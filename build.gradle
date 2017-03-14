@@ -219,7 +219,7 @@ configure(subprojects) {
 
                 groupId = project.group
                 artifactId = project.name
-                version = buildNrLoc //so that new builds can be tested
+                version = '1.0-SNAPSHOT'//buildNrLoc //so that new builds can be tested
 
                 withXml {
 

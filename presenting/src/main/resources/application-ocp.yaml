@@ -1,0 +1,15 @@
+spring.application.name: presenting
+
+# will be enabled after deploying RabbitMQ
+# spring.rabbitmq.addresses: ${vcap.services.brewery-rabbitmq.credentials.uri}
+
+server.port: 8080
+
+spring.rabbitmq.host: rabbitmq-client
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${http://eureka-server}/eureka/
+
+
