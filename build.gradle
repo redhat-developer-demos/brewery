@@ -17,8 +17,10 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.0.RELEASE" }"
-        if (hasProperty("docker")) { classpath 'se.transmode.gradle:gradle-docker:1.2' }
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.0.RELEASE"}"
+        if (hasProperty("docker")) {
+            classpath 'se.transmode.gradle:gradle-docker:1.2'
+        }
     }
 }
 
@@ -74,7 +76,7 @@ configure(subprojects) {
             }
         }
         systemPropsFromGradle = {
-            project.gradle.startParameter.systemPropertiesArgs.entrySet().collect{"-D${it.key}=${it.value}"}
+            project.gradle.startParameter.systemPropertiesArgs.entrySet().collect { "-D${it.key}=${it.value}" }
         }
         systemPropsFromGradleContains = { String key ->
             project.gradle.startParameter.systemPropertiesArgs.containsKey(key)
@@ -162,7 +164,9 @@ configure(subprojects - zipkinServerProject - acceptanceTestsProject - zookeeper
         if (whatToTest('SCS')) compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
         compile "org.springframework.cloud:spring-cloud-starter-hystrix"
         compile "org.springframework.cloud:spring-cloud-starter-stream-${propOrSysEnvPresent('kafka') ? 'kafka' : 'rabbit'}"
-        if (!whatToTest('SLEUTH')) { compile "org.springframework.cloud:spring-cloud-sleuth-stream" }
+        if (!whatToTest('SLEUTH')) {
+            compile "org.springframework.cloud:spring-cloud-sleuth-stream"
+        }
         compile "org.springframework.amqp:spring-amqp"
         compile "io.dropwizard.metrics:metrics-core"
         compile "io.dropwizard.metrics:metrics-graphite"
@@ -172,7 +176,9 @@ configure(subprojects - zipkinServerProject - acceptanceTestsProject - zookeeper
 configure(zipkinRelatedProjects) {
 
     dependencies {
-        if (whatToTest('SLEUTH')) { compile "org.springframework.cloud:spring-cloud-starter-zipkin" }
+        if (whatToTest('SLEUTH')) {
+            compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+        }
     }
 }
 
@@ -195,7 +201,77 @@ if (hasProperty("docker")) {
         docker {
             baseImage 'frolvlad/alpine-oraclejdk8'
         }
+
+
     }
+}
+
+configure(subprojects) {
+
+    apply plugin: 'maven'
+
+    //Generate pom for f8-m-p kubernetes deployment
+    task createFabric8Pom {
+
+        doLast {
+
+            pom {
+
+                groupId = project.group
+                artifactId = project.name
+                version = buildNrLoc //so that new builds can be tested
+
+                withXml {
+
+                    def pomNode = asNode()
+
+                    //properties node
+                    def propsNode = pomNode.appendNode("properties")
+                    propsNode.appendNode('project.build.sourceEncoding', 'UTF-8')
+                    propsNode.appendNode('maven.compiler.source', '1.8')
+                    propsNode.appendNode('maven.compiler.target', '1.8')
+                    propsNode.appendNode('fabric8.maven.plugin.version', '3.2.30')
+                    propsNode.appendNode('spring-boot-maven-plugin.version', '1.5.1.RELEASE')
+
+                    def buildNode = asNode().appendNode("build")
+                    buildNode.appendNode('finalName', 'springcloud-brewing')
+                    buildNode.appendNode('directory', '${project.basedir}/build/libs')
+                    buildNode.appendNode('outputDirectory', '${project.basedir}/build/classes')
+
+                    //set resources
+                    def resourcesNode = buildNode.appendNode('resources')
+                    def resourceNode = resourcesNode.appendNode('resource')
+                    resourceNode.appendNode('directory', 'src/main/fabric8')
+                    resourceNode.appendNode('filtering', 'true')
+
+                    //set plugins
+                    def pluginsNode = buildNode.appendNode('plugins')
+                    def pluginNode = pluginsNode.appendNode('plugin')
+                    pluginNode.appendNode('groupId', 'io.fabric8')
+                    pluginNode.appendNode('artifactId', 'fabric8-maven-plugin')
+                    pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+
+                    def pluginExecsNode = pluginNode.appendNode("executions")
+                    def pluginExecNode = pluginExecsNode.appendNode("execution")
+                    def goalsNode = pluginExecNode.appendNode("goals")
+                    goalsNode.appendNode("goal", 'resource')
+                    goalsNode.appendNode("goal", 'build')
+
+                    pluginNode = pluginsNode.appendNode('plugin')
+                    pluginNode.appendNode('groupId', 'org.springframework.boot')
+                    pluginNode.appendNode('artifactId', 'spring-boot-maven-plugin')
+                    pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+
+
+                    //the fat jar has already generated via gradle build - the maven build will reuse it
+                    pomNode.remove(pomNode.get('dependencies'))
+
+                }
+            }.writeTo("$buildDir/../pom.xml")
+        }
+    }
+
+    createFabric8Pom.onlyIf { ext.fabric8 }
 }
 
 configure(subprojects - techProjects - commonZipkinProject - commonZipkinProjectOld - commonZipkinStreamProject) {
@@ -209,15 +285,21 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
                 compile commonZipkinProject
             }
         }
-        if (whatToTest('SLEUTH_STREAM')) { compile commonZipkinStreamProject }
+        if (whatToTest('SLEUTH_STREAM')) {
+            compile commonZipkinStreamProject
+        }
 
         compile "org.springframework.boot:spring-boot-starter-actuator"
         compile 'com.fasterxml.jackson.core:jackson-databind'
         if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
             compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
         }
-        if (whatToTest('CONSUL')) { compile "org.springframework.cloud:spring-cloud-starter-consul-discovery" }
-        if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) { compile "org.springframework.cloud:spring-cloud-starter-eureka" }
+        if (whatToTest('CONSUL')) {
+            compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
+        }
+        if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
+            compile "org.springframework.cloud:spring-cloud-starter-eureka"
+        }
         compile "org.springframework.cloud:spring-cloud-starter-feign"
         compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
         compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
