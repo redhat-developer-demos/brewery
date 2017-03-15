@@ -1,0 +1,6 @@
+ext {
+  // though this is not spring boot application it requires to get some right transitive deps
+  BOOT_VERSION = '1.5.1.RELEASE'
+  fabric8 = false
+  springboot = false
+}

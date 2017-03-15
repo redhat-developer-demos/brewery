@@ -1,27 +1,27 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url "http://repo.spring.io/snapshot"
-        }
-        maven {
-            url "http://repo.spring.io/milestone"
-        }
-        maven {
-            url "http://repo.spring.io/release"
-        }
-        maven {
-            url "http://repo.spring.io/libs-staging-local/"
-        }
-        jcenter()
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+      url "http://repo.spring.io/snapshot"
     }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.0.RELEASE"}"
-        if (hasProperty("docker")) {
-            classpath 'se.transmode.gradle:gradle-docker:1.2'
-        }
+    maven {
+      url "http://repo.spring.io/milestone"
     }
+    maven {
+      url "http://repo.spring.io/release"
+    }
+    maven {
+      url "http://repo.spring.io/libs-staging-local/"
+    }
+    jcenter()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.0.RELEASE"}"
+    if (hasProperty("docker")) {
+      classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+  }
 }
 
 def commonProject = project(':common')
@@ -41,292 +41,364 @@ def nonDockerProjects = [commonProject, commonZipkinProject, commonZipkinProject
 def zipkinRelatedProjects = subprojects - nonZipkinProjects
 
 allprojects {
-    apply plugin: 'java'
+  apply plugin: 'java'
 }
 
 configure(subprojects) {
 
-    apply plugin: 'java'
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
-    apply plugin: 'spring-boot'
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+  apply plugin: 'idea'
+  apply plugin: 'spring-boot'
 
-    ext {
-        dockerConfiguration = { int port ->
-            if (hasProperty("docker")) {
-                int debugPort = port - 1000
-                dependsOn 'build'
-                dryRun true
-                addFile("${libsDir}/${project.name}-${buildNrLoc}.jar", "/${project.name}/${project.name}.jar")
-                exposePort(port)
-                exposePort(debugPort)
-                // Random beacuse of https://wiki.apache.org/tomcat/HowTo/FasterStartUp
-                entryPoint(['java', '-Xmx64m', '-Xss1024k',
-                            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$debugPort",
-                            '-Djava.security.egd=file:/dev/./urandom', '-jar', "/${project.name}/${project.name}.jar"])
-            } else {
-                getLogger().debug("docker property is not set")
-            }
-        }
-        createDockerTaskWithPort = { int port ->
-            if (hasProperty("docker")) {
-                project.task([type: Docker], "docker", ext.dockerConfiguration.curry(port))
-            } else {
-                getLogger().debug("docker property is not set")
-            }
-        }
-        systemPropsFromGradle = {
-            project.gradle.startParameter.systemPropertiesArgs.entrySet().collect { "-D${it.key}=${it.value}" }
-        }
-        systemPropsFromGradleContains = { String key ->
-            project.gradle.startParameter.systemPropertiesArgs.containsKey(key)
-        }
-        whatToTest = { String propName ->
-            String whatToTestProp = "WHAT_TO_TEST"
-            return propName.equalsIgnoreCase(project.gradle.startParameter.systemPropertiesArgs.get(whatToTestProp)) ?:
-                    propName.equalsIgnoreCase(System.getenv(whatToTestProp))
-        }
-        propOrSysEnvPresent = { String propName ->
-            project.hasProperty(propName) || systemPropsFromGradleContains(propName) || System.getenv(propName.toUpperCase())
-        }
-        moduleEnabled = { boolean enabled ->
-            if (!enabled) {
-                project.tasks*.enabled = false
-            }
-        }
-        oldSleuthPresent = {
-            String bom = "$BOM_VERSION".toString()
-            return ["Brixton", "Camden"].any { bom.contains(it) }
-        }
-        buildNrLoc = project.hasProperty('buildNr') ? "${buildNr}" : "1.0.0"
+  ext {
+    dockerConfiguration = { int port ->
+      if (hasProperty("docker")) {
+        int debugPort = port - 1000
+        dependsOn 'build'
+        dryRun true
+        addFile("${libsDir}/${project.name}-${buildNrLoc}.jar", "/${project.name}/${project.name}.jar")
+        exposePort(port)
+        exposePort(debugPort)
+        // Random beacuse of https://wiki.apache.org/tomcat/HowTo/FasterStartUp
+        entryPoint(['java', '-Xmx64m', '-Xss1024k',
+                    "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$debugPort",
+                    '-Djava.security.egd=file:/dev/./urandom', '-jar', "/${project.name}/${project.name}.jar"])
+      } else {
+        getLogger().debug("docker property is not set")
+      }
     }
-
-    group = 'io.spring.cloud.samples.brewery'
-    version = buildNrLoc
-
-    sourceCompatibility = '1.8'
-
-    configurations {
-        all {
-            resolutionStrategy {
-                eachDependency { DependencyResolveDetails details ->
-                    // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
-                    // all modularized Groovy jars are replaced with groovy-all.jar by default.
-                    if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
-                        details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
-                    }
-                }
-            }
-        }
+    createDockerTaskWithPort = { int port ->
+      if (hasProperty("docker")) {
+        project.task([type: Docker], "docker", ext.dockerConfiguration.curry(port))
+      } else {
+        getLogger().debug("docker property is not set")
+      }
     }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url "http://repo.spring.io/snapshot"
-        }
-        maven {
-            url "http://repo.spring.io/milestone"
-        }
-        maven {
-            url "http://repo.spring.io/release"
-        }
-        maven {
-            url "http://repo.spring.io/libs-staging-local/"
-        }
-        jcenter()
+    systemPropsFromGradle = {
+      project.gradle.startParameter.systemPropertiesArgs.entrySet().collect { "-D${it.key}=${it.value}" }
     }
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:$BOM_VERSION"
-            if (hasProperty("BOOT_VERSION")) {
-                println "Using boot in version [${project.property("BOOT_VERSION")}]"
-                mavenBom "org.springframework.boot:spring-boot-dependencies:${project.property("BOOT_VERSION")}"
-            }
-            if (ext.whatToTest('SCS')) mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:$SCS_VERSION"
-        }
+    systemPropsFromGradleContains = { String key ->
+      project.gradle.startParameter.systemPropertiesArgs.containsKey(key)
     }
+    whatToTest = { String propName ->
+      String whatToTestProp = "WHAT_TO_TEST"
+      return propName.equalsIgnoreCase(project.gradle.startParameter.systemPropertiesArgs.get(whatToTestProp)) ?:
+        propName.equalsIgnoreCase(System.getenv(whatToTestProp))
+    }
+    propOrSysEnvPresent = { String propName ->
+      project.hasProperty(propName) || systemPropsFromGradleContains(propName) || System.getenv(propName.toUpperCase())
+    }
+    moduleEnabled = { boolean enabled ->
+      if (!enabled) {
+        project.tasks*.enabled = false
+      }
+    }
+    oldSleuthPresent = {
+      String bom = "$BOM_VERSION".toString()
+      return ["Brixton", "Camden"].any { bom.contains(it) }
+    }
+    //buildNrLoc = project.hasProperty('buildNr') ? "${buildNr}" : "1.0.0"
+    //Since the migration is in progress - would keep the versions to snapshots
+    buildNrLoc = project.hasProperty('buildNr') ? "${buildNr}" : "1.0-SNAPSHOT"
+  }
 
-    task allDeps(type: DependencyReportTask) {}
+  group = 'io.spring.cloud.samples.brewery'
+  version = buildNrLoc
+
+  sourceCompatibility = '1.8'
+
+  configurations {
+    all {
+      resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+          // To prevent an accidental usage of groovy-all.jar and groovy.jar in different versions
+          // all modularized Groovy jars are replaced with groovy-all.jar by default.
+          if (details.requested.group == 'org.codehaus.groovy' && details.requested.name != "groovy-all") {
+            details.useTarget("org.codehaus.groovy:groovy-all:${details.requested.version}")
+          }
+        }
+      }
+    }
+  }
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+      url "http://repo.spring.io/snapshot"
+    }
+    maven {
+      url "http://repo.spring.io/milestone"
+    }
+    maven {
+      url "http://repo.spring.io/release"
+    }
+    maven {
+      url "http://repo.spring.io/libs-staging-local/"
+    }
+    jcenter()
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:$BOM_VERSION"
+      if (hasProperty("BOOT_VERSION")) {
+        println "Using boot in version [${project.property("BOOT_VERSION")}]"
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${project.property("BOOT_VERSION")}"
+      }
+      if (ext.whatToTest('SCS')) mavenBom "io.pivotal.spring.cloud:spring-cloud-services-dependencies:$SCS_VERSION"
+    }
+  }
+
+  task allDeps(type: DependencyReportTask) {}
 }
 
 logger.lifecycle("WHAT_TO_TEST is: System prop: [${project.gradle.startParameter.systemPropertiesArgs.get("WHAT_TO_TEST")}] , Env prop: [${System.getenv("WHAT_TO_TEST")}]")
 
 configure(subprojects - zipkinServerProject - acceptanceTestsProject - zookeeperServerProject - configServerProject) {
 
-    dependencies {
-        compile 'org.projectlombok:lombok:1.16.6'
-        compile "org.springframework.cloud:spring-cloud-starter-sleuth"
-        if (!whatToTest('SCS')) compile "org.springframework.cloud:spring-cloud-starter-config"
-        if (whatToTest('SCS')) compile("io.pivotal.spring.cloud:spring-cloud-services-starter-config-client")
-        if (whatToTest('SCS')) compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
-        compile "org.springframework.cloud:spring-cloud-starter-hystrix"
-        compile "org.springframework.cloud:spring-cloud-starter-stream-${propOrSysEnvPresent('kafka') ? 'kafka' : 'rabbit'}"
-        if (!whatToTest('SLEUTH')) {
-            compile "org.springframework.cloud:spring-cloud-sleuth-stream"
-        }
-        compile "org.springframework.amqp:spring-amqp"
-        compile "io.dropwizard.metrics:metrics-core"
-        compile "io.dropwizard.metrics:metrics-graphite"
+  dependencies {
+    compile 'org.projectlombok:lombok:1.16.6'
+    compile "org.springframework.cloud:spring-cloud-starter-sleuth"
+    if (!whatToTest('SCS')) compile "org.springframework.cloud:spring-cloud-starter-config"
+    if (whatToTest('SCS')) compile("io.pivotal.spring.cloud:spring-cloud-services-starter-config-client")
+    if (whatToTest('SCS')) compile("io.pivotal.spring.cloud:spring-cloud-services-starter-service-registry")
+    compile "org.springframework.cloud:spring-cloud-starter-hystrix"
+    compile "org.springframework.cloud:spring-cloud-starter-stream-${propOrSysEnvPresent('kafka') ? 'kafka' : 'rabbit'}"
+    if (!whatToTest('SLEUTH')) {
+      compile "org.springframework.cloud:spring-cloud-sleuth-stream"
     }
+    compile "org.springframework.amqp:spring-amqp"
+    compile "io.dropwizard.metrics:metrics-core"
+    compile "io.dropwizard.metrics:metrics-graphite"
+  }
 }
 
 configure(zipkinRelatedProjects) {
 
-    dependencies {
-        if (whatToTest('SLEUTH')) {
-            compile "org.springframework.cloud:spring-cloud-starter-zipkin"
-        }
+  dependencies {
+    if (whatToTest('SLEUTH')) {
+      compile "org.springframework.cloud:spring-cloud-starter-zipkin"
     }
+  }
 }
 
 configure(nonDockerProjects) {
 
-    bootRepackage {
-        enabled = false
-    }
+  bootRepackage {
+    enabled = false
+  }
 
-    bootRun {
-        enabled = false
-    }
+  bootRun {
+    enabled = false
+  }
 }
 
 if (hasProperty("docker")) {
-    configure(subprojects - nonDockerProjects) {
+  configure(subprojects - nonDockerProjects) {
 
-        apply plugin: 'docker'
+    apply plugin: 'docker'
 
-        docker {
-            baseImage 'frolvlad/alpine-oraclejdk8'
-        }
-
-
+    docker {
+      baseImage 'frolvlad/alpine-oraclejdk8'
     }
+
+
+  }
 }
 
 configure(subprojects) {
 
-    apply plugin: 'maven'
+  apply plugin: 'maven'
 
-    //Generate pom for f8-m-p kubernetes deployment
-    task createFabric8Pom {
+  //Generate pom for f8-m-p kubernetes deployment
+  task generatePom {
 
-        doLast {
+    doLast {
 
-            pom {
+      pom {
 
-                groupId = project.group
-                artifactId = project.name
-                version = '1.0-SNAPSHOT'//buildNrLoc //so that new builds can be tested
+        groupId = project.group
+        artifactId = project.name
+        version = buildNrLoc
 
-                withXml {
+        withXml {
 
-                    def pomNode = asNode()
+          def pomNode = asNode()
 
-                    //properties node
-                    def propsNode = pomNode.appendNode("properties")
-                    propsNode.appendNode('project.build.sourceEncoding', 'UTF-8')
-                    propsNode.appendNode('maven.compiler.source', '1.8')
-                    propsNode.appendNode('maven.compiler.target', '1.8')
-                    propsNode.appendNode('fabric8.maven.plugin.version', '3.2.30')
-                    propsNode.appendNode('spring-boot-maven-plugin.version', '1.5.1.RELEASE')
+          //properties node
+          def propsNode = pomNode.appendNode("properties")
+          propsNode.appendNode('project.build.sourceEncoding', 'UTF-8')
+          propsNode.appendNode('maven.compiler.source', '1.8')
+          propsNode.appendNode('maven.compiler.target', '1.8')
+          if (fabric8) {
+            propsNode.appendNode('fabric8.maven.plugin.version', '3.2-SNAPSHOT')
+            propsNode.appendNode('fabric8.generator.spring-boot.activeProfiles', 'ocp')
+          }
+          propsNode.appendNode('spring-boot-maven-plugin.version', '1.5.1.RELEASE')
+          propsNode.appendNode('spring-cloud.version', "$BOM_VERSION".toString())
+          if (project.hasProperty('BOOT_VERSION')) {
+            propsNode.appendNode('spring-boot.version', "$BOOT_VERSION".toString())
+          }
 
-                    def buildNode = asNode().appendNode("build")
-                    buildNode.appendNode('finalName', 'springcloud-brewing')
-                    buildNode.appendNode('directory', '${project.basedir}/build/libs')
-                    buildNode.appendNode('outputDirectory', '${project.basedir}/build/classes')
+          // dependency management
 
-                    //set resources
-                    def resourcesNode = buildNode.appendNode('resources')
-                    def resourceNode = resourcesNode.appendNode('resource')
-                    resourceNode.appendNode('directory', 'src/main/fabric8')
-                    resourceNode.appendNode('filtering', 'true')
+          def depsMgmtNode = pomNode.appendNode("dependencyManagement")
+          def depsNode = depsMgmtNode.appendNode("dependencies")
 
-                    //set plugins
-                    def pluginsNode = buildNode.appendNode('plugins')
-                    def pluginNode = pluginsNode.appendNode('plugin')
-                    pluginNode.appendNode('groupId', 'io.fabric8')
-                    pluginNode.appendNode('artifactId', 'fabric8-maven-plugin')
-                    pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+          def depNode = depsNode.appendNode("dependency")
 
-                    def pluginExecsNode = pluginNode.appendNode("executions")
-                    def pluginExecNode = pluginExecsNode.appendNode("execution")
-                    def goalsNode = pluginExecNode.appendNode("goals")
-                    goalsNode.appendNode("goal", 'resource')
-                    goalsNode.appendNode("goal", 'build')
+          //Spring Cloud Dependencies BOM
+          depNode.appendNode("groupId", 'org.springframework.cloud')
+          depNode.appendNode("artifactId", 'spring-cloud-dependencies')
+          depNode.appendNode("version", '${spring-cloud.version}')
+          depNode.appendNode("type", 'pom')
+          depNode.appendNode("scope", 'import')
 
-                    pluginNode = pluginsNode.appendNode('plugin')
-                    pluginNode.appendNode('groupId', 'org.springframework.boot')
-                    pluginNode.appendNode('artifactId', 'spring-boot-maven-plugin')
-                    pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+          //Spring Boot Dependencies BOM
+          if (project.hasProperty("BOOT_VERSION")) {
+            depNode = depsNode.appendNode("dependency")
+            depNode.appendNode("groupId", 'org.springframework.boot')
+            depNode.appendNode("artifactId", 'spring-boot-dependencies')
+            depNode.appendNode("version", '${spring-boot.version}')
+            depNode.appendNode("type", 'pom')
+            depNode.appendNode("scope", 'import')
+          }
 
+          def buildNode = asNode().appendNode("build")
+          //buildNode.appendNode('finalName', 'springcloud-brewing')
+          //buildNode.appendNode('directory', '${project.basedir}/build/libs')
+          //buildNode.appendNode('outputDirectory', '${project.basedir}/build/classes')
+          def pluginsNode = buildNode.appendNode('plugins')
 
-                    //the fat jar has already generated via gradle build - the maven build will reuse it
-                    pomNode.remove(pomNode.get('dependencies'))
+          def resourcesNode = buildNode.appendNode('resources')
+          def resourceNode = resourcesNode.appendNode('resource')
+          resourceNode.appendNode('directory', 'src/main/resources')
 
-                }
-            }.writeTo("$buildDir/../pom.xml")
+          if (fabric8) {
+            //set resources
+            resourceNode = resourcesNode.appendNode('resource')
+            resourceNode.appendNode('directory', 'src/main/fabric8')
+            resourceNode.appendNode('filtering', 'true')
+
+            //set plugins
+            def pluginNode = pluginsNode.appendNode('plugin')
+            pluginNode.appendNode('groupId', 'io.fabric8')
+            pluginNode.appendNode('artifactId', 'fabric8-maven-plugin')
+            pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+
+            def pluginExecsNode = pluginNode.appendNode("executions")
+            def pluginExecNode = pluginExecsNode.appendNode("execution")
+            def goalsNode = pluginExecNode.appendNode("goals")
+            goalsNode.appendNode("goal", 'resource')
+            goalsNode.appendNode("goal", 'build')
+
+          }
+
+          //Spring Boot maven plugin
+          if (project.hasProperty('springboot') && springboot) {
+            def pluginNode = pluginsNode.appendNode('plugin')
+            pluginNode.appendNode('groupId', 'org.springframework.boot')
+            pluginNode.appendNode('artifactId', 'spring-boot-maven-plugin')
+            pluginNode.appendNode('version', '${spring-boot-maven-plugin.version}')
+            def pluginExecsNode = pluginNode.appendNode("executions")
+            def pluginExecNode = pluginExecsNode.appendNode("execution")
+            def goalsNode = pluginExecNode.appendNode("goals")
+            goalsNode.appendNode("goal", 'repackage')
+          }
+
         }
+      }.writeTo("$projectDir/pom.xml")
     }
+  }
 
-    createFabric8Pom.onlyIf { ext.fabric8 }
+  //Utility for doing oc apply/delete from respective sub projects whereever its needed
+  project.ext.ocApply = {
+    def f8dir = new File("$projectDir/target/classes/META-INF/fabric8")
+
+    if (f8dir.exists()) {
+      def standardOutput = new ByteArrayOutputStream()
+      exec {
+        workingDir "$projectDir/target/classes/META-INF/fabric8"
+        commandLine 'oc', 'apply', '-f', 'openshift.yml'
+      }
+      return standardOutput.toString()
+    }
+  }
+
+  project.ext.ocDelete = {
+    def f8dir = new File("$projectDir/target/classes/META-INF/fabric8")
+
+    if (f8dir.exists()) {
+
+      def standardOutput = new ByteArrayOutputStream()
+
+      exec {
+        workingDir "$projectDir/target/classes/META-INF/fabric8"
+        commandLine 'oc', 'delete', '-f', 'openshift.yml'
+      }
+
+      return standardOutput.toString()
+    }
+  }
+
+  generatePom.onlyIf { project.hasProperty('fabric8') }
 }
 
 configure(subprojects - techProjects - commonZipkinProject - commonZipkinProjectOld - commonZipkinStreamProject) {
 
-    dependencies {
-        compile(commonProject)
-        if (whatToTest('SLEUTH')) {
-            if (oldSleuthPresent()) {
-                compile commonZipkinProjectOld
-            } else {
-                compile commonZipkinProject
-            }
-        }
-        if (whatToTest('SLEUTH_STREAM')) {
-            compile commonZipkinStreamProject
-        }
-
-        compile "org.springframework.boot:spring-boot-starter-actuator"
-        compile 'com.fasterxml.jackson.core:jackson-databind'
-        if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
-            compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
-        }
-        if (whatToTest('CONSUL')) {
-            compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
-        }
-        if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
-            compile "org.springframework.cloud:spring-cloud-starter-eureka"
-        }
-        compile "org.springframework.cloud:spring-cloud-starter-feign"
-        compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
-        compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
-        compile 'org.apache.commons:commons-lang3:3.4'
-        compile 'com.jayway.jsonpath:json-path-assert:2.0.0'
-        compile 'org.yaml:snakeyaml'
-        compile 'org.hibernate:hibernate-validator'
-        compile "org.aspectj:aspectjrt"
-
-        runtime 'cglib:cglib-nodep:3.1'
-        runtime 'org.objenesis:objenesis:2.2'
-        runtime 'org.aspectj:aspectjweaver'
+  dependencies {
+    compile(commonProject)
+    if (whatToTest('SLEUTH')) {
+      if (oldSleuthPresent()) {
+        compile commonZipkinProjectOld
+      } else {
+        compile commonZipkinProject
+      }
+    }
+    if (whatToTest('SLEUTH_STREAM')) {
+      compile commonZipkinStreamProject
     }
 
-    wrapper {
-        gradleVersion '3.3'
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile 'com.fasterxml.jackson.core:jackson-databind'
+    if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
+      compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
     }
+    if (whatToTest('CONSUL')) {
+      compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
+    }
+    if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
+      compile "org.springframework.cloud:spring-cloud-starter-eureka"
+    }
+    compile "org.springframework.cloud:spring-cloud-starter-feign"
+    compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
+    compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.jayway.jsonpath:json-path-assert:2.0.0'
+    compile 'org.yaml:snakeyaml'
+    compile 'org.hibernate:hibernate-validator'
+    compile "org.aspectj:aspectjrt"
 
-    bootRun {
-        jvmArgs = systemPropsFromGradle()
-    }
+    runtime 'cglib:cglib-nodep:3.1'
+    runtime 'org.objenesis:objenesis:2.2'
+    runtime 'org.aspectj:aspectjweaver'
+  }
 
-    test {
-        jvmArgs systemPropsFromGradle()
-        testLogging {
-            exceptionFormat = 'full'
-            showStandardStreams = true
-        }
+  wrapper {
+    gradleVersion '3.3'
+  }
+
+  bootRun {
+    jvmArgs = systemPropsFromGradle()
+  }
+
+  test {
+    jvmArgs systemPropsFromGradle()
+    testLogging {
+      exceptionFormat = 'full'
+      showStandardStreams = true
     }
+  }
 }

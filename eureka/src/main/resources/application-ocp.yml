@@ -1,5 +1,7 @@
 server.port: 8080
 
+logging.file: deployments/eureka.log
+
 eureka:
   client:
     serviceUrl:
