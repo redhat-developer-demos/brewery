@@ -1,0 +1,22 @@
+spec:
+  replicas: ${replicas}
+  template:
+    spec:
+      containers:
+       - name: ${project.artifactId}
+         image: "${docker.image}"
+         imagePullPolicy: "IfNotPresent"
+         livenessProbe:
+           tcpSocket:
+             port: 15672
+           initialDelaySeconds: 30
+         readinessProbe:
+           httpGet:
+             port: 15672
+             path: /
+           initialDelaySeconds: 5
+         ports:
+         - containerPort: 15672
+           name: "management"
+         - containerPort: 5672
+           name: "amqp"

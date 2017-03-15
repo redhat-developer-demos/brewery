@@ -1,0 +1,11 @@
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "rabbitmq-client"
+spec:
+  type: NodePort
+  ports:
+  - name: "client-amqp"
+    port:  5672
+    protocol: "TCP"
+    targetPort: 5672
