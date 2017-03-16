@@ -4,7 +4,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVICE_HOST}/eureka/
-
 logging:
   level.org.springframework.cloud: INFO
   level.org.springframework.cloud.sleuth: ERROR

@@ -22,7 +22,7 @@
     <spring-cloud.version>Dalston.M1</spring-cloud.version>
     <spring-boot.version>1.5.1.RELEASE</spring-boot.version>
     <!-- -->
-    <fabric8.generator.spring-boot.activeProfiles>ocp</fabric8.generator.spring-boot.activeProfiles>
+    <fabric8.generator.spring-boot.activeProfiles>ocp,eureka</fabric8.generator.spring-boot.activeProfiles>
   </properties>
   <dependencyManagement>
     <dependencies>

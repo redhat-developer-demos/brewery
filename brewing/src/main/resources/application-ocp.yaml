@@ -4,3 +4,11 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${EUREKA_SERVICE_HOST}/eureka/
+spring.zipkin.enabled: false
+ingredients.threshold: 1500
+logging:
+  level.org.springframework.cloud: INFO
+  level.org.springframework.cloud.sleuth: ERROR
+  level.org.springframework.cloud.sleuth.log: ERROR
+  level.org.springframework.cloud.sleuth.trace: ERROR
+  level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR

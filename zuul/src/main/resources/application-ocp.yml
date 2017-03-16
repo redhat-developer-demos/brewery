@@ -3,4 +3,10 @@ spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${EUREKA_SERVICE_HOST}/eureka/
+      defaultZone: "http://${EUREKA_SERVICE_HOST}/eureka/"
+logging:
+  level.org.springframework.cloud: INFO
+  level.org.springframework.cloud.sleuth: ERROR
+  level.org.springframework.cloud.sleuth.log: ERROR
+  level.org.springframework.cloud.sleuth.trace: ERROR
+  level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR

@@ -1,6 +1,6 @@
 server.port: 8080
 
-logging.file: deployments/eureka.log
+spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
 
 eureka:
   client:
