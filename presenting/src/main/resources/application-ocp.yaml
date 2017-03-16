@@ -1,11 +1,5 @@
-spring.application.name: presenting
-
 server.port: 8080
-
-spring.rabbitmq.host:
-
 spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
-
 eureka:
   client:
     serviceUrl:

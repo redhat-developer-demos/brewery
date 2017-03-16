@@ -19,7 +19,7 @@ project(xmlns:'http://maven.apache.org/POM/4.0.0',
         if (fabric8) {
             'fabric8.maven.plugin.version'("${f8mpVersion}")
             newLine()
-            'fabric8.generator.spring-boot.activeProfiles'('ocp')
+            'fabric8.generator.spring-boot.activeProfiles'('ocp','eureka')
         }
         newLine()
         'spring-boot-maven-plugin.version'('1.5.1.RELEASE')
@@ -64,6 +64,9 @@ project(xmlns:'http://maven.apache.org/POM/4.0.0',
     yieldUnescaped "${projectDeps}"
     newLine()
     build {
+        if(groovy) {
+          sourceDirectory('src/main/groovy')
+        }
         resources {
             resource {
                 directory('src/main/resources')
@@ -133,6 +136,7 @@ project(xmlns:'http://maven.apache.org/POM/4.0.0',
                              phase('compile')
                              configuration {
                                 tasks{
+                                   mkdir(dir:"src/main/groovy")
                                    taskdef(name: 'groovyc', classname:'org.codehaus.groovy.ant.Groovyc'){
                                      classpath(refid: 'maven.compile.classpath')
                                    }
@@ -155,6 +159,7 @@ project(xmlns:'http://maven.apache.org/POM/4.0.0',
                               phase('test-compile')
                               configuration {
                                  tasks{
+                                    mkdir(dir:"src/test/groovy")
                                     taskdef(name: 'groovyc', classname:'org.codehaus.groovy.ant.Groovyc'){
                                       classpath(refid: 'maven.test.classpath')
                                     }
