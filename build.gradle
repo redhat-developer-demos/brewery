@@ -1,3 +1,6 @@
+import groovy.text.markup.MarkupTemplateEngine
+import groovy.text.markup.TemplateConfiguration
+
 buildscript {
   repositories {
     mavenLocal()
@@ -21,6 +24,7 @@ buildscript {
     if (hasProperty("docker")) {
       classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
+    //classpath 'org.codehaus.groovy:groovy-all:2.4.5'
   }
 }
 
@@ -212,104 +216,60 @@ configure(subprojects) {
 
   apply plugin: 'maven'
 
-  //Generate pom for f8-m-p kubernetes deployment
+  //Generate pom
   task generatePom {
 
     doLast {
 
       pom {
 
-        groupId = project.group
-        artifactId = project.name
-        version = buildNrLoc
-
         withXml {
 
-          def pomNode = asNode()
+        }.writeTo("$buildDir/tmp/pom.xml")
 
-          //properties node
-          def propsNode = pomNode.appendNode("properties")
-          propsNode.appendNode('project.build.sourceEncoding', 'UTF-8')
-          propsNode.appendNode('maven.compiler.source', '1.8')
-          propsNode.appendNode('maven.compiler.target', '1.8')
-          if (fabric8) {
-            propsNode.appendNode('fabric8.maven.plugin.version', '3.2-SNAPSHOT')
-            propsNode.appendNode('fabric8.generator.spring-boot.activeProfiles', 'ocp')
-          }
-          propsNode.appendNode('spring-boot-maven-plugin.version', '1.5.1.RELEASE')
-          propsNode.appendNode('spring-cloud.version', "$BOM_VERSION".toString())
-          if (project.hasProperty('BOOT_VERSION')) {
-            propsNode.appendNode('spring-boot.version', "$BOOT_VERSION".toString())
-          }
+      }
 
-          // dependency management
+      def pomXml = new XmlParser().parse(file("$buildDir/tmp/pom.xml"))
 
-          def depsMgmtNode = pomNode.appendNode("dependencyManagement")
-          def depsNode = depsMgmtNode.appendNode("dependencies")
+      StringWriter stringWriter = new StringWriter()
 
-          def depNode = depsNode.appendNode("dependency")
+      PrintWriter pw = new PrintWriter(stringWriter)
 
-          //Spring Cloud Dependencies BOM
-          depNode.appendNode("groupId", 'org.springframework.cloud')
-          depNode.appendNode("artifactId", 'spring-cloud-dependencies')
-          depNode.appendNode("version", '${spring-cloud.version}')
-          depNode.appendNode("type", 'pom')
-          depNode.appendNode("scope", 'import')
+      XmlNodePrinter xmlNodePrinter = new XmlNodePrinter(pw)
 
-          //Spring Boot Dependencies BOM
-          if (project.hasProperty("BOOT_VERSION")) {
-            depNode = depsNode.appendNode("dependency")
-            depNode.appendNode("groupId", 'org.springframework.boot')
-            depNode.appendNode("artifactId", 'spring-boot-dependencies')
-            depNode.appendNode("version", '${spring-boot.version}')
-            depNode.appendNode("type", 'pom')
-            depNode.appendNode("scope", 'import')
-          }
+      xmlNodePrinter.preserveWhitespace = true
+      xmlNodePrinter.namespaceAware  = false
+      xmlNodePrinter.print(pomXml.dependencies[0])
 
-          def buildNode = asNode().appendNode("build")
-          //buildNode.appendNode('finalName', 'springcloud-brewing')
-          //buildNode.appendNode('directory', '${project.basedir}/build/libs')
-          //buildNode.appendNode('outputDirectory', '${project.basedir}/build/classes')
-          def pluginsNode = buildNode.appendNode('plugins')
+      stringWriter.flush()
+      stringWriter.close()
 
-          def resourcesNode = buildNode.appendNode('resources')
-          def resourceNode = resourcesNode.appendNode('resource')
-          resourceNode.appendNode('directory', 'src/main/resources')
+      def projectDepsXml = stringWriter.toString()
 
-          if (fabric8) {
-            //set resources
-            resourceNode = resourcesNode.appendNode('resource')
-            resourceNode.appendNode('directory', 'src/main/fabric8')
-            resourceNode.appendNode('filtering', 'true')
+      def model = [groupId           : project.group,
+                   artifactId        : project.name,
+                   version           : buildNrLoc,
+                   f8mpVersion       : '3.2-SNAPSHOT',
+                   springCloudVersion: 'Dalston.M1',
+                   springBootVersion : '1.5.1.RELEASE',
+                   fabric8           : project.fabric8,
+                   springBoot        : project.springboot,
+                   groovy            : project.groovy,
+                   projectDeps       : projectDepsXml]
 
-            //set plugins
-            def pluginNode = pluginsNode.appendNode('plugin')
-            pluginNode.appendNode('groupId', 'io.fabric8')
-            pluginNode.appendNode('artifactId', 'fabric8-maven-plugin')
-            pluginNode.appendNode('version', '${fabric8.maven.plugin.version}')
+      TemplateConfiguration tplConf = new TemplateConfiguration()
+      tplConf.autoNewLine = true
+      tplConf.autoIndent = true
+      tplConf.cacheTemplates = false
 
-            def pluginExecsNode = pluginNode.appendNode("executions")
-            def pluginExecNode = pluginExecsNode.appendNode("execution")
-            def goalsNode = pluginExecNode.appendNode("goals")
-            goalsNode.appendNode("goal", 'resource')
-            goalsNode.appendNode("goal", 'build')
+      MarkupTemplateEngine engine = new MarkupTemplateEngine(tplConf)
 
-          }
+      def pomXmlTemplate = engine.createTemplate(file("$projectDir/../pom.tpl"))
 
-          //Spring Boot maven plugin
-          if (project.hasProperty('springboot') && springboot) {
-            def pluginNode = pluginsNode.appendNode('plugin')
-            pluginNode.appendNode('groupId', 'org.springframework.boot')
-            pluginNode.appendNode('artifactId', 'spring-boot-maven-plugin')
-            pluginNode.appendNode('version', '${spring-boot-maven-plugin.version}')
-            def pluginExecsNode = pluginNode.appendNode("executions")
-            def pluginExecNode = pluginExecsNode.appendNode("execution")
-            def goalsNode = pluginExecNode.appendNode("goals")
-            goalsNode.appendNode("goal", 'repackage')
-          }
+      pomXmlTemplate.make(model).writeTo(new FileWriter(file("$projectDir/pom.xml")))
 
-        }
-      }.writeTo("$projectDir/pom.xml")
+      file("$buildDir/tmp/pom.xml").delete()
+
     }
   }
 
