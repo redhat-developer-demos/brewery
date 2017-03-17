@@ -1,5 +1,12 @@
 moduleEnabled(whatToTest('SLEUTH_STREAM'))
 
+ext {
+  fabric8 = true
+  BOOT_VERSION='1.4.4.RELEASE'
+  springboot = true
+  groovy=false
+}
+
 dependencies {
     compile "org.springframework:spring-jdbc"
     runtime 'org.hsqldb:hsqldb'
