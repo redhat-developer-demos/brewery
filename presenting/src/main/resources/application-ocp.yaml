@@ -1,9 +1,15 @@
 server.port: 8080
-spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
+spring.rabbitmq.host: "rabbitmq-client"
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://${EUREKA_SERVICE_HOST}/eureka/
+      defaultZone: "http://eureka/eureka/"
+  instance:
+      hostname: presenting
+      nonSecurePort: 80
+ribbon:
+  eureka:
+    enabled: true
 
 logging:
   level.org.springframework.cloud: INFO
@@ -11,5 +17,3 @@ logging:
   level.org.springframework.cloud.sleuth.log: ERROR
   level.org.springframework.cloud.sleuth.trace: ERROR
   level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR
-
-spring.zipkin.enabled: false

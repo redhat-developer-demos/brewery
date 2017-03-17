@@ -1,4 +1,5 @@
 spring:
   cloud:
     config:
-      uri: "http://${CONFIG_SERVER_SERVICE_HOST}"
+      uri: "http://config-server"
+

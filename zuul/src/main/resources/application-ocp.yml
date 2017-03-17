@@ -3,7 +3,13 @@ spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
 eureka:
   client:
     serviceUrl:
-      defaultZone: "http://${EUREKA_SERVICE_HOST}/eureka/"
+      defaultZone: "http://eureka/eureka/"
+  instance:
+      hostname: zuul
+      nonSecurePort: 80
+ribbon:
+  eureka:
+    enabled: true
 logging:
   level.org.springframework.cloud: INFO
   level.org.springframework.cloud.sleuth: ERROR

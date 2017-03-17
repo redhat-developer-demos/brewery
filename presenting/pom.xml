@@ -12,7 +12,7 @@
     <fabric8.generator.spring-boot.activeProfiles>ocp</fabric8.generator.spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.1.RELEASE</spring-boot-maven-plugin.version>
     <spring-cloud.version>Dalston.M1</spring-cloud.version>
-    <spring-boot.version>1.5.1.RELEASE</spring-boot.version>
+    <spring-boot.version>1.4.4.RELEASE</spring-boot.version>
   </properties>
   <dependencyManagement>
     <dependencies>

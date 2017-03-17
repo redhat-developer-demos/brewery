@@ -19,7 +19,7 @@ project(xmlns:'http://maven.apache.org/POM/4.0.0',
         if (fabric8) {
             'fabric8.maven.plugin.version'("${f8mpVersion}")
             newLine()
-            'fabric8.generator.spring-boot.activeProfiles'('ocp,eureka')
+            'fabric8.generator.spring-boot.activeProfiles'('ocp')
         }
         newLine()
         'spring-boot-maven-plugin.version'('1.5.1.RELEASE')

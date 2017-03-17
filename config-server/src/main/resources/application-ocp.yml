@@ -10,8 +10,3 @@ spring:
           uri: https://github.com/spring-cloud-samples/brewery-config.git
   application:
     name: config-server
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://${EUREKA_SERVICE_HOST}/eureka/

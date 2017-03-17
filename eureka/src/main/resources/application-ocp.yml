@@ -3,11 +3,16 @@ server.port: 8080
 spring.rabbitmq.host: ${RABBITMQ_CLIENT_SERVICE_HOST}
 
 eureka:
+  numberRegistrySyncRetries: 0
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8080/eureka/
-    register-with-eureka: false
     fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: "http://eureka/eureka"
   server:
-    enableSelfPreservation: false
+    enableSelfPreservation: true
     wait-time-in-ms-when-sync-empty: 0
+  instance:
+    non-secure-port-enabled: true
+    non-secure-port: 80
+    hostname: eureka
