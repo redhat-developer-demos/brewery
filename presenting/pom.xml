@@ -8,7 +8,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <fabric8.maven.plugin.version>3.2-SNAPSHOT</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.4-SNAPSHOT</fabric8.maven.plugin.version>
     <fabric8.generator.spring-boot.activeProfiles>ocp</fabric8.generator.spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.1.RELEASE</spring-boot-maven-plugin.version>
     <spring-cloud.version>Dalston.M1</spring-cloud.version>
