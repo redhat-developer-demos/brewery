@@ -15,7 +15,7 @@
     <docker.image>rabbitmq:management</docker.image>
     <fabric8-maven-plugin.rabbitmq.alias>rabbitmq</fabric8-maven-plugin.rabbitmq.alias>
     <replicas>1</replicas>
-    <fabric8-maven-plugin.version>3.2-SNAPSHOT</fabric8-maven-plugin.version>
+    <fabric8-maven-plugin.version>3.4-SNAPSHOT</fabric8-maven-plugin.version>
   </properties>
 
   <build>
