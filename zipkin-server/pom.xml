@@ -8,84 +8,57 @@
   </parent>
   <artifactId>zipkin-server</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <fabric8.maven.plugin.version>3.4-SNAPSHOT</fabric8.maven.plugin.version>
-    <fabric8.generator.spring-boot.activeProfiles>ocp</fabric8.generator.spring-boot.activeProfiles>
-    <spring-boot-maven-plugin.version>1.5.1.RELEASE</spring-boot-maven-plugin.version>
-    <spring-cloud.version>Dalston.SR1</spring-cloud.version>
-    <spring-boot.version>1.4.4.RELEASE</spring-boot.version>
-  </properties>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-jdbc</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-sleuth-zipkin-stream</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-amqp</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.zipkin.java</groupId>
-      <artifactId>zipkin-autoconfigure-ui</artifactId>
-      <version>1.16.2</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
-
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/fabric8</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
+
+      <!-- As the jars are built by gradle we tend to avoid rebuild again which will mess with spring-boot jar-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>dont-bind</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.5.3.RELEASE</version>
+      </plugin>
+
+      <!-- Task to collate the gradle build artifacts and use them in fabric8 maven plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>prepare-for-fmp</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${project.build.directory}/classes"/>
+                <copy todir="${project.build.directory}/classes">
+                  <fileset dir="${basedir}/build/classes/main"/>
+                </copy>
+                <copy todir="${project.build.directory}/classes">
+                  <fileset dir="${basedir}/build/resources"/>
+                </copy>
+                <copy todir="${project.build.directory}"
+                      file="${basedir}/build/libs/${project.artifactId}-${project.version}.jar"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>fabric8-maven-plugin</artifactId>
@@ -93,25 +66,32 @@
         <executions>
           <execution>
             <goals>
-              <goal>build</goal>
               <goal>resource</goal>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <generator>
+            <includes>
+              <include>spring-boot</include>
+            </includes>
+            <config>
+              <spring-boot>
+                <config>
+                  <webPort>8080</webPort>
+                </config>
+              </spring-boot>
+            </config>
+          </generator>
+        </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-boot-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/fabric8</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
 </project>

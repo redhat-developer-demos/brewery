@@ -2,3 +2,5 @@ spring:
   cloud:
     config:
       uri: "http://config-server"
+  application:
+    name: ingredients

@@ -14,34 +14,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <fabric8.maven.plugin.version>3.4-SNAPSHOT</fabric8.maven.plugin.version>
-    <fabric8.generator.spring-boot.activeProfiles>ocp</fabric8.generator.spring-boot.activeProfiles>
+    <fabric8.maven.plugin.version>3.4.1</fabric8.maven.plugin.version>
+    <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.1.RELEASE</spring-boot-maven-plugin.version>
     <spring-cloud.version>Dalston.M1</spring-cloud.version>
     <spring-boot.version>1.4.4.RELEASE</spring-boot.version>
+    <!-- Don't build the jar of the project as its done by gradle-->
+    <maven.main.skip>true</maven.main.skip>
+    <!-- Default profile to use when deployed in Kubernetes/OpenShift-->
+    <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
+    <fabric8-maven-plugin.from>fabric8/s2i-java</fabric8-maven-plugin.from>
   </properties>
 
 
   <profiles>
-
-    <profile>
-      <id>build</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <modules>
-        <module>extras/rabbitmq</module>
-        <module>common</module>
-        <module>config-server</module>
-        <module>eureka</module>
-        <module>zipkin-server</module>
-        <module>zuul</module>
-        <module>ingredients</module>
-        <module>reporting</module>
-        <module>brewing</module>
-        <module>presenting</module>
-      </modules>
-    </profile>
 
     <profile>
       <id>fabric8</id>
@@ -55,9 +41,6 @@
         <module>brewing</module>
         <module>presenting</module>
       </modules>
-      <build>
-        <defaultGoal>clean fabric8:deploy</defaultGoal>
-      </build>
     </profile>
 
     <profile>
