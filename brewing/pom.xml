@@ -8,6 +8,7 @@
     <version>1.0</version>
   </parent>
 
+  <groupId>io.spring.cloud.samples.brewery</groupId>
   <artifactId>brewing</artifactId>
   <version>1.0-SNAPSHOT</version>
   <build>
