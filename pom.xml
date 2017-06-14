@@ -1,0 +1,55 @@
+<project xmlns='http://maven.apache.org/POM/4.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd'>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.spring.cloud.samples.brewery</groupId>
+  <artifactId>brewery-parent</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <name>Spring Cloud Brewery:: Parent</name>
+  <description>The parent for all the brewery modules that would be built and deployed in Fuse</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <fabric8.maven.plugin.version>3.4.1</fabric8.maven.plugin.version>
+    <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
+    <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
+    <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+    <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+    <!-- Don't build the jar of the project as its done by gradle-->
+    <maven.main.skip>true</maven.main.skip>
+    <!-- Default profile to use when deployed in Kubernetes/OpenShift-->
+    <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
+    <fabric8-maven-plugin.from>fabric8/s2i-java</fabric8-maven-plugin.from>
+  </properties>
+
+
+  <profiles>
+
+    <profile>
+      <id>fabric8</id>
+      <modules>
+        <module>config-server</module>
+        <module>eureka</module>
+        <module>zipkin-server</module>
+        <module>zuul</module>
+        <module>ingredients</module>
+        <module>reporting</module>
+        <module>brewing</module>
+        <module>presenting</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>openshift</id>
+      <modules>
+        <module>openshift-deployer</module>
+      </modules>
+    </profile>
+
+  </profiles>
+
+</project>

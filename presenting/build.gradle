@@ -7,4 +7,11 @@ dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.5'
 }
 
-createDockerTaskWithPort(9991)
+ext {
+	fabric8 = true
+  BOOT_VERSION='1.4.4.RELEASE'
+  springboot = true
+  groovy=true
+}
+
+//createDockerTaskWithPort(9991)

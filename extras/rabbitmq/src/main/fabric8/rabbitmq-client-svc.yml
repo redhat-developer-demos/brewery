@@ -1,0 +1,9 @@
+metadata:
+  labels:
+    expose: "true"
+spec:
+  ports:
+  - name: "client-amqp"
+    port:  5672
+    protocol: "TCP"
+    targetPort: 5672

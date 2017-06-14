@@ -1,0 +1,9 @@
+metadata: 
+  labels:
+    expose: "true"
+spec:
+  ports:
+  - name: "management"
+    port: 15672
+    protocol: "TCP"
+    targetPort: 15672

@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      uri: http://config-server:8080
+  application:
+    name: ingredients

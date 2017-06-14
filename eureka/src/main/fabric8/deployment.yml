@@ -1,0 +1,22 @@
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTIONS
+          value: -Xmx64m -Xss1024k -Dspring.profiles.active=${spring-boot.activeProfiles}  -Djava.net.preferIPv4Stack=true
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 10

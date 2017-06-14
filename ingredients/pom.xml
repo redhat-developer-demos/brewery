@@ -1,0 +1,100 @@
+<project xmlns='http://maven.apache.org/POM/4.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+         xsi:schemaLocation='http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd'>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.spring.cloud.samples.brewery</groupId>
+    <artifactId>brewery-parent</artifactId>
+    <version>1.0</version>
+  </parent>
+
+  <groupId>io.spring.cloud.samples.brewery</groupId>
+  <artifactId>ingredients</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <build>
+    <plugins>
+
+      <!-- As the jars are built by gradle we tend to avoid rebuild again which will mess with spring-boot jar-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>dont-bind</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>1.5.3.RELEASE</version>
+      </plugin>
+
+      <!-- Task to collate the gradle build artifacts and use them in fabric8 maven plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>prepare-for-fmp</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <mkdir dir="${project.build.directory}/classes"/>
+                <copy todir="${project.build.directory}/classes">
+                  <fileset dir="${basedir}/build/classes/main"/>
+                </copy>
+                <copy todir="${project.build.directory}/classes">
+                  <fileset dir="${basedir}/build/resources"/>
+                </copy>
+                <copy todir="${project.build.directory}"
+                      file="${basedir}/build/libs/${project.artifactId}-${project.version}.jar"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-maven-plugin</artifactId>
+        <version>${fabric8.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>resource</goal>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <generator>
+            <includes>
+              <include>spring-boot</include>
+            </includes>
+            <config>
+              <spring-boot>
+                <config>
+                  <webPort>8080</webPort>
+                </config>
+              </spring-boot>
+            </config>
+          </generator>
+        </configuration>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/fabric8</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+</project>

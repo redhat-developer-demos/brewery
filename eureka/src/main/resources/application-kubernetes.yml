@@ -1,0 +1,27 @@
+server.port: 8080
+
+
+eureka:
+  numberRegistrySyncRetries: 0
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://eureka:8080/eureka
+  server:
+    enableSelfPreservation: true
+    wait-time-in-ms-when-sync-empty: 0
+  instance:
+    non-secure-port-enabled: true
+    hostname: eureka
+
+spring:
+  rabbitmq:
+    host: rabbitmq-client
+  cloud:
+    config:
+      uri: http://config-server:8080
+
+endpoints:
+  actuator:
+    sensitive: false

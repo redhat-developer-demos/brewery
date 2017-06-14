@@ -4,4 +4,9 @@ dependencies {
     compile "org.springframework.cloud:spring-cloud-config-server"
 }
 
-createDockerTaskWithPort(8888)
+ext {
+  fabric8 = true
+  springboot = true
+  BOOT_VERSION = '1.5.1.RELEASE'
+}
+//createDockerTaskWithPort(8888)
