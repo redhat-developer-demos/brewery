@@ -16,9 +16,9 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <fabric8.maven.plugin.version>3.4.1</fabric8.maven.plugin.version>
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
-    <spring-boot-maven-plugin.version>1.5.1.RELEASE</spring-boot-maven-plugin.version>
-    <spring-cloud.version>Dalston.M1</spring-cloud.version>
-    <spring-boot.version>1.4.4.RELEASE</spring-boot.version>
+    <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
+    <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+    <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
     <!-- Don't build the jar of the project as its done by gradle-->
     <maven.main.skip>true</maven.main.skip>
     <!-- Default profile to use when deployed in Kubernetes/OpenShift-->

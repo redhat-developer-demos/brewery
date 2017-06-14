@@ -1,12 +1,14 @@
 server.port: 8080
-spring.rabbitmq.host: "rabbitmq-client"
+spring.rabbitmq.host: rabbitmq-client
 eureka:
   client:
     serviceUrl:
-      defaultZone: "http://eureka/eureka/"
+      defaultZone: http://eureka:8080/eureka/
   instance:
     hostname: reporting
-    nonSecurePort: 80
+    nonSecurePort: 8080
+    preferIpAddress: false
+
 ribbon:
   eureka:
     enabled: true

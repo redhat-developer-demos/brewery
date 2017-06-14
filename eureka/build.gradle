@@ -1,25 +1,8 @@
-//moduleEnabled(whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM'))
+moduleEnabled(whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM'))
 
 dependencies {
   compile "org.springframework.cloud:spring-cloud-starter-eureka-server"
   compile "org.springframework.cloud:spring-cloud-starter-eureka"
 }
 
-ext {
-  fabric8 = true
-  springboot = true
-  BOOT_VERSION = '1.4.4.RELEASE'
-}
-
-task ocApply {
-  doLast {
-    ocApply()
-  }
-}
-
-task ocDelete {
-  doLast {
-    ocDelete()
-  }
-}
-//createDockerTaskWithPort(8761)
+createDockerTaskWithPort(8761)

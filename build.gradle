@@ -20,7 +20,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.0.RELEASE"}"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.4.RELEASE"}"
     if (hasProperty("docker")) {
       classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
@@ -53,7 +53,7 @@ configure(subprojects) {
   apply plugin: 'java'
   apply plugin: 'eclipse'
   apply plugin: 'idea'
-  apply plugin: 'spring-boot'
+  apply plugin: 'org.springframework.boot'
 
   ext {
     dockerConfiguration = { int port ->
@@ -238,7 +238,7 @@ configure(subprojects) {
       XmlNodePrinter xmlNodePrinter = new XmlNodePrinter(pw)
 
       xmlNodePrinter.preserveWhitespace = true
-      xmlNodePrinter.namespaceAware  = false
+      xmlNodePrinter.namespaceAware = false
       xmlNodePrinter.print(pomXml.dependencies[0])
 
       stringWriter.flush()
@@ -250,8 +250,8 @@ configure(subprojects) {
                    artifactId        : project.name,
                    version           : buildNrLoc,
                    f8mpVersion       : '3.2-SNAPSHOT',
-                   springCloudVersion: 'Dalston.M1',
-                   springBootVersion : '1.5.1.RELEASE',
+                   springCloudVersion: 'Dalston.SR1',
+                   springBootVersion : '1.5.4.RELEASE',
                    fabric8           : project.fabric8,
                    springBoot        : project.springboot,
                    groovy            : project.groovy,
