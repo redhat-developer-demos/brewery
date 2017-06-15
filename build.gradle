@@ -20,7 +20,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.4.4.RELEASE"}"
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:${hasProperty("BOOT_VERSION") ? "${project.property("BOOT_VERSION")}" : "1.5.4.RELEASE"}"
     if (hasProperty("docker")) {
       classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
@@ -185,6 +185,8 @@ configure(zipkinRelatedProjects) {
     if (whatToTest('SLEUTH')) {
       compile "org.springframework.cloud:spring-cloud-starter-zipkin"
     }
+
+    if (!whatToTest('SCS')) compile "org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION"
   }
 }
 
@@ -323,15 +325,16 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
 
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile 'com.fasterxml.jackson.core:jackson-databind'
-    if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
-      compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
-    }
-    if (whatToTest('CONSUL')) {
-      compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
-    }
-    if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
-      compile "org.springframework.cloud:spring-cloud-starter-eureka"
-    }
+
+//    if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
+//      compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
+//    }
+//    if (whatToTest('CONSUL')) {
+//      compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
+//    }
+//    if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
+//      //compile "org.springframework.cloud:spring-cloud-starter-eureka"
+//    }
     compile "org.springframework.cloud:spring-cloud-starter-feign"
     compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
     compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
@@ -344,6 +347,8 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
     runtime 'cglib:cglib-nodep:3.1'
     runtime 'org.objenesis:objenesis:2.2'
     runtime 'org.aspectj:aspectjweaver'
+
+    compile "org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION"
   }
 
   wrapper {

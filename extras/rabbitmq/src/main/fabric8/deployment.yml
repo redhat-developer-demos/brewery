@@ -20,3 +20,5 @@ spec:
            name: "management"
          - containerPort: 5672
            name: "amqp"
+      serviceAccountName: brewery
+

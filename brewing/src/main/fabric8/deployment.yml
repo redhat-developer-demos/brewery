@@ -5,7 +5,7 @@ spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
-          value: -Xmx64m -Xss1024k -Dspring.profiles.active=${spring-boot.activeProfiles}  -Djava.net.preferIPv4Stack=true
+          value: -Xmx64m -Xss1024k  -Djava.net.preferIPv4Stack=true
         livenessProbe:
           httpGet:
             path: /health
@@ -20,3 +20,4 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 5
+      serviceAccountName: brewery

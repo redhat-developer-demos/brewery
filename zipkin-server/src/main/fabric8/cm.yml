@@ -1,0 +1,27 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: zipkin
+data:
+  application.yaml: |-
+    server.port: 8080
+    spring:
+      rabbitmq:
+        host: rabbitmq-client
+      sleuth:
+        enabled: false
+      cloud:
+        stream:
+          binder:
+            rabbit.default.maxConcurrency: 5
+
+    hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+    endpoints.health.sensitive: false
+
+    logging:
+     level.org.springframework.cloud: INFO
+     level.org.springframework.cloud.sleuth: ERROR
+     level.org.springframework.cloud.sleuth.log: ERROR
+     level.org.springframework.cloud.sleuth.trace: ERROR
+     level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR

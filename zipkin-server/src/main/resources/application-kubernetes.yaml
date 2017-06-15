@@ -1,18 +1,10 @@
-logging:
-  level.org.springframework.cloud: INFO
-  level.org.springframework.cloud.sleuth: ERROR
-  level.org.springframework.cloud.sleuth.log: ERROR
-  level.org.springframework.cloud.sleuth.trace: ERROR
-  level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR
-
-server:
-  port: 8080
+spring.application.name: zipkin
 
 spring:
-  rabbitmq:
-    host: "rabbitmq-client"
-  sleuth:
-    enabled: false
-zipkin:
-  store:
-    type: mem
+  cloud:
+    kubernetes:
+      client:
+        namespace: myproject
+      reload:
+        enabled: true
+
