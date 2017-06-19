@@ -517,7 +517,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="details">
 <span id="author" class="author">Kamesh Sampath</span><br>
 <span id="revnumber">version 1.0-SNAPSHOT,</span>
-<span id="revdate">2017-06-14 16</span>
+<span id="revdate">2017-06-19 14</span>
 </div>
 <div id="toc" class="toc">
 <div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
@@ -607,7 +607,8 @@ run the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; clean build <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; clean build <i class="conum" data-value="1"></i><b>(1)</b>
+./mvnw -N install <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -615,6 +616,10 @@ run the following command</p>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>We will be using <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> for sending trace information to <a href="https://github.com/openzipkin/zipkin">Zipkin</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This will install the brewery parent pom in local maven repository</td>
 </tr>
 </table>
 </div>
@@ -774,7 +779,7 @@ shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the cl
 <div id="footer">
 <div id="footer-text">
 Version 1.0-SNAPSHOT<br>
-Last updated 2017-06-14 21:43:58 IST
+Last updated 2017-06-19 19:35:18 IST
 </div>
 </div>
 </body>
