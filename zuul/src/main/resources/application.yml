@@ -7,7 +7,7 @@ logging:
 
 logging.file: build/zuul.log
 
-server.port: 9993
+server.port: 8080
 
 spring.rabbitmq.host: ${RABBIT_HOST:localhost}
 
