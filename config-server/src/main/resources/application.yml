@@ -1,6 +1,6 @@
 logging.file: build/config-server.log
 
-server.port: ${PORT:8888}
+server.port: 8888
 
 spring:
   cloud:

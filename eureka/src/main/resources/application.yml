@@ -1,6 +1,6 @@
 logging.file: build/eureka.log
 
-server.port: ${PORT:8761}
+server.port: 8761
 
 eureka:
   client:

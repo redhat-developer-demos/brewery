@@ -7,7 +7,7 @@ logging:
   level.org.springframework.cloud.sleuth.trace: DEBUG
   level.org.springframework.cloud.sleuth.instrument.rxjava: DEBUG
 
-server.port: ${PORT:9995}
+server.port: 9995
 
 spring.rabbitmq.host: ${RABBIT_HOST:localhost}
 
