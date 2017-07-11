@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      uri: "http://config-server:8080"
+      enabled: false
   application:
     name: presenting
 
