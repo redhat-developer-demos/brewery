@@ -4,27 +4,30 @@ metadata:
   name: brewing
 data:
   application.yaml: |-
-    logging:
-      level.org.springframework.cloud: INFO
-      level.org.springframework.cloud.sleuth: ERROR
-      level.org.springframework.cloud.sleuth.log: ERROR
-      level.org.springframework.cloud.sleuth.trace: ERROR
-      level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR
+    server.port: 8080
+    spring:
+      rabbitmq:
+        host: rabbitmq-client
+      cloud:
+        stream:
+          binder:
+            rabbit.default.maxConcurrency: 5
 
-    server:
-      port: 8080
+    hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+    endpoints.health.sensitive: false
+
+    eureka:
+      client:
+        enabled: false
 
     ribbon:
       eureka:
         enabled: false
-      client:
-        enabled: true
 
-    spring:
-      rabbitmq:
-        host: rabbitmq-client
-      sleuth:
-        enabled: false
-    zipkin:
-      store:
-        type: mem
+    logging:
+     level.org.springframework.cloud: INFO
+     level.org.springframework.cloud.sleuth: ERROR
+     level.org.springframework.cloud.sleuth.log: ERROR
+     level.org.springframework.cloud.sleuth.trace: ERROR
+     level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR

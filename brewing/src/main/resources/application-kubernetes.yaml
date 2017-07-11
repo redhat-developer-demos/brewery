@@ -1,9 +1,5 @@
-spring.application.name: brewing
-
 spring:
   cloud:
-    config:
-      enabled: false
     kubernetes:
       client:
         namespace: myproject

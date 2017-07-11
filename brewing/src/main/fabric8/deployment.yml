@@ -5,7 +5,7 @@ spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
-          value: -Xmx64m -Xss1024k  -Djava.net.preferIPv4Stack=true
+          value: -Xmx64m -Xss1024k -Djava.net.preferIPv4Stack=true
         livenessProbe:
           httpGet:
             path: /health
