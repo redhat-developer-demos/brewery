@@ -186,7 +186,12 @@ configure(zipkinRelatedProjects) {
       compile "org.springframework.cloud:spring-cloud-starter-zipkin"
     }
 
-    if (!whatToTest('SCS')) compile "org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION"
+    if (!whatToTest('SCS')) {
+      compile("org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION") {
+        exclude group: 'org.springframework.cloud', module: 'spring-cloud-sleuth-zipkin'
+        exclude group: 'org.springframework.cloud', module: 'spring-cloud-kubernetes-zipkin'
+      }
+    }
   }
 }
 
@@ -348,7 +353,10 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
     runtime 'org.objenesis:objenesis:2.2'
     runtime 'org.aspectj:aspectjweaver'
 
-    compile "org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION"
+    compile("org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION") {
+      exclude group: 'org.springframework.cloud', module: 'spring-cloud-sleuth-zipkin'
+      exclude group: 'org.springframework.cloud', module: 'spring-cloud-kubernetes-zipkin'
+    }
   }
 
   wrapper {
