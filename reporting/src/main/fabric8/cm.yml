@@ -8,6 +8,9 @@ data:
     spring:
       rabbitmq:
         host: rabbitmq-client
+      sleuth:
+        web:
+          skipPattern: /api-docs.*|/autoconfig|/health|/configprops|/dump|/info|/metrics.*|/mappings|/trace|/swagger.*|.*\.png|.*\.css|.*\.js|.*\.html|/favicon.ico|/hystrix.stream|/feed/process/.*
       cloud:
         stream:
           binder:
@@ -24,6 +27,14 @@ data:
     ribbon:
       eureka:
         enabled: false
+      client:
+        enabled: true
+
+    brewing.ribbon.listOfServers: brewing:8080
+    ingredients.ribbon.listOfServers: ingredients:8080
+    presenting.ribbon.listOfServers: presenting:8080
+    reporting.ribbon.listOfServers: reporting:8080
+    zuul.ribbon.listOfServers: zuul:8080
 
     logging:
      level.org.springframework.cloud: INFO

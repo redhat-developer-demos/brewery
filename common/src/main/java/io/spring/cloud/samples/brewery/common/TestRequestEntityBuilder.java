@@ -1,7 +1,11 @@
 package io.spring.cloud.samples.brewery.common;
 
 import java.net.URI;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
@@ -66,7 +70,7 @@ public class TestRequestEntityBuilder {
 		return new RequestEntity<>(body, headers, httpMethod, uri);
 	}
 
-	private String getCommunicationTypeHeader() {
+    private String getCommunicationTypeHeader() {
 		if (testCommunicationType != null) {
 			return testCommunicationType.name();
 		} else if (TestConfigurationHolder.TEST_CONFIG.get() == null) {

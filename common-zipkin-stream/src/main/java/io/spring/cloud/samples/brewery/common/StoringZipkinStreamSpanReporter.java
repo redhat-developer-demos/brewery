@@ -50,11 +50,11 @@ public class StoringZipkinStreamSpanReporter implements SpanReporter {
 	@Override
 	public void report(Span span) {
 		sentSpans.put(span.getTraceId(), span);
-		try {
-			log.info("Sending span [" + objectMapper.writeValueAsString(span) + "] to Zipkin");
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			log.info("Sending span [" + objectMapper.writeValueAsString(span) + "] to Zipkin");
+//		} catch (JsonProcessingException e) {
+//			e.printStackTrace();
+//		}
 		delegate.report(span);
 	}
 
