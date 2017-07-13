@@ -30,12 +30,6 @@ data:
       client:
         enabled: true
 
-    brewing.ribbon.listOfServers: brewing:8080
-    ingredients.ribbon.listOfServers: ingredients:8080
-    presenting.ribbon.listOfServers: presenting:8080
-    reporting.ribbon.listOfServers: reporting:8080
-    zuul.ribbon.listOfServers: zuul:8080
-
     logging:
      level.org.springframework.cloud: INFO
      level.org.springframework.cloud.sleuth: ERROR

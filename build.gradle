@@ -330,16 +330,6 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
 
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile 'com.fasterxml.jackson.core:jackson-databind'
-
-//    if (!whatToTest('CONSUL') && !whatToTest('EUREKA') && !whatToTest('SLEUTH_STREAM') && !whatToTest('SCS')) {
-//      compile "org.springframework.cloud:spring-cloud-starter-zookeeper-discovery"
-//    }
-//    if (whatToTest('CONSUL')) {
-//      compile "org.springframework.cloud:spring-cloud-starter-consul-discovery"
-//    }
-//    if (whatToTest('EUREKA') || whatToTest('SLEUTH_STREAM')) {
-//      //compile "org.springframework.cloud:spring-cloud-starter-eureka"
-//    }
     compile "org.springframework.cloud:spring-cloud-starter-feign"
     compile "org.codehaus.jackson:jackson-mapper-asl:$jacksonMapper"
     compile "org.codehaus.jackson:jackson-core-asl:$jacksonMapper"
@@ -353,6 +343,7 @@ configure(subprojects - techProjects - commonZipkinProject - commonZipkinProject
     runtime 'org.objenesis:objenesis:2.2'
     runtime 'org.aspectj:aspectjweaver'
 
+    compile 'org.springframework.cloud:spring-cloud-starter-ribbon'
     compile("org.springframework.cloud:spring-cloud-starter-kubernetes-all:$SPRING_CLOUD_KUBERNETES_VERSION") {
       exclude group: 'org.springframework.cloud', module: 'spring-cloud-sleuth-zipkin'
       exclude group: 'org.springframework.cloud', module: 'spring-cloud-kubernetes-zipkin'
