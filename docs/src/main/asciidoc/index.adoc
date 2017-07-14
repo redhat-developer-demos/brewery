@@ -1,0 +1,25 @@
+
+:author: Kamesh Sampath
+:revnumber: {version}
+:revdate: {localdate}
+:toc: macro
+:toclevels: 4
+:toc-title: Spring Cloud Samples: Brewery on OpenShift
+:doctype: book
+:icons: font
+:linkattrs:
+
+= Spring Cloud Brewery on OpenShift: Setup Guide
+
+ifndef::ebook-format[:leveloffset: 1]
+
+(C) 2017 The original authors.
+
+ifdef::basebackend-html[toc::[]]
+
+:numbered:
+
+include::inc/_introduction.adoc[]
+
+include::inc/_iteration1.adoc[]
+include::inc/_iteration2.adoc[]

@@ -1,0 +1,200 @@
+[[iteration-2]]
+= Iteration II
+
+The Iteration II will drop/undeploy few of the https://netflix.github.io/[NetFlix OSS] components that are superflous
+inside https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift]. The following sections shows how to get
+the Iteration II deployed on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift]. This iteration
+uses the https://github.com/spring-cloud-incubator/spring-cloud-kubernetes[Spring Cloud Kubernetes] -
+the http://projects.spring.io/spring-cloud/[Spring Cloud] based discovery client for Kubernetes
+
+[[itr2-application-setup]]
+== Setup
+
+[[itr2-clone-source]]
+=== Clone
+
+[source,sh]
+----
+git clone -b iteration-2 https://github.com/kameshsampath/brewery
+----
+
+[NOTE]
+====
+Through out this document we will call the directoy where the project was cloned as _$PROJECT_HOME_
+====
+
+[[itr2-deployable-apps]]
+== Deploy Applications
+
+.Application List
+[cols="1*^,1,1,5"]
+|===
+| |Application| Folder | Remarks
+
+|icon:check[color: green]
+|<<rabbitmq>>
+|*$PROJECT_HOME*/extras/rabbitmq
+|Message Broker - https://www.rabbitmq.com/
+
+|icon:check[color: green]
+|common
+|*$PROJECT_HOME*/common
+|Common shared library
+
+|[red]#*X*#
+|[red]#eureka#
+|[red]#*$PROJECT_HOME*/eureka#
+|Application will use https://kubernetes.io/docs/concepts/services-networking/service/[Kubernetes Services]
+
+|[red]#*X*#
+|[red]#config-server#
+|[red]#*$PROJECT_HOME*/config-server#
+|Application will use https://kubernetes.io/docs/tasks/configure-pod-container/configmap/[Kubernetes ConfigMaps]
+
+|icon:check[color: green]
+|<<zipkin-server>>
+|*$PROJECT_HOME*/zipkin-server
+| http://zipkin.io/[Distributed Tracing system]
+
+|icon:check[color: green]
+|<<zuul>>
+|*$PROJECT_HOME*/zuul
+| https://github.com/Netflix/zuul/wiki[Java based Proxy]
+
+|icon:check[color: green]
+|<<ingredients>>
+|*$PROJECT_HOME*/ingredients
+|
+
+|icon:check[color: green]
+|<<reporting>>
+|*$PROJECT_HOME*/reporting
+|
+
+|icon:check[color: green]
+|<<brewing>>
+|*$PROJECT_HOME*/brewing
+|
+
+|icon:check[color: green]
+|<<presenting>>
+|*$PROJECT_HOME*/presenting
+|
+
+|===
+
+[[itr2-build-app]]
+=== Building
+
+Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
+run the following command
+
+[source,sh]
+----
+./gradlew -DWHAT_TO_TEST="SLEUTH_STREAM" clean build <1>
+./mvnw -N install <2>
+----
+
+<1> We will be using https://cloud.spring.io/spring-cloud-sleuth/[Spring Cloud Sleuth] for sending trace information to https://github.com/openzipkin/zipkin[Zipkin]
+<2> This will install the brewery parent pom in local maven repository
+
+[[itr2-deploy-to-openshift]]
+=== Deploying to OpenShift
+
+As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
+explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )
+
+[[rabbitmq]]
+==== RabbitMQ
+
+Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following command
+
+[source,sh]
+----
+./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy
+----
+
+This will take some time to get it running as the deployment needs to download the `rabbitmq` docker image
+[[zipkin-server]]
+==== Zipkin Server
+
+Go to the directory  *$PROJECT_HOME/zipkin-server*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[zuul]]
+==== Zuul
+
+Go to the directory  *$PROJECT_HOME/zuul*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[ingredients]]
+==== Ingredients
+
+Go to the directory  *$PROJECT_HOME/ingredients*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[reporting]]
+==== Reporting
+
+Go to the directory  *$PROJECT_HOME/reporting*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[brewing]]
+==== Brewing
+
+Go to the directory  *$PROJECT_HOME/brewing*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[presenting]]
+==== Presenting
+
+Go to the directory  *$PROJECT_HOME/presenting*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[itr2-acceptance-testing]]
+== Acceptance Testing
+
+The *$PROJECT_HOME/acceptance-tests* holds the test cases for testing the application.  To perform
+we need to have have some ports forwarded from Kubernetes/OpenShift to localhost(where you build the application)
+
+[source,sh]
+----
+oc port-forward zipkin-1-06wmt 9411:8080 <1>
+oc port-forward presenting-1-wzhfn 9991:8080 <2>
+----
+
+<1> forward port 8080 from Zipkin pod to listen on localhost:9411
+<2> forward port 8080 from Presenting pod to listen on localhost:9991
+
+NOTE: Please update the pod names based on your local deployment
+
+To run acceptance testing, execute following command from $PROJECT_HOME,
+
+[source,sh]
+----
+ ./gradlew -DWHAT_TO_TEST="SLEUTH_STREAM" :acceptance-tests:acceptanceTests
+----
