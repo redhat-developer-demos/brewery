@@ -511,56 +511,125 @@ table.CodeRay td.code>pre{padding:0}
 .CodeRay .head .head{color:#f4f}
 </style>
 </head>
-<body class="book">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>Spring Cloud Samples: Brewery on OpenShift: Quick Setup Guide</h1>
 <div class="details">
 <span id="author" class="author">Kamesh Sampath</span><br>
-<span id="revnumber">version 1.0-SNAPSHOT,</span>
-<span id="revdate">2017-06-19 14</span>
+<span id="revnumber">version 2.0-SNAPSHOT,</span>
+<span id="revdate">2017-07-14</span>
 </div>
-<div id="toc" class="toc">
+<div id="toc" class="toc2">
 <div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
 <ul class="sectlevel1">
-<li><a href="#_overview">1. Overview</a></li>
-<li><a href="#_pre_requsite">2. Pre-Requsite</a></li>
-<li><a href="#application-setup">3. Setup</a>
+<li><a href="#spring-cloud-samples-brewery-on-openshift">1. Spring Cloud Samples: Brewery on OpenShift</a>
 <ul class="sectlevel2">
-<li><a href="#clone-source">3.1. Clone</a></li>
-<li><a href="#build-app">3.2. Building</a></li>
-<li><a href="#deploy-to-openshift">3.3. Deploying to OpenShift</a>
-<ul class="sectlevel3">
-<li><a href="#deploy-rabbitmq">3.3.1. RabbitMQ</a></li>
-<li><a href="#deploy-config-server">3.3.2. Config Server</a></li>
-<li><a href="#deploy-eureka">3.3.3. Eureka</a></li>
-<li><a href="#zipkin-server">3.3.4. Zipkin Server</a></li>
-<li><a href="#zuul">3.3.5. Zuul</a></li>
-<li><a href="#ingredients">3.3.6. Ingredients</a></li>
-<li><a href="#reporting">3.3.7. Reporting</a></li>
-<li><a href="#brewing">3.3.8. Brewing</a></li>
-<li><a href="#presenting">3.3.9. Presenting</a></li>
+<li><a href="#overview">1.1. Overview</a></li>
+<li><a href="#pre-requsite">1.2. Pre-Requsite</a></li>
+<li><a href="#accessing-the-applications">1.3. Accessing the Applications</a></li>
+<li><a href="#references">1.4. References</a></li>
 </ul>
 </li>
-<li><a href="#_accessing_the_application">3.4. Accessing the Application</a></li>
+<li><a href="#iteration-1">2. Iteration I</a>
+<ul class="sectlevel2">
+<li><a href="#itr1-application-setup">2.1. Setup</a>
+<ul class="sectlevel3">
+<li><a href="#itr1-clone-source">2.1.1. Clone</a></li>
+<li><a href="#itr1-deployable-apps">2.1.2. Deploy Applications</a></li>
+<li><a href="#itr1-build-app">2.1.3. Building</a></li>
+<li><a href="#itr1-deploy-to-openshift">2.1.4. Deploying to OpenShift</a>
+<ul class="sectlevel4">
+<li><a href="#rabbitmq">RabbitMQ</a></li>
+<li><a href="#config-server">Config Server</a></li>
+<li><a href="#eureka">Eureka</a></li>
+<li><a href="#zipkin-server">Zipkin Server</a></li>
+<li><a href="#zuul">Zuul</a></li>
+<li><a href="#ingredients">Ingredients</a></li>
+<li><a href="#reporting">Reporting</a></li>
+<li><a href="#brewing">Brewing</a></li>
+<li><a href="#presenting">Presenting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#iteration-2">3. Iteration II</a>
+<ul class="sectlevel2">
+<li><a href="#itr2-application-setup">3.1. Setup</a>
+<ul class="sectlevel3">
+<li><a href="#itr2-clone-source">3.1.1. Clone</a></li>
+</ul>
+</li>
+<li><a href="#itr2-deployable-apps">3.2. Deploy Applications</a>
+<ul class="sectlevel3">
+<li><a href="#itr2-build-app">3.2.1. Building</a></li>
+<li><a href="#itr2-deploy-to-openshift">3.2.2. Deploying to OpenShift</a>
+<ul class="sectlevel4">
+<li><a href="#rabbitmq">RabbitMQ</a></li>
+<li><a href="#zipkin-server">Zipkin Server</a></li>
+<li><a href="#zuul">Zuul</a></li>
+<li><a href="#ingredients">Ingredients</a></li>
+<li><a href="#reporting">Reporting</a></li>
+<li><a href="#brewing">Brewing</a></li>
+<li><a href="#presenting">Presenting</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#itr2-acceptance-testing">3.3. Acceptance Testing</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_overview">1. Overview</h2>
+<div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This guides walks you through how to quickly setup  <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> on
-<a href="https://www.openshift.com">OpenShift</a>.  The steps in this guide could be a the first step or a Proof of Technology(PoT) on how to migrate the existing Spring Cloud/Boot applications
-on to <a href="https://kubernetes.io">Kubernetes</a> (OR) <a href="https://www.openshift.com">Openshift</a>.</p>
+<p>&#169; 2017 The original authors.</p>
 </div>
+<!-- toc disabled -->
 </div>
 </div>
 <div class="sect1">
-<h2 id="_pre_requsite">2. Pre-Requsite</h2>
+<h2 id="spring-cloud-samples-brewery-on-openshift">1. Spring Cloud Samples: Brewery on OpenShift</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="overview">1.1. Overview</h3>
+<div class="paragraph">
+<p>This guides walks you through to setup  <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> on
+<a href="https://www.openshift.com">OpenShift</a>.  The steps in this guide could be a the first step or a Proof of Technology(PoT)
+on how to migrate the existing Spring Cloud/Boot applications on to <a href="https://kubernetes.io">Kubernetes</a>
+or <a href="https://www.openshift.com">Openshift</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the process of migration, the original <a href="https://github.com/spring-cloud-samples/brewery">Spring Cloud Samples - Brewery</a>
+will be modified to make it deployable on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>.</p>
+</div>
+<div class="paragraph">
+<p>The application will be migrated with iterations,</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> <a href="#iteration-1">Iteration I</a> - As-is deployment of the <a href="https://github.com/spring-cloud-samples/brewery">Spring Cloud Samples - Brewery</a>
+with minimal or no code change</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> <a href="#iteration-2">Iteration II</a> - Will strip deployment of few Netflix OSS components that is considered as superfluous inside Kubernetes</p>
+</li>
+<li>
+<p>[] Iteration III - Optimization</p>
+</li>
+<li>
+<p>[] Iteration IV - Serviec Mesh</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pre-requsite">1.2. Pre-Requsite</h3>
 <div class="paragraph">
 <p>You have a OpenShift cluster running locally using <a href="https://docs.openshift.org/latest/minishift/getting-started/index.html"><strong>minishift</strong></a>
 or <a href="https://developers.redhat.com/products/cdk/overview/Op"><strong>CDK</strong></a>, or
@@ -574,7 +643,7 @@ have access to <a href="https://www.openshift.com/container-platform/index.html"
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Not sure this needed, but have this setup as pre-req for next iteration</p>
+<p>This is needed only in OpenShift and applicable for iteations 2 and above</p>
 </div>
 <div class="paragraph">
 <p><code>oc policy add-role-to-user view system:serviceaccount:$(oc project -q):default -n $(oc project -q)</code></p>
@@ -584,23 +653,165 @@ have access to <a href="https://www.openshift.com/container-platform/index.html"
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="accessing-the-applications">1.3. Accessing the Applications</h3>
+<div class="paragraph">
+<p>You can view the application urls from OpenShift Web Console.  A successful deployment  will have all the applications running with single pod. The following screenshots
+shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the clients registers with it</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/OpenShift_Web_Console.png" alt="OpenShift WebConsole">
+</div>
+<div class="title">Figure 1. Brewery Services</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Eureka_OpenShift.png" alt="Netflix Eureka Registry">
+</div>
+<div class="title">Figure 2. Eureka on OpenShift</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Brewer_App.png" alt="Brewer Application Home">
+</div>
+<div class="title">Figure 3. Brewer App</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="references">1.4. References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html">Maven Properties</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io">Kubernetes</a></p>
+</li>
+<li>
+<p><a href="https://www.openshift.com">Openshift</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="application-setup">3. Setup</h2>
+<h2 id="iteration-1">2. Iteration I</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The Iteration-1 is supposed to be the as-is deployment of the <em>Brewery</em> application on to <a href="https://kubernetes.io">Kubernetes</a>
+or <a href="https://www.openshift.com">Openshift</a>.  This will have all the components from the original <a href="https://github.com/spring-cloud-samples/brewery" class="bare">https://github.com/spring-cloud-samples/brewery</a>
+with modifications required to have it deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a></p>
+</div>
 <div class="sect2">
-<h3 id="clone-source">3.1. Clone</h3>
+<h3 id="itr1-application-setup">2.1. Setup</h3>
+<div class="sect3">
+<h4 id="itr1-clone-source">2.1.1. Clone</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">git clone https://github.com/kameshsampath/brewery</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-1 https://github.com/kameshsampath/brewery</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Through out this document we will call the directoy where the project is cloned as <em>$PROJECT_HOME</em></p>
+<p>Through out this document we will call the directoy where the project was cloned as <em>$PROJECT_HOME</em></p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="build-app">3.2. Building</h3>
+<div class="sect3">
+<h4 id="itr1-deployable-apps">2.1.2. Deploy Applications</h4>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Application List</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"></th>
+<th class="tableblock halign-left valign-top">Application</th>
+<th class="tableblock halign-left valign-top">Folder</th>
+<th class="tableblock halign-left valign-top">Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#rabbitmq">RabbitMQ</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/extras/rabbitmq</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message Broker - <a href="https://www.rabbitmq.com/" class="bare">https://www.rabbitmq.com/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common shared library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#eureka">Eureka</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/eureka</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service Registry - <a href="https://github.com/Netflix/eureka/wiki/Eureka-at-a-glance" class="bare">https://github.com/Netflix/eureka/wiki/Eureka-at-a-glance</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#config-server">Config Server</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/config-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Centralized Configuration Server - <a href="https://cloud.spring.io/spring-cloud-config/spring-cloud-config.html" class="bare">https://cloud.spring.io/spring-cloud-config/spring-cloud-config.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#zipkin-server">Zipkin Server</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/zipkin-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://zipkin.io/">Distributed Tracing system</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#zuul">Zuul</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/zuul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Netflix/zuul/wiki">Java based Proxy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ingredients">Ingredients</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/ingredients</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#reporting">Reporting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/reporting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#brewing">Brewing</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/brewing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#presenting">Presenting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/presenting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="itr1-build-app">2.1.3. Building</h4>
 <div class="paragraph">
 <p>Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
 run the following command</p>
@@ -624,14 +835,14 @@ run the following command</p>
 </table>
 </div>
 </div>
-<div class="sect2">
-<h3 id="deploy-to-openshift">3.3. Deploying to OpenShift</h3>
+<div class="sect3">
+<h4 id="itr1-deploy-to-openshift">2.1.4. Deploying to OpenShift</h4>
 <div class="paragraph">
 <p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
 </div>
-<div class="sect3">
-<h4 id="deploy-rabbitmq">3.3.1. RabbitMQ</h4>
+<div class="sect4">
+<h5 id="rabbitmq">RabbitMQ</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/extras/rabbitmq</strong>, and execute the following command</p>
 </div>
@@ -644,8 +855,8 @@ explains the deployment of the application in the same order as expected  ( you 
 <p>This will take some time to get it running as the deployment needs to download the <code>rabbitmq</code> docker image</p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="deploy-config-server">3.3.2. Config Server</h4>
+<div class="sect4">
+<h5 id="config-server">Config Server</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/config-server</strong>, and execute the following command</p>
 </div>
@@ -667,8 +878,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="deploy-eureka">3.3.3. Eureka</h4>
+<div class="sect4">
+<h5 id="eureka">Eureka</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/eureka</strong>, and execute the following command</p>
 </div>
@@ -678,8 +889,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="zipkin-server">3.3.4. Zipkin Server</h4>
+<div class="sect4">
+<h5 id="zipkin-server">Zipkin Server</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/zipkin-server</strong>, and execute the following command</p>
 </div>
@@ -689,8 +900,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="zuul">3.3.5. Zuul</h4>
+<div class="sect4">
+<h5 id="zuul">Zuul</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/zuul</strong>, and execute the following command</p>
 </div>
@@ -700,8 +911,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="ingredients">3.3.6. Ingredients</h4>
+<div class="sect4">
+<h5 id="ingredients">Ingredients</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/ingredients</strong>, and execute the following command</p>
 </div>
@@ -711,8 +922,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="reporting">3.3.7. Reporting</h4>
+<div class="sect4">
+<h5 id="reporting">Reporting</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/reporting</strong>, and execute the following command</p>
 </div>
@@ -722,8 +933,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="brewing">3.3.8. Brewing</h4>
+<div class="sect4">
+<h5 id="brewing">Brewing</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/brewing</strong>, and execute the following command</p>
 </div>
@@ -733,8 +944,8 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="presenting">3.3.9. Presenting</h4>
+<div class="sect4">
+<h5 id="presenting">Presenting</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/presenting</strong>, and execute the following command</p>
 </div>
@@ -745,32 +956,281 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="iteration-2">3. Iteration II</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Iteration II will drop/undeploy few of the <a href="https://netflix.github.io/">NetFlix OSS</a> components that are superflous
+inside <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>. The following sections shows how to get
+the Iteration II deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>. This iteration
+uses the <a href="https://github.com/spring-cloud-incubator/spring-cloud-kubernetes">Spring Cloud Kubernetes</a> -
+the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based discovery client for Kubernetes</p>
+</div>
 <div class="sect2">
-<h3 id="_accessing_the_application">3.4. Accessing the Application</h3>
+<h3 id="itr2-application-setup">3.1. Setup</h3>
+<div class="sect3">
+<h4 id="itr2-clone-source">3.1.1. Clone</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-2 https://github.com/kameshsampath/brewery</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>You can view the application urls from OpenShift Web Console.  A successful deployment  will have all the applications running with single pod. The following screenshots
-shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the clients registers with it</p>
+<p>Through out this document we will call the directoy where the project was cloned as <em>$PROJECT_HOME</em></p>
 </div>
-<div class="imageblock">
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr2-deployable-apps">3.2. Deploy Applications</h3>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 2. Application List</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"></th>
+<th class="tableblock halign-left valign-top">Application</th>
+<th class="tableblock halign-left valign-top">Folder</th>
+<th class="tableblock halign-left valign-top">Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#rabbitmq">RabbitMQ</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/extras/rabbitmq</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message Broker - <a href="https://www.rabbitmq.com/" class="bare">https://www.rabbitmq.com/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common shared library</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">eureka</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/eureka</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application will use <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Kubernetes Services</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">config-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/config-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application will use <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configmap/">Kubernetes ConfigMaps</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#zipkin-server">Zipkin Server</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/zipkin-server</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://zipkin.io/">Distributed Tracing system</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#zuul">Zuul</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/zuul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Netflix/zuul/wiki">Java based Proxy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ingredients">Ingredients</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/ingredients</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#reporting">Reporting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/reporting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#brewing">Brewing</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/brewing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#presenting">Presenting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/presenting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="itr2-build-app">3.2.1. Building</h4>
+<div class="paragraph">
+<p>Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
+run the following command</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="images/OpenShift_Web_Console.png" alt="OpenShift WebConsole">
+<pre class="CodeRay highlight"><code data-lang="sh">./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; clean build <i class="conum" data-value="1"></i><b>(1)</b>
+./mvnw -N install <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
-<div class="title">Figure 1. Brewery Services</div>
 </div>
-<div class="imageblock">
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We will be using <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> for sending trace information to <a href="https://github.com/openzipkin/zipkin">Zipkin</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This will install the brewery parent pom in local maven repository</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="itr2-deploy-to-openshift">3.2.2. Deploying to OpenShift</h4>
+<div class="paragraph">
+<p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
+explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
+</div>
+<div class="sect4">
+<h5 id="rabbitmq">RabbitMQ</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/extras/rabbitmq</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="images/Eureka_OpenShift.png" alt="Netflix Eureka Registry">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy</code></pre>
 </div>
-<div class="title">Figure 2. Eureka on OpenShift</div>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/Brewer_App.png" alt="Brewer Application Home">
-</div>
-<div class="title">Figure 3. Brewer App</div>
 </div>
 <div class="paragraph">
-<p>--END--</p>
+<p>This will take some time to get it running as the deployment needs to download the <code>rabbitmq</code> docker image</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="zipkin-server">Zipkin Server</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/zipkin-server</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="zuul">Zuul</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/zuul</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="ingredients">Ingredients</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/ingredients</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="reporting">Reporting</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/reporting</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="brewing">Brewing</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/brewing</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="presenting">Presenting</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/presenting</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr2-acceptance-testing">3.3. Acceptance Testing</h3>
+<div class="paragraph">
+<p>The <strong>$PROJECT_HOME/acceptance-tests</strong> holds the test cases for testing the application.  To perform
+we need to have have some ports forwarded from Kubernetes/OpenShift to localhost(where you build the application)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc port-forward zipkin-1-06wmt 9411:8080 <i class="conum" data-value="1"></i><b>(1)</b>
+oc port-forward presenting-1-wzhfn 9991:8080 <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>forward port 8080 from Zipkin pod to listen on localhost:9411</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>forward port 8080 from Presenting pod to listen on localhost:9991</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Please update the pod names based on your local deployment
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To run acceptance testing, execute following command from $PROJECT_HOME,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh"> ./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; :acceptance-tests:acceptanceTests</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -778,8 +1238,8 @@ shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the cl
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0-SNAPSHOT<br>
-Last updated 2017-06-19 19:35:18 IST
+Version 2.0-SNAPSHOT<br>
+Last updated 2017-07-14 10:58:57 IST
 </div>
 </div>
 </body>
