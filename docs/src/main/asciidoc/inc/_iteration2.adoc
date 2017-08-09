@@ -15,7 +15,7 @@ the http://projects.spring.io/spring-cloud/[Spring Cloud] based discovery client
 
 [source,sh]
 ----
-git clone -b iteration-2 https://github.com/kameshsampath/brewery
+git clone -b iteration-2 https://github.com/redhat-developer-demos/brewery.git
 ----
 
 [NOTE]

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
 <meta name="author" content="Kamesh Sampath">
-<title>Spring Cloud Samples: Brewery on OpenShift: Quick Setup Guide</title>
+<title>Spring Cloud Brewery on OpenShift: Setup Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -513,19 +513,19 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>Spring Cloud Samples: Brewery on OpenShift: Quick Setup Guide</h1>
+<h1>Spring Cloud Brewery on OpenShift: Setup Guide</h1>
 <div class="details">
 <span id="author" class="author">Kamesh Sampath</span><br>
-<span id="revnumber">version 2.0-SNAPSHOT,</span>
-<span id="revdate">2017-07-14</span>
+<span id="revnumber">version 1.0,</span>
+<span id="revdate">2017-08-09</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
 <ul class="sectlevel1">
-<li><a href="#spring-cloud-samples-brewery-on-openshift">1. Spring Cloud Samples: Brewery on OpenShift</a>
+<li><a href="#spring-cloud-brewery-on-openshift">1. Spring Cloud Brewery on OpenShift</a>
 <ul class="sectlevel2">
 <li><a href="#overview">1.1. Overview</a></li>
-<li><a href="#pre-requsite">1.2. Pre-Requsite</a></li>
+<li><a href="#pre-requisite">1.2. Pre-Requisite</a></li>
 <li><a href="#accessing-the-applications">1.3. Accessing the Applications</a></li>
 <li><a href="#references">1.4. References</a></li>
 </ul>
@@ -593,14 +593,14 @@ table.CodeRay td.code>pre{padding:0}
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-samples-brewery-on-openshift">1. Spring Cloud Samples: Brewery on OpenShift</h2>
+<h2 id="spring-cloud-brewery-on-openshift">1. Spring Cloud Brewery on OpenShift</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="overview">1.1. Overview</h3>
 <div class="paragraph">
-<p>This guides walks you through to setup  <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> on
-<a href="https://www.openshift.com">OpenShift</a>.  The steps in this guide could be a the first step or a Proof of Technology(PoT)
-on how to migrate the existing Spring Cloud/Boot applications on to <a href="https://kubernetes.io">Kubernetes</a>
+<p>This guides walks you through to setup <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> on
+<a href="https://www.openshift.com">OpenShift</a>. The steps in this guide could be the first step or a Proof of Technology(PoT)
+on how to migrate an existing Spring Cloud/Boot application on to <a href="https://kubernetes.io">Kubernetes</a>
 or <a href="https://www.openshift.com">Openshift</a>.</p>
 </div>
 <div class="paragraph">
@@ -608,7 +608,7 @@ or <a href="https://www.openshift.com">Openshift</a>.</p>
 will be modified to make it deployable on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>.</p>
 </div>
 <div class="paragraph">
-<p>The application will be migrated with iterations,</p>
+<p>The application will be migrated based on these iterations,</p>
 </div>
 <div class="ulist checklist">
 <ul class="checklist">
@@ -617,23 +617,47 @@ will be modified to make it deployable on to <a href="https://kubernetes.io">Kub
 with minimal or no code change</p>
 </li>
 <li>
-<p><i class="fa fa-check-square-o"></i> <a href="#iteration-2">Iteration II</a> - Will strip deployment of few Netflix OSS components that is considered as superfluous inside Kubernetes</p>
+<p><i class="fa fa-check-square-o"></i> <a href="#iteration-2">Iteration II</a> - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing &amp; externalization of the config</p>
 </li>
 <li>
-<p>[] Iteration III - Optimization</p>
+<p>[] Iteration III - Replace RabbitMQ with JBoss A-MQ</p>
 </li>
 <li>
-<p>[] Iteration IV - Serviec Mesh</p>
+<p>[] Iteration IV - Service Mesh with <a href="https://istio.io">Istio</a></p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="pre-requsite">1.2. Pre-Requsite</h3>
+<h3 id="pre-requisite">1.2. Pre-Requisite</h3>
 <div class="paragraph">
 <p>You have a OpenShift cluster running locally using <a href="https://docs.openshift.org/latest/minishift/getting-started/index.html"><strong>minishift</strong></a>
 or <a href="https://developers.redhat.com/products/cdk/overview/Op"><strong>CDK</strong></a>, or
 have access to <a href="https://www.openshift.com/container-platform/index.html"><strong>OpenShift Container Platform</strong></a></p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>At least 7Gb of RAM is required to run the Brewery application</p>
+</li>
+<li>
+<p>Openshift Origin 1.4.1 is required till we have fixed this <a href="https://gist.github.com/cmoulliard/46a804a42648761b1fd8be4f61444dc3">issue</a></p>
+</li>
+<li>
+<p>You can boost the deployment if you pull these docker images used by the s2i process <code>docker pull fabric8/s2i-java:2.0</code> and <code>docker pull fabric8/java-jboss-openjdk8-jdk:1.2</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -702,7 +726,20 @@ shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the cl
 <div class="paragraph">
 <p>The Iteration-1 is supposed to be the as-is deployment of the <em>Brewery</em> application on to <a href="https://kubernetes.io">Kubernetes</a>
 or <a href="https://www.openshift.com">Openshift</a>.  This will have all the components from the original <a href="https://github.com/spring-cloud-samples/brewery" class="bare">https://github.com/spring-cloud-samples/brewery</a>
-with modifications required to have it deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a></p>
+with modifications required :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use the Fabric8 Maven Plugin to generate the Kubernetes/OpenShift resources needed to deploy the applications on the platform</p>
+</li>
+<li>
+<p>Design OpenShift templates top deploy RabbitMQ and the different servers such as Eureka, Config-Server, Zipkin, &#8230;&#8203; (to be discussed)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>to have it deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a></p>
 </div>
 <div class="sect2">
 <h3 id="itr1-application-setup">2.1. Setup</h3>
@@ -710,7 +747,7 @@ with modifications required to have it deployed on to <a href="https://kubernete
 <h4 id="itr1-clone-source">2.1.1. Clone</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-1 https://github.com/kameshsampath/brewery</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-1 https://github.com/redhat-developer-demos/brewery.git</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -813,7 +850,7 @@ with modifications required to have it deployed on to <a href="https://kubernete
 <div class="sect3">
 <h4 id="itr1-build-app">2.1.3. Building</h4>
 <div class="paragraph">
-<p>Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
+<p>Brewery application uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
 run the following command</p>
 </div>
 <div class="listingblock">
@@ -975,7 +1012,7 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 <h4 id="itr2-clone-source">3.1.1. Clone</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-2 https://github.com/kameshsampath/brewery</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-2 https://github.com/redhat-developer-demos/brewery.git</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1238,8 +1275,8 @@ Please update the pod names based on your local deployment
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 2.0-SNAPSHOT<br>
-Last updated 2017-07-14 10:58:57 IST
+Version 1.0<br>
+Last updated 2017-07-14 21:42:11 IST
 </div>
 </div>
 </body>

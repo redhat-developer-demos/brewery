@@ -21,15 +21,25 @@
     <profile>
       <id>doc-pdf</id>
       <build>
+        <defaultGoal>clean process-resources</defaultGoal>
         <plugins>
           <plugin>
             <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctor-maven-plugin</artifactId>
             <version>${asciidoctor-maven-plugin.version}</version>
-            <configuration>
-              <backend>pdf</backend>
-              <sourceHighlighter>rouge</sourceHighlighter>
-            </configuration>
+            <executions>
+              <execution>
+                <id>output-pdf</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>process-asciidoc</goal>
+                </goals>
+                <configuration>
+                  <backend>pdf</backend>
+                  <sourceHighlighter>rouge</sourceHighlighter>
+                </configuration>
+              </execution>
+            </executions>
             <dependencies>
               <dependency>
                 <groupId>org.asciidoctor</groupId>
@@ -38,14 +48,32 @@
               </dependency>
             </dependencies>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy file="${project.build.directory}/generated-docs/index.pdf"
+                          toFile="${basedir}/index.pdf" overwrite="true" verbose="true"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-        <defaultGoal>generate-resources asciidoctor:process-asciidoc</defaultGoal>
       </build>
     </profile>
     <profile>
       <id>doc-html</id>
       <build>
-        <defaultGoal>generate-resources asciidoctor:process-asciidoc</defaultGoal>
+        <defaultGoal>clean process-resources</defaultGoal>
         <plugins>
           <plugin>
             <groupId>org.asciidoctor</groupId>
@@ -73,9 +101,27 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+              <execution>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy file="${project.build.directory}/generated-docs/index.html"
+                          toFile="${basedir}/index.html" overwrite="true" verbose="true"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-
 </project>

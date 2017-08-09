@@ -18,7 +18,7 @@ to have it deployed on to https://kubernetes.io[Kubernetes] or https://www.opens
 
 [source,sh]
 ----
-git clone -b iteration-1 https://github.com/kameshsampath/brewery
+git clone -b iteration-1 https://github.com/redhat-developer-demos/brewery.git
 ----
 
 [NOTE]
