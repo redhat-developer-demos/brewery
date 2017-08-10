@@ -28,7 +28,7 @@
     <brewery-common.version>1.0</brewery-common.version>
     <brewery-common-zipkin-stream.version>1.0</brewery-common-zipkin-stream.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
-    <groovy-all.version>2.4.3</groovy-all.version>
+    <groovy-all.version>2.4.5</groovy-all.version>
   </properties>
 
   <dependencyManagement>
