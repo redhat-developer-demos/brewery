@@ -29,6 +29,8 @@
     <brewery-common-zipkin-stream.version>1.0</brewery-common-zipkin-stream.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <groovy-all.version>2.4.5</groovy-all.version>
+    <!-- This should be enabled once we have SB-128 implemented-->
+    <skipTests>true</skipTests>
   </properties>
 
   <dependencyManagement>
