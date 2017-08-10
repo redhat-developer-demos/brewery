@@ -118,6 +118,7 @@
     <module>reporting</module>
     <module>brewing</module>
     <module>presenting</module>
+    <module>acceptance-tests</module>
   </modules>
 
   <build>

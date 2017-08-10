@@ -1,4 +1,0 @@
-server.port: 9999
-
-
-endpoints.health.sensitive: false
