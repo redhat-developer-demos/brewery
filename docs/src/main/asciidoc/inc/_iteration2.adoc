@@ -1,7 +1,7 @@
 [[iteration-2]]
 = Iteration II
 
-The Iteration II will drop/undeploy few of the https://netflix.github.io/[NetFlix OSS] components that are superflous
+The Iteration II will <<itr2-deprecated-modules,deprecate>> few of the https://netflix.github.io/[NetFlix OSS] components that are superflous
 inside https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift]. The following sections shows how to get
 the Iteration II deployed on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift]. This iteration
 uses the https://github.com/spring-cloud-incubator/spring-cloud-kubernetes[Spring Cloud Kubernetes] -
@@ -40,6 +40,11 @@ Through out this document we will call the directoy where the project was cloned
 |common
 |*$PROJECT_HOME*/common
 |Common shared library
+
+|icon:check[color: green]
+|common-zipkin-stream
+|*$PROJECT_HOME*/ommon-zipkin-stream
+|Common shared library for the projects that uses the Sleuth Zipkin Stream for tracing
 
 |[red]#*X*#
 |[red]#eureka#
@@ -86,17 +91,17 @@ Through out this document we will call the directoy where the project was cloned
 [[itr2-build-app]]
 === Building
 
-Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
-run the following command
+The Iteration II of the brewery application has migrated all the projects to http://maven.apache.org/[Apache Maven] based build,
+to build the application run the following command
 
 [source,sh]
 ----
-./gradlew -DWHAT_TO_TEST="SLEUTH_STREAM" clean build <1>
-./mvnw -N install <2>
+./mvnw -N install <1>
+./mvnw clean install <2>
 ----
-
-<1> We will be using https://cloud.spring.io/spring-cloud-sleuth/[Spring Cloud Sleuth] for sending trace information to https://github.com/openzipkin/zipkin[Zipkin]
-<2> This will install the brewery parent pom in local maven repository
+<1> This will install the brewery parent pom in local maven repository
+<2> This will build the applications, if the minishift or OpenShift cluster is running, this will trigger `s2i` builds
+of the respective application as well
 
 [[itr2-deploy-to-openshift]]
 === Deploying to OpenShift
@@ -104,7 +109,7 @@ run the following command
 As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )
 
-[[rabbitmq]]
+[[itr2-rabbitmq]]
 ==== RabbitMQ
 
 Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following command
@@ -115,14 +120,14 @@ Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following 
 ----
 
 This will take some time to get it running as the deployment needs to download the `rabbitmq` docker image
-[[zipkin-server]]
+[[itr2-zipkin-server]]
 ==== Zipkin Server
 
 Go to the directory  *$PROJECT_HOME/zipkin-server*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
 [[zuul]]
@@ -132,47 +137,47 @@ Go to the directory  *$PROJECT_HOME/zuul*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
-[[ingredients]]
+[[itr2-ingredients]]
 ==== Ingredients
 
 Go to the directory  *$PROJECT_HOME/ingredients*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
-[[reporting]]
+[[itr2-reporting]]
 ==== Reporting
 
 Go to the directory  *$PROJECT_HOME/reporting*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
-[[brewing]]
+[[itr2-brewing]]
 ==== Brewing
 
 Go to the directory  *$PROJECT_HOME/brewing*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
-[[presenting]]
+[[itr2-presenting]]
 ==== Presenting
 
 Go to the directory  *$PROJECT_HOME/presenting*, and execute the following command
 
 [source,sh]
 ----
-./mvnw clean fabric8:deploy
+./mvnw fabric8:deploy
 ----
 
 [[itr2-acceptance-testing]]
@@ -196,5 +201,18 @@ To run acceptance testing, execute following command from $PROJECT_HOME,
 
 [source,sh]
 ----
- ./gradlew -DWHAT_TO_TEST="SLEUTH_STREAM" :acceptance-tests:acceptanceTests
+ ./mvnw clean test
 ----
+
+[[itr2-deprecated-modules]]
+
+== Deprecated Modules
+
+As part of Iteration-II the following modules have been deprecated,
+
+* Eureka
+* Config Server
+* common-zipkin
+* common-zipkin-old
+* zookeeper
+* docker

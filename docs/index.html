@@ -517,7 +517,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="details">
 <span id="author" class="author">Kamesh Sampath</span><br>
 <span id="revnumber">version 1.0,</span>
-<span id="revdate">2017-08-09</span>
+<span id="revdate">2017-08-10</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
@@ -566,18 +566,19 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#itr2-build-app">3.2.1. Building</a></li>
 <li><a href="#itr2-deploy-to-openshift">3.2.2. Deploying to OpenShift</a>
 <ul class="sectlevel4">
-<li><a href="#rabbitmq">RabbitMQ</a></li>
-<li><a href="#zipkin-server">Zipkin Server</a></li>
+<li><a href="#itr2-rabbitmq">RabbitMQ</a></li>
+<li><a href="#itr2-zipkin-server">Zipkin Server</a></li>
 <li><a href="#zuul">Zuul</a></li>
-<li><a href="#ingredients">Ingredients</a></li>
-<li><a href="#reporting">Reporting</a></li>
-<li><a href="#brewing">Brewing</a></li>
-<li><a href="#presenting">Presenting</a></li>
+<li><a href="#itr2-ingredients">Ingredients</a></li>
+<li><a href="#itr2-reporting">Reporting</a></li>
+<li><a href="#itr2-brewing">Brewing</a></li>
+<li><a href="#itr2-presenting">Presenting</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a href="#itr2-acceptance-testing">3.3. Acceptance Testing</a></li>
+<li><a href="#itr2-deprecated-modules">3.4. Deprecated Modules</a></li>
 </ul>
 </li>
 </ul>
@@ -1000,7 +1001,7 @@ Since this is the first Java application to be deployed,  it may take some time 
 <h2 id="iteration-2">3. Iteration II</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Iteration II will drop/undeploy few of the <a href="https://netflix.github.io/">NetFlix OSS</a> components that are superflous
+<p>The Iteration II will <a href="#itr2-deprecated-modules">deprecate</a> few of the <a href="https://netflix.github.io/">NetFlix OSS</a> components that are superflous
 inside <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>. The following sections shows how to get
 the Iteration II deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>. This iteration
 uses the <a href="https://github.com/spring-cloud-incubator/spring-cloud-kubernetes">Spring Cloud Kubernetes</a> -
@@ -1063,6 +1064,12 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 <td class="tableblock halign-left valign-top"><p class="tableblock">Common shared library</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">common-zipkin-stream</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/ommon-zipkin-stream</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common shared library for the projects that uses the Sleuth Zipkin Stream for tracing</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">eureka</span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/eureka</span></p></td>
@@ -1115,24 +1122,25 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 <div class="sect3">
 <h4 id="itr2-build-app">3.2.1. Building</h4>
 <div class="paragraph">
-<p>Brewery applicaiton uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
-run the following command</p>
+<p>The Iteration II of the brewery application has migrated all the projects to <a href="http://maven.apache.org/">Apache Maven</a> based build,
+to build the application run the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; clean build <i class="conum" data-value="1"></i><b>(1)</b>
-./mvnw -N install <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw -N install <i class="conum" data-value="1"></i><b>(1)</b>
+./mvnw clean install <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>We will be using <a href="https://cloud.spring.io/spring-cloud-sleuth/">Spring Cloud Sleuth</a> for sending trace information to <a href="https://github.com/openzipkin/zipkin">Zipkin</a></td>
+<td>This will install the brewery parent pom in local maven repository</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This will install the brewery parent pom in local maven repository</td>
+<td>This will build the applications, if the minishift or OpenShift cluster is running, this will trigger <code>s2i</code> builds
+of the respective application as well</td>
 </tr>
 </table>
 </div>
@@ -1144,7 +1152,7 @@ run the following command</p>
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
 </div>
 <div class="sect4">
-<h5 id="rabbitmq">RabbitMQ</h5>
+<h5 id="itr2-rabbitmq">RabbitMQ</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/extras/rabbitmq</strong>, and execute the following command</p>
 </div>
@@ -1158,13 +1166,13 @@ explains the deployment of the application in the same order as expected  ( you 
 </div>
 </div>
 <div class="sect4">
-<h5 id="zipkin-server">Zipkin Server</h5>
+<h5 id="itr2-zipkin-server">Zipkin Server</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/zipkin-server</strong>, and execute the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
@@ -1175,51 +1183,51 @@ explains the deployment of the application in the same order as expected  ( you 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="ingredients">Ingredients</h5>
+<h5 id="itr2-ingredients">Ingredients</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/ingredients</strong>, and execute the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="reporting">Reporting</h5>
+<h5 id="itr2-reporting">Reporting</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/reporting</strong>, and execute the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="brewing">Brewing</h5>
+<h5 id="itr2-brewing">Brewing</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/brewing</strong>, and execute the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="presenting">Presenting</h5>
+<h5 id="itr2-presenting">Presenting</h5>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/presenting</strong>, and execute the following command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:deploy</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
 </div>
 </div>
 </div>
@@ -1266,8 +1274,36 @@ Please update the pod names based on your local deployment
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="sh"> ./gradlew -DWHAT_TO_TEST=&quot;SLEUTH_STREAM&quot; :acceptance-tests:acceptanceTests</code></pre>
+<pre class="CodeRay highlight"><code data-lang="sh"> ./mvnw clean test</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr2-deprecated-modules">3.4. Deprecated Modules</h3>
+<div class="paragraph">
+<p>As part of Iteration-II the following modules have been deprecated,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Eureka</p>
+</li>
+<li>
+<p>Config Server</p>
+</li>
+<li>
+<p>common-zipkin</p>
+</li>
+<li>
+<p>common-zipkin-old</p>
+</li>
+<li>
+<p>zookeeper</p>
+</li>
+<li>
+<p>docker</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1276,7 +1312,7 @@ Please update the pod names based on your local deployment
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2017-07-14 21:42:11 IST
+Last updated 2017-08-10 14:39:19 IST
 </div>
 </div>
 </body>
