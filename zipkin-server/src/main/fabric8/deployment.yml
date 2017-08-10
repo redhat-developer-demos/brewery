@@ -24,4 +24,3 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 5
         name: zipkin
-      serviceAccountName: brewery

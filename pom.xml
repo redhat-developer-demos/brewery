@@ -14,42 +14,129 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <fabric8.maven.plugin.version>3.4.1</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.22</fabric8.maven.plugin.version>
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <spring-cloud.version>Dalston.SR1</spring-cloud.version>
     <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
-    <!-- Don't build the jar of the project as its done by gradle-->
-    <maven.main.skip>true</maven.main.skip>
-    <!-- Default profile to use when deployed in Kubernetes/OpenShift-->
-    <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
-    <fabric8-maven-plugin.from>fabric8/s2i-java</fabric8-maven-plugin.from>
+    <objenesis.version>2.2</objenesis.version>
+    <cglib-nodep.version>3.1</cglib-nodep.version>
+    <json-path-assert.version>2.0.0</json-path-assert.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
+    <jackson-core-asl.version>1.9.13</jackson-core-asl.version>
+    <spring-cloud-starter-kubernetes-all.version>0.2.0.RELEASE</spring-cloud-starter-kubernetes-all.version>
+    <brewery-common.version>1.0</brewery-common.version>
+    <brewery-common-zipkin-stream.version>1.0</brewery-common-zipkin-stream.version>
+    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+    <groovy-all.version>2.4.3</groovy-all.version>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
 
-  <profiles>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
 
-    <profile>
-      <id>fabric8</id>
-      <modules>
-        <module>config-server</module>
-        <module>eureka</module>
-        <module>zipkin-server</module>
-        <module>zuul</module>
-        <module>ingredients</module>
-        <module>reporting</module>
-        <module>brewing</module>
-        <module>presenting</module>
-      </modules>
-    </profile>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-kubernetes-all</artifactId>
+        <version>${spring-cloud-starter-kubernetes-all.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
 
-    <profile>
-      <id>openshift</id>
-      <modules>
-        <module>openshift-deployer</module>
-      </modules>
-    </profile>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>${groovy-all.version}</version>
+      </dependency>
 
-  </profiles>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson-core-asl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>${jackson-core-asl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.jayway.jsonpath</groupId>
+        <artifactId>json-path-assert</artifactId>
+        <version>${json-path-assert.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>${cglib-nodep.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>${objenesis.version}</version>
+      </dependency>
 
+      <dependency>
+        <groupId>io.spring.cloud.samples.brewery</groupId>
+        <artifactId>common</artifactId>
+        <version>${brewery-common.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.spring.cloud.samples.brewery</groupId>
+        <artifactId>common-zipkin-stream</artifactId>
+        <version>${brewery-common-zipkin-stream.version}</version>
+      </dependency>
+    </dependencies>
+
+  </dependencyManagement>
+
+  <modules>
+    <module>common</module>
+    <module>common-zipkin-stream</module>
+    <module>zipkin-server</module>
+    <module>zuul</module>
+    <module>ingredients</module>
+    <module>reporting</module>
+    <module>brewing</module>
+    <module>presenting</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>fabric8-maven-plugin</artifactId>
+          <version>${fabric8.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>build</goal>
+                <goal>resource</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>

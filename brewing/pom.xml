@@ -8,55 +8,132 @@
     <version>1.0</version>
   </parent>
 
-  <groupId>io.spring.cloud.samples.brewery</groupId>
   <artifactId>brewing</artifactId>
-  <version>2.0-SNAPSHOT</version>
+  <name>Spring Cloud:: Brewery:: Brewing</name>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.spring.cloud.samples.brewery</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.spring.cloud.samples.brewery</groupId>
+      <artifactId>common-zipkin-stream</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-feign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.jayway.jsonpath</groupId>
+      <artifactId>json-path-assert</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- This is required for Ribbon Clients to work properly -->
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-ribbon</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-config</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-discovery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-archaius</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-ribbon</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-kubernetes-hystrix</artifactId>
+    </dependency>
+
+  </dependencies>
+
   <build>
     <plugins>
-
-      <!-- As the jars are built by gradle we tend to avoid rebuild again which will mess with spring-boot jar-->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.6</version>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <phase>dont-bind</phase>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>1.5.3.RELEASE</version>
-      </plugin>
-
-      <!-- Task to collate the gradle build artifacts and use them in fabric8 maven plugin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
+        <version>${spring-boot.version}</version>
         <executions>
           <execution>
-            <id>prepare-for-fmp</id>
-            <phase>clean</phase>
             <goals>
-              <goal>run</goal>
+              <goal>repackage</goal>
             </goals>
             <configuration>
-              <target>
-                <mkdir dir="${project.build.directory}/classes"/>
-                <copy todir="${project.build.directory}/classes">
-                  <fileset dir="${basedir}/build/classes/main"/>
-                </copy>
-                <copy todir="${project.build.directory}/classes">
-                  <fileset dir="${basedir}/build/resources"/>
-                </copy>
-                <copy todir="${project.build.directory}"
-                      file="${basedir}/build/libs/${project.artifactId}-${project.version}.jar"/>
-              </target>
+              <mainClass>io.spring.cloud.samples.brewery.Application</mainClass>
             </configuration>
           </execution>
         </executions>
@@ -74,27 +151,8 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <generator>
-            <includes>
-              <include>spring-boot</include>
-            </includes>
-            <config>
-              <spring-boot>
-                <config>
-                  <webPort>8080</webPort>
-                </config>
-              </spring-boot>
-            </config>
-          </generator>
-        </configuration>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/fabric8</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
   </build>
+
 </project>
