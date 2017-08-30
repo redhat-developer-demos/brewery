@@ -4,7 +4,10 @@ metadata:
   name: ingredients
 data:
   application.yaml: |-
-    server.port: 8080
+    server:
+      port: 8080
+      tomcat:
+        max-threads: 10
     spring:
       rabbitmq:
         host: rabbitmq-client

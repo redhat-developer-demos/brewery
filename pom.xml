@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <fabric8.maven.plugin.version>3.5.22</fabric8.maven.plugin.version>
+    <fabric8.maven.plugin.version>3.5.26</fabric8.maven.plugin.version>
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <spring-cloud.version>Dalston.SR1</spring-cloud.version>
@@ -31,6 +31,8 @@
     <groovy-all.version>2.4.5</groovy-all.version>
     <!-- This should be enabled once we have SB-128 implemented-->
     <skipTests>true</skipTests>
+    <!-- Setting the image explicity to use redhat-openjdk-->
+    <fabric8.generator.from>redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
   </properties>
 
   <dependencyManagement>

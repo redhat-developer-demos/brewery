@@ -5,7 +5,11 @@ spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
-          value: -Xmx64m -Xss1024k -Djava.net.preferIPv4Stack=true
+          value: -Xms128m -Xmx128m -Xss256k -XX:MaxDirectMemorySize=64m -Djava.net.preferIPv4Stack=true
+        - name: AB_JOLOKIA_OFF
+          value: "true"
+        - name: AB_OFF
+          value: "true"
         livenessProbe:
           httpGet:
             path: /health
@@ -20,4 +24,8 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 5
-      serviceAccountName: brewery
+        resources:
+          limits:
+            memory: 512Mi
+          requests:
+            memory: 128Mi

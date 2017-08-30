@@ -4,7 +4,6 @@ metadata:
   name: zipkin
 data:
   application.yaml: |-
-    server.port: 8080
     spring:
       rabbitmq:
         host: rabbitmq-client
@@ -14,6 +13,10 @@ data:
         stream:
           binder:
             rabbit.default.maxConcurrency: 5
+    server:
+      port: 8080
+      tomcat:
+        max-threads: 10
 
     hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 

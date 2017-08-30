@@ -1,7 +1,0 @@
-spring:
-  cloud:
-    kubernetes:
-      client:
-        namespace: myproject
-      reload:
-        enabled: true

@@ -4,3 +4,4 @@ spring:
       enabled: false
   application:
     name: zipkin
+
