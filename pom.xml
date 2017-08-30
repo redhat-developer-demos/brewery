@@ -17,8 +17,6 @@
     <fabric8.maven.plugin.version>3.5.26</fabric8.maven.plugin.version>
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
-    <spring-cloud.version>Dalston.SR1</spring-cloud.version>
-    <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
     <objenesis.version>2.2</objenesis.version>
     <cglib-nodep.version>3.1</cglib-nodep.version>
     <json-path-assert.version>2.0.0</json-path-assert.version>
@@ -33,30 +31,16 @@
     <skipTests>true</skipTests>
     <!-- Setting the image explicity to use redhat-openjdk-->
     <fabric8.generator.from>redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
+    <rohar-spring-boot-1.5-bom.version>1-SNAPSHOT</rohar-spring-boot-1.5-bom.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring-cloud.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
 
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-kubernetes-all</artifactId>
-        <version>${spring-cloud-starter-kubernetes-all.version}</version>
+       <dependency>
+        <groupId>org.jboss.snowdrop</groupId>
+        <artifactId>spring-boot-1.5-bom</artifactId>
+        <version>${rohar-spring-boot-1.5-bom.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
