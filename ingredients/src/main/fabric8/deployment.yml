@@ -5,7 +5,7 @@ spec:
       containers:
       - env:
         - name: JAVA_OPTIONS
-          value: -Xms64m -Xmx64m -Xss256k -XX:MaxDirectMemorySize=64m -Djava.net.preferIPv4Stack=true
+          value: -Xms128m -Xmx128m -Xss256k -XX:MaxDirectMemorySize=64m -Djava.net.preferIPv4Stack=true
         - name: AB_JOLOKIA_OFF
           value: "true"
         - name: AB_OFF
@@ -26,6 +26,6 @@ spec:
           timeoutSeconds: 5
         resources:
           limits:
-            memory: 256Mi
+            memory: 512Mi
           requests:
-            memory: 64Mi
+            memory: 128Mi
