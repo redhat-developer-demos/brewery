@@ -21,6 +21,7 @@ with minimal or no code change
 
 * [] Iteration IV - Service Mesh with https://istio.io[Istio]
 
+[[default-pre-req]]
 == Pre-Requisite
 
 You have a OpenShift cluster running locally using https://docs.openshift.org/latest/minishift/getting-started/index.html[*minishift*]
@@ -31,14 +32,6 @@ have access to https://www.openshift.com/container-platform/index.html[*OpenShif
 ====
 - At least 7Gb of RAM is required to run the Brewery application
 - Openshift Origin 1.4.1 is required till we have fixed this https://gist.github.com/cmoulliard/46a804a42648761b1fd8be4f61444dc3[issue]
-- You can boost the deployment if you pull these docker images used by the s2i process `docker pull fabric8/s2i-java:2.0` and `docker pull fabric8/java-jboss-openjdk8-jdk:1.2`
-====
-
-[NOTE]
-====
-This is needed only in OpenShift and applicable for iteations 2 and above
-
-`oc policy add-role-to-user view system:serviceaccount:$(oc project -q):default -n $(oc project -q)`
 ====
 
 == Accessing the Applications

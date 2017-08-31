@@ -23,6 +23,39 @@ git clone -b iteration-2 https://github.com/redhat-developer-demos/brewery.git
 Through out this document we will call the directoy where the project was cloned as _$PROJECT_HOME_
 ====
 
+
+[[itr2-pre-req]]
+== Pre-Requisite
+
+[[itr2-pre-req-general]]
+=== General
+The spring-cloud-kubernetes library used in the project requires the `default` service account to have view permissions, to enable that we execute the following command,
+
+[source,sh]
+----
+oc policy add-role-to-user view -z default -n $(oc project -q)
+----
+
+
+[[itr2-pre-req-rabbitmq]]
+=== RabbitMQ 
+
+The https://hub.docker.com/_/rabbitmq/[RabbimtMQ] container image when run is run using `root` user, which is restricted in OpenShift by defult, to enable the container to be run with `root` we need to give special permissions. 
+
+We create a seperate service account called **brewery** and add the required SCC to it as shown below.
+
+[source,sh]
+----
+oc adm policy add-scc-to-user privileged -z brewery <1>
+
+oc adm policy add-scc-to-user anyuid -z brewery  <1>
+----
+
+<1> **brewery** service is created when RabbitMQ is deployed
+
+More info on previleged access, refer https://docs.openshift.com/container-platform/3.5/admin_guide/manage_scc.html#grant-access-to-the-privileged-scc[here]
+
+
 [[itr2-deployable-apps]]
 == Deploy Applications
 
@@ -109,8 +142,17 @@ of the respective application as well
 As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )
 
+
+[IMPORTANT]
+====
+Ensure that all <<itr2-pre-req,Pre-Requisite>> are done before starting deployment.
+====
+
 [[itr2-rabbitmq]]
 ==== RabbitMQ
+
+[[itr2-rabbitmq-local]]
+===== Local Deployment
 
 Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following command
 
@@ -119,7 +161,19 @@ Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following 
 ./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy
 ----
 
+[[itr2-rabbitmq-cloud]]
+===== External Cloud Deployment
+
+Sometimes you might have access to docker socket typical case when deploying to external cloud, in those cases you can run the following set of commands,
+
+[source,sh]
+----
+./mvnw clean fabric8:resource
+oc apply -f target/classes/META-INF/fabric8/openshift.yml
+----
+
 This will take some time to get it running as the deployment needs to download the `rabbitmq` docker image
+
 [[itr2-zipkin-server]]
 ==== Zipkin Server
 

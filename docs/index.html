@@ -517,7 +517,7 @@ table.CodeRay td.code>pre{padding:0}
 <div class="details">
 <span id="author" class="author">Kamesh Sampath</span><br>
 <span id="revnumber">version 1.0,</span>
-<span id="revdate">2017-08-10</span>
+<span id="revdate">2017-08-31</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
@@ -525,7 +525,7 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#spring-cloud-brewery-on-openshift">1. Spring Cloud Brewery on OpenShift</a>
 <ul class="sectlevel2">
 <li><a href="#overview">1.1. Overview</a></li>
-<li><a href="#pre-requisite">1.2. Pre-Requisite</a></li>
+<li><a href="#default-pre-req">1.2. Pre-Requisite</a></li>
 <li><a href="#accessing-the-applications">1.3. Accessing the Applications</a></li>
 <li><a href="#references">1.4. References</a></li>
 </ul>
@@ -561,10 +561,16 @@ table.CodeRay td.code>pre{padding:0}
 <li><a href="#itr2-clone-source">3.1.1. Clone</a></li>
 </ul>
 </li>
-<li><a href="#itr2-deployable-apps">3.2. Deploy Applications</a>
+<li><a href="#itr2-pre-req">3.2. Pre-Requisite</a>
 <ul class="sectlevel3">
-<li><a href="#itr2-build-app">3.2.1. Building</a></li>
-<li><a href="#itr2-deploy-to-openshift">3.2.2. Deploying to OpenShift</a>
+<li><a href="#itr2-pre-req-general">3.2.1. General</a></li>
+<li><a href="#itr2-pre-req-rabbitmq">3.2.2. RabbitMQ</a></li>
+</ul>
+</li>
+<li><a href="#itr2-deployable-apps">3.3. Deploy Applications</a>
+<ul class="sectlevel3">
+<li><a href="#itr2-build-app">3.3.1. Building</a></li>
+<li><a href="#itr2-deploy-to-openshift">3.3.2. Deploying to OpenShift</a>
 <ul class="sectlevel4">
 <li><a href="#itr2-rabbitmq">RabbitMQ</a></li>
 <li><a href="#itr2-zipkin-server">Zipkin Server</a></li>
@@ -577,8 +583,8 @@ table.CodeRay td.code>pre{padding:0}
 </li>
 </ul>
 </li>
-<li><a href="#itr2-acceptance-testing">3.3. Acceptance Testing</a></li>
-<li><a href="#itr2-deprecated-modules">3.4. Deprecated Modules</a></li>
+<li><a href="#itr2-acceptance-testing">3.4. Acceptance Testing</a></li>
+<li><a href="#itr2-deprecated-modules">3.5. Deprecated Modules</a></li>
 </ul>
 </li>
 </ul>
@@ -630,7 +636,7 @@ with minimal or no code change</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="pre-requisite">1.2. Pre-Requisite</h3>
+<h3 id="default-pre-req">1.2. Pre-Requisite</h3>
 <div class="paragraph">
 <p>You have a OpenShift cluster running locally using <a href="https://docs.openshift.org/latest/minishift/getting-started/index.html"><strong>minishift</strong></a>
 or <a href="https://developers.redhat.com/products/cdk/overview/Op"><strong>CDK</strong></a>, or
@@ -651,27 +657,7 @@ have access to <a href="https://www.openshift.com/container-platform/index.html"
 <li>
 <p>Openshift Origin 1.4.1 is required till we have fixed this <a href="https://gist.github.com/cmoulliard/46a804a42648761b1fd8be4f61444dc3">issue</a></p>
 </li>
-<li>
-<p>You can boost the deployment if you pull these docker images used by the s2i process <code>docker pull fabric8/s2i-java:2.0</code> and <code>docker pull fabric8/java-jboss-openjdk8-jdk:1.2</code></p>
-</li>
 </ul>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is needed only in OpenShift and applicable for iteations 2 and above</p>
-</div>
-<div class="paragraph">
-<p><code>oc policy add-role-to-user view system:serviceaccount:$(oc project -q):default -n $(oc project -q)</code></p>
 </div>
 </td>
 </tr>
@@ -1033,7 +1019,48 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-deployable-apps">3.2. Deploy Applications</h3>
+<h3 id="itr2-pre-req">3.2. Pre-Requisite</h3>
+<div class="sect3">
+<h4 id="itr2-pre-req-general">3.2.1. General</h4>
+<div class="paragraph">
+<p>The spring-cloud-kubernetes library used in the project requires the <code>default</code> service account to have view permissions, to enable that we execute the following command,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc policy add-role-to-user view -z default -n $(oc project -q)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="itr2-pre-req-rabbitmq">3.2.2. RabbitMQ</h4>
+<div class="paragraph">
+<p>The <a href="https://hub.docker.com/_/rabbitmq/">RabbimtMQ</a> container image when run is run using <code>root</code> user, which is restricted in OpenShift by defult, to enable the container to be run with <code>root</code> we need to give special permissions.</p>
+</div>
+<div class="paragraph">
+<p>We create a seperate service account called <strong>brewery</strong> and add the required SCC to it as shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc adm policy add-scc-to-user privileged -z brewery <i class="conum" data-value="1"></i><b>(1)</b>
+
+oc adm policy add-scc-to-user anyuid -z brewery  <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><strong>brewery</strong> service is created when RabbitMQ is deployed</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More info on previleged access, refer <a href="https://docs.openshift.com/container-platform/3.5/admin_guide/manage_scc.html#grant-access-to-the-privileged-scc">here</a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr2-deployable-apps">3.3. Deploy Applications</h3>
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 2. Application List</caption>
 <colgroup>
@@ -1120,7 +1147,7 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="itr2-build-app">3.2.1. Building</h4>
+<h4 id="itr2-build-app">3.3.1. Building</h4>
 <div class="paragraph">
 <p>The Iteration II of the brewery application has migrated all the projects to <a href="http://maven.apache.org/">Apache Maven</a> based build,
 to build the application run the following command</p>
@@ -1146,13 +1173,29 @@ of the respective application as well</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="itr2-deploy-to-openshift">3.2.2. Deploying to OpenShift</h4>
+<h4 id="itr2-deploy-to-openshift">3.3.2. Deploying to OpenShift</h4>
 <div class="paragraph">
 <p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Ensure that all <a href="#itr2-pre-req">Pre-Requisite</a> are done before starting deployment.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="itr2-rabbitmq">RabbitMQ</h5>
+<div class="sect5">
+<h6 id="itr2-rabbitmq-local">Local Deployment</h6>
 <div class="paragraph">
 <p>Go to the directory  <strong>$PROJECT_HOME/extras/rabbitmq</strong>, and execute the following command</p>
 </div>
@@ -1161,8 +1204,21 @@ explains the deployment of the application in the same order as expected  ( you 
 <pre class="CodeRay highlight"><code data-lang="sh">./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy</code></pre>
 </div>
 </div>
+</div>
+<div class="sect5">
+<h6 id="itr2-rabbitmq-cloud">External Cloud Deployment</h6>
+<div class="paragraph">
+<p>Sometimes you might have access to docker socket typical case when deploying to external cloud, in those cases you can run the following set of commands,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:resource
+oc apply -f target/classes/META-INF/fabric8/openshift.yml</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>This will take some time to get it running as the deployment needs to download the <code>rabbitmq</code> docker image</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1234,7 +1290,7 @@ explains the deployment of the application in the same order as expected  ( you 
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-acceptance-testing">3.3. Acceptance Testing</h3>
+<h3 id="itr2-acceptance-testing">3.4. Acceptance Testing</h3>
 <div class="paragraph">
 <p>The <strong>$PROJECT_HOME/acceptance-tests</strong> holds the test cases for testing the application.  To perform
 we need to have have some ports forwarded from Kubernetes/OpenShift to localhost(where you build the application)</p>
@@ -1279,7 +1335,7 @@ Please update the pod names based on your local deployment
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-deprecated-modules">3.4. Deprecated Modules</h3>
+<h3 id="itr2-deprecated-modules">3.5. Deprecated Modules</h3>
 <div class="paragraph">
 <p>As part of Iteration-II the following modules have been deprecated,</p>
 </div>
@@ -1312,7 +1368,7 @@ Please update the pod names based on your local deployment
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2017-08-10 14:39:19 IST
+Last updated 2017-08-31 14:36:35 IST
 </div>
 </div>
 </body>
