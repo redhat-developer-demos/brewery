@@ -1,7 +1,10 @@
 package io.spring.cloud.samples.brewery.bottling;
 
+import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.web.client.TracingRestTemplateInterceptor;
+import io.spring.cloud.samples.brewery.common.TestConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -10,10 +13,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
-import io.spring.cloud.samples.brewery.common.TestConfiguration;
+import java.util.Collections;
 
 @Configuration
 @Import(TestConfiguration.class)
+@Slf4j
 class BottlingConfiguration {
 
     @Bean
@@ -27,8 +31,14 @@ class BottlingConfiguration {
 
     @Bean
     @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate() {
-        return new RestTemplate();
+    public RestTemplate loadBalancedRestTemplate(Tracer tracer) {
+        log.info("<<<<< TRACER  BottlingConfiguration >>>>> {} ",tracer);
+        RestTemplate restTemplate = new RestTemplate();
+        //VERY IMPORTANT
+        //FIXME can we use Async Template here ???
+        restTemplate.setInterceptors(Collections.singletonList(new TracingRestTemplateInterceptor(tracer)));
+        //VERY IMPORTANT
+        return restTemplate;
     }
 
 

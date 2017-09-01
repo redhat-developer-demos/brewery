@@ -1,5 +1,8 @@
 package io.spring.cloud.samples.brewery.bottling;
 
+import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.events.Event;
 import io.spring.cloud.samples.brewery.common.events.EventGateway;
@@ -9,8 +12,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ class BottlingWorker {
     }
 
     private void notifyPresentingService(String processId) {
-        Span scope = this.tracer.createSpan("calling_presenting");
+        Span scope = this.tracer.buildSpan("calling_presenting").startManual();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
                 callPresentingViaFeign(processId);
@@ -60,12 +61,15 @@ class BottlingWorker {
             default:
                 useRestTemplateToCallPresenting(processId);
         }
-        tracer.close(scope);
+        scope.finish();
     }
 
     private void increaseBottles(Integer wortAmount, String processId) {
         log.info("Bottling beer...");
-        Span scope = tracer.createSpan("waiting_for_beer_bottling");
+        ActiveSpan activeSpan = tracer.activeSpan();
+        Span scope = tracer.buildSpan("waiting_for_beer_bottling")
+            .asChildOf(activeSpan.context())
+            .startManual();
         try {
             State stateForProcess = PROCESS_STATE.getOrDefault(processId, new State());
             Integer bottled = stateForProcess.bottled;
@@ -83,7 +87,7 @@ class BottlingWorker {
             stateForProcess.setBottles(bottles);
             PROCESS_STATE.put(processId, stateForProcess);
         } finally {
-            tracer.close(scope);
+            scope.finish();
         }
     }
 

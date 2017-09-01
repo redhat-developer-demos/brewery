@@ -1,15 +1,7 @@
 package io.spring.cloud.samples.brewery.aggregating;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.sleuth.SpanNamer;
-import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.cloud.sleuth.TraceKeys;
-import org.springframework.cloud.sleuth.instrument.async.TraceableExecutorService;
-import org.springframework.stereotype.Component;
-
+import io.opentracing.Tracer;
+import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.events.Event;
 import io.spring.cloud.samples.brewery.common.events.EventGateway;
@@ -18,6 +10,11 @@ import io.spring.cloud.samples.brewery.common.model.Ingredient;
 import io.spring.cloud.samples.brewery.common.model.Ingredients;
 import io.spring.cloud.samples.brewery.common.model.Order;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @Component
@@ -28,20 +25,16 @@ class IngredientsAggregator {
     private final IngredientsCollector ingredientsCollector;
     private final Tracer tracer;
     private final EventGateway eventGateway;
-    private final TraceKeys traceKeys;
-    private final SpanNamer spanNamer;
 
     @Autowired
     IngredientsAggregator(IngredientWarehouse ingredientWarehouse, MaturingServiceUpdater maturingServiceUpdater,
-            IngredientsCollector ingredientsCollector, Tracer tracer,
-            EventGateway eventGateway, TraceKeys traceKeys, SpanNamer spanNamer) {
+                          IngredientsCollector ingredientsCollector, Tracer tracer,
+                          EventGateway eventGateway) {
         this.ingredientWarehouse = ingredientWarehouse;
         this.ingredientsCollector = ingredientsCollector;
         this.maturingUpdater = maturingServiceUpdater;
         this.tracer = tracer;
         this.eventGateway = eventGateway;
-        this.traceKeys = traceKeys;
-        this.spanNamer = spanNamer;
     }
 
     // TODO: Consider simplifying the case by removing the DB (always matches threshold)
@@ -62,8 +55,7 @@ class IngredientsAggregator {
                                 ingredientWarehouse.addIngredient(ingredient);
                             });
                     return null;
-                }, new TraceableExecutorService(Executors.newFixedThreadPool(5),
-                tracer, traceKeys, spanNamer, "fetchIngredients"));
+                }, new TracedExecutorService(Executors.newFixedThreadPool(5),tracer));
         // block to perform the request (as I said the example is stupid)
         completableFuture.get();
         eventGateway.emitEvent(Event.builder().eventType(EventType.INGREDIENTS_ORDERED).processId(processId).build());

@@ -2,17 +2,17 @@ package io.spring.cloud.samples.brewery.presenting.present
 
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
+import io.opentracing.ActiveSpan
+import io.opentracing.Span
+import io.opentracing.Tracer
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder
 import io.spring.cloud.samples.brewery.presenting.config.Collaborators
 import io.spring.cloud.samples.brewery.presenting.config.Versions
 import io.spring.cloud.samples.brewery.presenting.feed.FeedRepository
 import io.spring.cloud.samples.brewery.presenting.feed.ProcessState
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.client.ServiceInstance
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.kubernetes.discovery.KubernetesDiscoveryClient
-import org.springframework.cloud.sleuth.Span
-import org.springframework.cloud.sleuth.Tracer
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.util.JdkIdGenerator
@@ -61,7 +61,11 @@ class PresentController {
             processIdFromHeaders :
             new JdkIdGenerator().generateId().toString()
         log.info("Making new order with [$body.body] and processid [$processId].")
-        Span span = this.tracer.createSpan("inside_presenting")
+        ActiveSpan activeSpan = this.tracer.activeSpan()
+        Span span = this.tracer
+            .buildSpan("inside_presenting")
+            .asChildOf(activeSpan.context())
+            .startManual()
         try {
             switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
                 case FEIGN:
@@ -70,7 +74,9 @@ class PresentController {
                     return useRestTemplateToCallAggregation(body, processId)
             }
         } finally {
-            tracer.close(span)
+            span.finish()
+            //TODO do we need this ??
+           // activeSpan.close()
         }
     }
 

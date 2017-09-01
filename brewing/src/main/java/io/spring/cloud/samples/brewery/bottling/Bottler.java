@@ -3,17 +3,15 @@ package io.spring.cloud.samples.brewery.bottling;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.cloud.sleuth.TraceKeys;
-import org.springframework.cloud.sleuth.instrument.hystrix.TraceCommand;
-import org.springframework.stereotype.Service;
-
+import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.BottlingService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.model.Wort;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -21,16 +19,14 @@ class Bottler implements BottlingService {
 
     private final BottlerService bottlerService;
     private final Tracer tracer;
-    private final TraceKeys traceKeys;
 
     @Autowired
-    public Bottler(BottlerService bottlerService, Tracer tracer, TraceKeys traceKeys) {
+    public Bottler(BottlerService bottlerService, Tracer tracer) {
         this.bottlerService = bottlerService;
         this.tracer = tracer;
-        this.traceKeys = traceKeys;
     }
 
-	/**
+    /**
      * [SLEUTH] TraceCommand
      */
     @Override
@@ -40,10 +36,10 @@ class Bottler implements BottlingService {
         String groupKey = "bottling";
         String commandKey = "bottle";
         HystrixCommand.Setter setter = HystrixCommand.Setter
-                .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
-                .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
+            .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
+            .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
         TestConfigurationHolder testConfigurationHolder = TestConfigurationHolder.TEST_CONFIG.get();
-        new TraceCommand<Void>(tracer, traceKeys, setter) {
+        new TraceCommand<Void>(tracer, setter) {
             @Override
             public Void doRun() throws Exception {
                 TestConfigurationHolder.TEST_CONFIG.set(testConfigurationHolder);
@@ -52,5 +48,36 @@ class Bottler implements BottlingService {
                 return null;
             }
         }.execute();
+    }
+
+    static abstract class TraceCommand<Void> extends HystrixCommand<Void> {
+
+        private Span span;
+        private final Tracer tracer;
+
+        public TraceCommand(Tracer tracer, Setter setter) {
+            super(setter);
+            this.tracer = tracer;
+        }
+
+        @Override
+        protected Void run() throws Exception {
+            String commandKeyName = getCommandKey().name();
+            ActiveSpan activeSpan = tracer.activeSpan();
+
+            this.span = this.tracer.buildSpan(commandKeyName).asChildOf(activeSpan.context())
+                .withTag("commandKey", commandKeyName)
+                .withTag("commandGroup", commandGroup.name())
+                .withTag("threadPoolKey", threadPoolKey.name())
+                .startManual();
+
+            try {
+                return doRun();
+            } finally {
+                this.span.finish();
+            }
+        }
+
+        public abstract Void doRun() throws Exception;
     }
 }

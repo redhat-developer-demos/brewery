@@ -37,7 +37,7 @@
   <dependencyManagement>
     <dependencies>
 
-       <dependency>
+      <dependency>
         <groupId>org.jboss.snowdrop</groupId>
         <artifactId>spring-boot-1.5-bom</artifactId>
         <version>${rohar-spring-boot-1.5-bom.version}</version>
@@ -88,25 +88,29 @@
         <version>${brewery-common.version}</version>
       </dependency>
 
-      <dependency>
+      <!-- FIXME remove after testing -->
+      <!-- dependency>
         <groupId>io.spring.cloud.samples.brewery</groupId>
         <artifactId>common-zipkin-stream</artifactId>
         <version>${brewery-common-zipkin-stream.version}</version>
-      </dependency>
+      </dependency -->
+
+
     </dependencies>
+
 
   </dependencyManagement>
 
   <modules>
     <module>common</module>
-    <module>common-zipkin-stream</module>
-    <module>zipkin-server</module>
+    <!-- module>common-zipkin-stream</module -->
+    <!-- module>zipkin-server</module -->
     <module>zuul</module>
     <module>ingredients</module>
     <module>reporting</module>
     <module>brewing</module>
     <module>presenting</module>
-    <module>acceptance-tests</module>
+    <!-- module>acceptance-tests</module -->
   </modules>
 
   <build>

@@ -23,10 +23,10 @@
       <artifactId>common</artifactId>
     </dependency>
 
-    <dependency>
+    <!-- dependency>
       <groupId>io.spring.cloud.samples.brewery</groupId>
       <artifactId>common-zipkin-stream</artifactId>
-    </dependency>
+    </dependency -->
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

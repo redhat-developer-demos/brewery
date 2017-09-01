@@ -2,8 +2,9 @@ package io.spring.cloud.samples.brewery.maturing;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
+import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.Assert;
@@ -47,7 +48,7 @@ class BottlingServiceUpdater {
 
     @Async
     public void updateBottlingServiceAboutBrewedBeer(final Ingredients ingredients, String processId, TestConfigurationHolder configurationHolder) {
-        Span trace = tracer.createSpan("inside_maturing");
+        Span trace = tracer.buildSpan("inside_maturing").startManual();
         try {
             TestConfigurationHolder.TEST_CONFIG.set(configurationHolder);
             log.info("Updating bottling service. Current process id is equal [{}]", processId);
@@ -56,23 +57,26 @@ class BottlingServiceUpdater {
             eventGateway.emitEvent(Event.builder().eventType(EventType.BEER_MATURED).processId(processId).build());
             notifyBottlingService(ingredients, processId);
         } finally {
-            tracer.close(trace);
+            trace.finish();
         }
     }
 
     private void brewBeer() {
         try {
-			Long timeout = brewProperties.getTimeout();
-			log.info("Brewing beer... it will take [{}] ms", timeout);
-			Thread.sleep(timeout);
-		} catch (InterruptedException e) {
-			log.error("Exception occurred while brewing beer", e);
-		}
+            Long timeout = brewProperties.getTimeout();
+            log.info("Brewing beer... it will take [{}] ms", timeout);
+            Thread.sleep(timeout);
+        } catch (InterruptedException e) {
+            log.error("Exception occurred while brewing beer", e);
+        }
     }
 
     private void notifyPresentingService(String correlationId) {
         log.info("Calling presenting from maturing");
-        Span scope = this.tracer.createSpan("calling_presenting_from_maturing");
+        ActiveSpan activeSpan = tracer.activeSpan();
+        Span scope = this.tracer.buildSpan("calling_presenting_from_maturing")
+            .asChildOf(activeSpan.context())
+            .startManual();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
                 callPresentingViaFeign(correlationId);
@@ -80,33 +84,36 @@ class BottlingServiceUpdater {
             default:
                 useRestTemplateToCallPresenting(correlationId);
         }
-        tracer.close(scope);
+        scope.finish();
     }
 
     private void callPresentingViaFeign(String correlationId) {
         presentingServiceClient.maturingFeed(correlationId, FEIGN.name());
     }
 
-	/**
+    /**
      * [SLEUTH] HystrixCommand - Javanica integration
      */
     @HystrixCommand
     public void notifyBottlingService(Ingredients ingredients, String correlationId) {
         log.info("Calling bottling from maturing");
-        Span scope = this.tracer.createSpan("calling_bottling_from_maturing");
+        ActiveSpan activeSpan = tracer.activeSpan();
+        Span scope = this.tracer.buildSpan("calling_bottling_from_maturing")
+            .asChildOf(activeSpan.context())
+            .startManual();
         bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name());
-        tracer.close(scope);
+        scope.finish();
     }
 
     private void useRestTemplateToCallPresenting(String processId) {
         log.info("Calling presenting - process id [{}]", processId);
         restTemplate.exchange(requestEntity()
-                .processId(processId)
-                .contentTypeVersion(Version.PRESENTING_V1)
-                .serviceName(Collaborators.PRESENTING)
-                .url("feed/maturing")
-                .httpMethod(HttpMethod.PUT)
-                .build(), String.class);
+            .processId(processId)
+            .contentTypeVersion(Version.PRESENTING_V1)
+            .serviceName(Collaborators.PRESENTING)
+            .url("feed/maturing")
+            .httpMethod(HttpMethod.PUT)
+            .build(), String.class);
     }
 
     private Integer getQuantity(Ingredients ingredients) {

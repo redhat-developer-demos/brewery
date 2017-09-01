@@ -1,5 +1,8 @@
 package io.spring.cloud.samples.brewery.presenting
 
+import io.opentracing.Tracer
+import io.opentracing.contrib.spring.web.client.TracingRestTemplateInterceptor
+import io.spring.cloud.samples.brewery.common.BreweryConfiguration
 import io.spring.cloud.samples.brewery.common.TestConfiguration
 import io.spring.cloud.samples.brewery.common.events.EventSource
 import org.springframework.boot.SpringApplication
@@ -7,9 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient
 import org.springframework.cloud.client.loadbalancer.LoadBalanced
 import org.springframework.cloud.netflix.feign.EnableFeignClients
-import org.springframework.cloud.sleuth.Sampler
-import org.springframework.cloud.sleuth.sampler.AlwaysSampler
-import org.springframework.cloud.sleuth.util.ExceptionUtils
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.EnableAspectJAutoProxy
@@ -22,22 +22,22 @@ import org.springframework.web.client.RestTemplate
 @EnableAsync
 @EnableDiscoveryClient
 @EnableFeignClients
-@Import(TestConfiguration.class)
+@Import([TestConfiguration.class,BreweryConfiguration.class])
 @EnableBinding(EventSource.class)
 class Application {
 
-    @Bean Sampler sampler() {
-        return new AlwaysSampler();
-    }
-
     @Bean
     @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate() {
-        return new RestTemplate();
+    public RestTemplate loadBalancedRestTemplate(Tracer tracer) {
+        RestTemplate restTemplate = new RestTemplate()
+        //VERY IMPORTANT
+        //FIXME can we use Async Template here ???
+        restTemplate.setInterceptors(Collections.singletonList(new TracingRestTemplateInterceptor(tracer)))
+        //VERY IMPORTANT
+        return restTemplate
     }
 
     static void main(String[] args) {
-        ExceptionUtils.setFail(true)
         new SpringApplication(Application.class).run(args)
     }
 }
