@@ -1,7 +1,5 @@
 package io.spring.cloud.samples.brewery.presenting
 
-import io.opentracing.Tracer
-import io.opentracing.contrib.spring.web.client.TracingRestTemplateInterceptor
 import io.spring.cloud.samples.brewery.common.BreweryConfiguration
 import io.spring.cloud.samples.brewery.common.TestConfiguration
 import io.spring.cloud.samples.brewery.common.events.EventSource
@@ -28,13 +26,8 @@ class Application {
 
     @Bean
     @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate(Tracer tracer) {
-        RestTemplate restTemplate = new RestTemplate()
-        //VERY IMPORTANT
-        //FIXME can we use Async Template here ???
-        restTemplate.setInterceptors(Collections.singletonList(new TracingRestTemplateInterceptor(tracer)))
-        //VERY IMPORTANT
-        return restTemplate
+    public RestTemplate loadBalancedRestTemplate() {
+        return  new RestTemplate()
     }
 
     static void main(String[] args) {

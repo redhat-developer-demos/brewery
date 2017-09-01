@@ -4,6 +4,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
@@ -27,11 +28,11 @@ import static io.spring.cloud.samples.brewery.common.TestRequestEntityBuilder.re
 class BottlingServiceUpdater {
 
     private final BrewProperties brewProperties;
-    private final Tracer tracer;
     private final PresentingServiceClient presentingServiceClient;
     private final BottlingService bottlingService;
     private final RestTemplate restTemplate;
     private final EventGateway eventGateway;
+    private final Tracer tracer;
 
     public BottlingServiceUpdater(BrewProperties brewProperties,
                                   Tracer tracer,
@@ -39,23 +40,28 @@ class BottlingServiceUpdater {
                                   BottlingService bottlingService,
                                   RestTemplate restTemplate, EventGateway eventGateway) {
         this.brewProperties = brewProperties;
-        this.tracer = tracer;
         this.presentingServiceClient = presentingServiceClient;
         this.bottlingService = bottlingService;
         this.restTemplate = restTemplate;
+        this.tracer = tracer;
         this.eventGateway = eventGateway;
     }
 
+    //FIXME - can the activeSpan be instrumented automatically ???
     @Async
-    public void updateBottlingServiceAboutBrewedBeer(final Ingredients ingredients, String processId, TestConfigurationHolder configurationHolder) {
-        Span trace = tracer.buildSpan("inside_maturing").startManual();
+    public void updateBottlingServiceAboutBrewedBeer(final Ingredients ingredients, String processId,
+                                                     TestConfigurationHolder configurationHolder,SpanContext spanContext) {
+
+        Span trace = tracer.buildSpan("inside_maturing")
+            .asChildOf(spanContext)
+            .startManual();
         try {
             TestConfigurationHolder.TEST_CONFIG.set(configurationHolder);
             log.info("Updating bottling service. Current process id is equal [{}]", processId);
-            notifyPresentingService(processId);
+            notifyPresentingService(processId,spanContext);
             brewBeer();
             eventGateway.emitEvent(Event.builder().eventType(EventType.BEER_MATURED).processId(processId).build());
-            notifyBottlingService(ingredients, processId);
+            notifyBottlingService(ingredients, processId,spanContext);
         } finally {
             trace.finish();
         }
@@ -71,11 +77,11 @@ class BottlingServiceUpdater {
         }
     }
 
-    private void notifyPresentingService(String correlationId) {
+    private void notifyPresentingService(String correlationId,SpanContext spanContext) {
         log.info("Calling presenting from maturing");
-        ActiveSpan activeSpan = tracer.activeSpan();
-        Span scope = this.tracer.buildSpan("calling_presenting_from_maturing")
-            .asChildOf(activeSpan.context())
+        Span scope = this.tracer.
+            buildSpan("calling_presenting_from_maturing")
+            .asChildOf(spanContext)
             .startManual();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
@@ -95,13 +101,12 @@ class BottlingServiceUpdater {
      * [SLEUTH] HystrixCommand - Javanica integration
      */
     @HystrixCommand
-    public void notifyBottlingService(Ingredients ingredients, String correlationId) {
+    public void notifyBottlingService(Ingredients ingredients, String correlationId,SpanContext spanContext) {
         log.info("Calling bottling from maturing");
-        ActiveSpan activeSpan = tracer.activeSpan();
         Span scope = this.tracer.buildSpan("calling_bottling_from_maturing")
-            .asChildOf(activeSpan.context())
+            .asChildOf(spanContext)
             .startManual();
-        bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name());
+        bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name(),spanContext);
         scope.finish();
     }
 

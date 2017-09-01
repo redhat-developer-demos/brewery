@@ -3,6 +3,7 @@ package io.spring.cloud.samples.brewery.bottling;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.model.Version;
 import io.spring.cloud.samples.brewery.common.model.Wort;
@@ -40,15 +41,14 @@ class BottlerService {
      * [SLEUTH] HystrixCommand - Javanica integration
      */
     @HystrixCommand
-    void bottle(Wort wort, String processId) {
+    void bottle(Wort wort, String processId, SpanContext spanContext) {
         log.info("I'm inside bottling");
-        ActiveSpan activeSpan = tracer.activeSpan();
         Span span = tracer.buildSpan("inside_bottling")
-            .asChildOf(activeSpan.context())
+            .asChildOf(spanContext)
             .startManual();
         try {
             notifyPresenting(processId);
-            bottlingWorker.bottleBeer(wort.getWort(), processId, TEST_CONFIG.get());
+            bottlingWorker.bottleBeer(wort.getWort(), processId, TEST_CONFIG.get(),spanContext);
         } finally {
             span.finish();
         }

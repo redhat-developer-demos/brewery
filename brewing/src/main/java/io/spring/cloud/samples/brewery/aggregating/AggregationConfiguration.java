@@ -21,42 +21,36 @@ import java.util.Collections;
 @Slf4j
 class AggregationConfiguration {
 
-	@Bean
-	IngredientsProperties ingredientsProperties() {
-		return new IngredientsProperties();
-	}
+    @Bean
+    IngredientsProperties ingredientsProperties() {
+        return new IngredientsProperties();
+    }
 
-	@Bean
-	AsyncRestTemplate asyncRestTemplate() {
-		return new AsyncRestTemplate();
-	}
+    @Bean
+    AsyncRestTemplate asyncRestTemplate() {
+        return new AsyncRestTemplate();
+    }
 
-	@Bean
-	@LoadBalanced
-	public RestTemplate loadBalancedRestTemplate(Tracer tracer) {
-	    log.info("<<<<< TRACER  AggregationConfiguration >>>>> {} ",tracer);
-        RestTemplate restTemplate = new RestTemplate();
-        //VERY IMPORTANT
-        //FIXME can we use Async Template here ???
-        restTemplate.setInterceptors(Collections.singletonList(new TracingRestTemplateInterceptor(tracer)));
-        //VERY IMPORTANT
-        return restTemplate;
-	}
+    @Bean
+    @LoadBalanced
+    public RestTemplate loadBalancedRestTemplate() {
+        return new RestTemplate();
+    }
 
-	@Bean
-	MaturingServiceUpdater maturingServiceUpdater(IngredientsProperties ingredientsProperties,
-												  IngredientWarehouse ingredientWarehouse,
-												  MaturingService maturingService,
-												  @LoadBalanced RestTemplate restTemplate,
-												  EventGateway eventGateway) {
-		return new MaturingServiceUpdater(ingredientsProperties,
-				ingredientWarehouse, maturingService, restTemplate, eventGateway);
-	}
+    @Bean
+    MaturingServiceUpdater maturingServiceUpdater(IngredientsProperties ingredientsProperties,
+                                                  IngredientWarehouse ingredientWarehouse,
+                                                  MaturingService maturingService,
+                                                  @LoadBalanced RestTemplate restTemplate,
+                                                  EventGateway eventGateway) {
+        return new MaturingServiceUpdater(ingredientsProperties,
+            ingredientWarehouse, maturingService, restTemplate, eventGateway);
+    }
 
-	@Bean
-	IngredientsCollector ingredientsCollector(@LoadBalanced RestTemplate restTemplate,
-											  IngredientsProxy ingredientsProxy) {
-		return new IngredientsCollector(restTemplate, ingredientsProxy);
-	}
+    @Bean
+    IngredientsCollector ingredientsCollector(@LoadBalanced RestTemplate restTemplate,
+                                              IngredientsProxy ingredientsProxy) {
+        return new IngredientsCollector(restTemplate, ingredientsProxy);
+    }
 }
 

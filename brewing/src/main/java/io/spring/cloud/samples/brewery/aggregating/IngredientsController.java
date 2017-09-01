@@ -51,7 +51,7 @@ class IngredientsController {
             .startManual();
         try {
             TestConfigurationHolder testConfigurationHolder = TestConfigurationHolder.TEST_CONFIG.get();
-            return () -> ingredientsAggregator.fetchIngredients(order, processId, testConfigurationHolder);
+            return () -> ingredientsAggregator.fetchIngredients(order, processId, testConfigurationHolder,activeSpan);
         } finally {
             span.finish();
         }

@@ -1,6 +1,5 @@
 package io.spring.cloud.samples.brewery.reporting;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.events.Event;
@@ -17,25 +16,24 @@ import java.util.Map;
 @Slf4j
 class EventListener {
 
-	private final ReportingRepository reportingRepository;
-	private final Tracer tracer;
+    private final ReportingRepository reportingRepository;
+    private final Tracer tracer;
 
-	@Autowired
-	public EventListener(ReportingRepository reportingRepository, Tracer tracer) {
-		this.reportingRepository = reportingRepository;
-		this.tracer = tracer;
-	}
+    @Autowired
+    public EventListener(ReportingRepository reportingRepository, Tracer tracer) {
+        this.reportingRepository = reportingRepository;
+        this.tracer = tracer;
+    }
 
-	@ServiceActivator(inputChannel = EventSink.INPUT)
-	public void handleEvents(Event event, @Headers Map<String, Object> headers) throws InterruptedException {
-		log.info("Received the following message with headers [{}] and body [{}]", headers, event);
-        ActiveSpan activeSpan = tracer.activeSpan();
-		Span newSpan = tracer.buildSpan("inside_reporting")
-            .asChildOf(activeSpan.context())
+    @ServiceActivator(inputChannel = EventSink.INPUT)
+    public void handleEvents(Event event, @Headers Map<String, Object> headers) throws InterruptedException {
+        log.info("Received the following message with headers [{}] and body [{}]", headers, event);
+        //FIXME - need to send parent span automatically - right now this wil be disconnected
+        Span newSpan = tracer.buildSpan("inside_reporting")
             .startManual();
-		reportingRepository.createOrUpdate(event);
-		newSpan.log("savedEvent");
-		log.info("Saved event to the db", headers, event);
+        reportingRepository.createOrUpdate(event);
+        newSpan.log("savedEvent");
+        log.info("Saved event to the db", headers, event);
         newSpan.finish();
-	}
+    }
 }

@@ -1,5 +1,7 @@
 package io.spring.cloud.samples.brewery.aggregating;
 
+import io.opentracing.ActiveSpan;
+import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
@@ -38,9 +40,12 @@ class IngredientsAggregator {
     }
 
     // TODO: Consider simplifying the case by removing the DB (always matches threshold)
-    public Ingredients fetchIngredients(Order order, String processId, TestConfigurationHolder testConfigurationHolder) throws Exception {
+    //TODO: instrumentation here as well...
+    public Ingredients fetchIngredients(Order order, String processId, TestConfigurationHolder testConfigurationHolder,
+                                        ActiveSpan activeSpan) throws Exception {
         TestConfigurationHolder.TEST_CONFIG.set(testConfigurationHolder);
         log.info("Fetching ingredients for order [{}] , processId [{}], span [{}]", order, processId);
+        final SpanContext spanContext = activeSpan.context();
         /**
          * [SLEUTH] ParallelStreams won't work out of the box
          * - example of a completable future with our TraceableExecutorService
@@ -58,9 +63,10 @@ class IngredientsAggregator {
                 }, new TracedExecutorService(Executors.newFixedThreadPool(5),tracer));
         // block to perform the request (as I said the example is stupid)
         completableFuture.get();
+
         eventGateway.emitEvent(Event.builder().eventType(EventType.INGREDIENTS_ORDERED).processId(processId).build());
         Ingredients ingredients = ingredientWarehouse.getCurrentState();
-        return maturingUpdater.updateIfLimitReached(ingredients, processId);
+        return maturingUpdater.updateIfLimitReached(ingredients, processId,spanContext);
     }
 
 }
