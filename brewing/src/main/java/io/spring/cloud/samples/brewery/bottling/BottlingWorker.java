@@ -1,8 +1,6 @@
 package io.spring.cloud.samples.brewery.bottling;
 
-import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.events.Event;
@@ -45,12 +43,10 @@ class BottlingWorker {
         this.eventGateway = eventGateway;
     }
 
-    //TODO:possible instrumentation
     @Async
-    public void bottleBeer(Integer wortAmount, String processId, TestConfigurationHolder configurationHolder,
-                           SpanContext spanContext) {
+    public void bottleBeer(Integer wortAmount, String processId, TestConfigurationHolder configurationHolder) {
         TestConfigurationHolder.TEST_CONFIG.set(configurationHolder);
-        increaseBottles(wortAmount, processId,spanContext);
+        increaseBottles(wortAmount, processId);
         eventGateway.emitEvent(Event.builder().eventType(EventType.BEER_BOTTLED).processId(processId).build());
         notifyPresentingService(processId);
     }
@@ -67,10 +63,9 @@ class BottlingWorker {
         scope.finish();
     }
 
-    private void increaseBottles(Integer wortAmount, String processId, SpanContext spanContext) {
+    private void increaseBottles(Integer wortAmount, String processId) {
         log.info("Bottling beer...");
         Span scope = tracer.buildSpan("waiting_for_beer_bottling")
-            .asChildOf(spanContext)
             .startManual();
         try {
             State stateForProcess = PROCESS_STATE.getOrDefault(processId, new State());

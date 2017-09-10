@@ -14,13 +14,15 @@ data:
           binder:
             rabbit.default.maxConcurrency: 5
     server:
-      port: 8080
+      port: 9411
       tomcat:
         max-threads: 10
 
     hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 
     endpoints.health.sensitive: false
+
+    zipkin.storage.type: mem
 
     logging:
      level.org.springframework.cloud: INFO

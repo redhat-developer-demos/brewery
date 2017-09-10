@@ -3,9 +3,7 @@ package io.spring.cloud.samples.brewery.bottling;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.BottlingService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
@@ -31,7 +29,7 @@ class Bottler implements BottlingService {
      * [SLEUTH] TraceCommand
      */
     @Override
-    public void bottle(Wort wort, String processId, String testCommunicationType, SpanContext spanContext) {
+    public void bottle(Wort wort, String processId, String testCommunicationType) {
         log.info("I'm in the bottling service");
         log.info("Process ID from headers {}", processId);
         String groupKey = "bottling";
@@ -40,12 +38,12 @@ class Bottler implements BottlingService {
             .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
             .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
         TestConfigurationHolder testConfigurationHolder = TestConfigurationHolder.TEST_CONFIG.get();
-        new TraceCommand<Void>(tracer,spanContext, setter) {
+        new TraceCommand<Void>(tracer,setter) {
             @Override
             public Void doRun() throws Exception {
                 TestConfigurationHolder.TEST_CONFIG.set(testConfigurationHolder);
                 log.info("Sending info to bottling service about process id [{}]", processId);
-                bottlerService.bottle(wort, processId, spanContext);
+                bottlerService.bottle(wort, processId);
                 return null;
             }
         }.execute();
@@ -53,14 +51,12 @@ class Bottler implements BottlingService {
 
     static abstract class TraceCommand<Void> extends HystrixCommand<Void> {
 
-        private final SpanContext spanContext;
         private Span span;
         private final Tracer tracer;
 
-        public TraceCommand(Tracer tracer,SpanContext spanContext, Setter setter) {
+        public TraceCommand(Tracer tracer, Setter setter) {
             super(setter);
             this.tracer = tracer;
-            this.spanContext = spanContext;
         }
 
         @Override
@@ -68,7 +64,6 @@ class Bottler implements BottlingService {
             String commandKeyName = getCommandKey().name();
 
             this.span = this.tracer.buildSpan(commandKeyName)
-                .asChildOf(this.spanContext)
                 .withTag("commandKey", commandKeyName)
                 .withTag("commandGroup", commandGroup.name())
                 .withTag("threadPoolKey", threadPoolKey.name())

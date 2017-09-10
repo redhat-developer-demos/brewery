@@ -12,14 +12,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 9411
             scheme: HTTP
           initialDelaySeconds: 180
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: 9411
             scheme: HTTP
           initialDelaySeconds: 10
           timeoutSeconds: 5

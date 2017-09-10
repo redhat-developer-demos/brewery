@@ -1,12 +1,11 @@
 package io.spring.cloud.samples.brewery.aggregating;
 
-import io.opentracing.SpanContext;
 import io.spring.cloud.samples.brewery.common.MaturingService;
-import io.spring.cloud.samples.brewery.common.model.IngredientType;
-import io.spring.cloud.samples.brewery.common.model.Ingredients;
 import io.spring.cloud.samples.brewery.common.events.Event;
 import io.spring.cloud.samples.brewery.common.events.EventGateway;
 import io.spring.cloud.samples.brewery.common.events.EventType;
+import io.spring.cloud.samples.brewery.common.model.IngredientType;
+import io.spring.cloud.samples.brewery.common.model.Ingredients;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,13 +30,12 @@ class MaturingServiceUpdater {
         this.eventGateway = eventGateway;
     }
 
-    //TODO possible Jaeger Instrumentation of parent Context
-    public Ingredients updateIfLimitReached(Ingredients ingredients, String processId, SpanContext parentSpan) {
+    public Ingredients updateIfLimitReached(Ingredients ingredients, String processId) {
         if (ingredientsMatchTheThreshold(ingredients)) {
             log.info("Ingredients match the threshold [{}] - time to notify the maturing service!",
                     ingredientsProperties.getThreshold());
             eventGateway.emitEvent(Event.builder().eventType(EventType.BREWING_STARTED).processId(processId).build());
-            notifyMaturingService(ingredients, processId,parentSpan);
+            notifyMaturingService(ingredients, processId);
             ingredientWarehouse.useIngredients(ingredientsProperties.getThreshold());
         } else {
             log.warn("Ingredients DO NOT match the threshold [{}]. If you're clicking manually then "
@@ -57,7 +55,7 @@ class MaturingServiceUpdater {
         return allIngredientsPresent && allIngredientsOverThreshold;
     }
 
-    private void notifyMaturingService(Ingredients ingredients, String processId,SpanContext parentSpan) {
-        maturingService.distributeIngredients(ingredients, processId, FEIGN.name(),parentSpan);
+    private void notifyMaturingService(Ingredients ingredients, String processId) {
+        maturingService.distributeIngredients(ingredients, processId, FEIGN.name());
     }
 }

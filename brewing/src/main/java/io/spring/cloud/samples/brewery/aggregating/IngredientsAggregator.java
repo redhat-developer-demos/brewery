@@ -1,7 +1,5 @@
 package io.spring.cloud.samples.brewery.aggregating;
 
-import io.opentracing.ActiveSpan;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
@@ -40,12 +38,10 @@ class IngredientsAggregator {
     }
 
     // TODO: Consider simplifying the case by removing the DB (always matches threshold)
-    //TODO: instrumentation here as well...
-    public Ingredients fetchIngredients(Order order, String processId, TestConfigurationHolder testConfigurationHolder,
-                                        ActiveSpan activeSpan) throws Exception {
+    public Ingredients fetchIngredients(Order order, String processId, TestConfigurationHolder testConfigurationHolder)
+        throws Exception {
         TestConfigurationHolder.TEST_CONFIG.set(testConfigurationHolder);
         log.info("Fetching ingredients for order [{}] , processId [{}], span [{}]", order, processId);
-        final SpanContext spanContext = activeSpan.context();
         /**
          * [SLEUTH] ParallelStreams won't work out of the box
          * - example of a completable future with our TraceableExecutorService
@@ -66,7 +62,7 @@ class IngredientsAggregator {
 
         eventGateway.emitEvent(Event.builder().eventType(EventType.INGREDIENTS_ORDERED).processId(processId).build());
         Ingredients ingredients = ingredientWarehouse.getCurrentState();
-        return maturingUpdater.updateIfLimitReached(ingredients, processId,spanContext);
+        return maturingUpdater.updateIfLimitReached(ingredients, processId);
     }
 
 }

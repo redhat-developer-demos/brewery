@@ -47,23 +47,24 @@ class BottlingServiceUpdater {
         this.eventGateway = eventGateway;
     }
 
-    //FIXME - can the activeSpan be instrumented automatically ???
     @Async
     public void updateBottlingServiceAboutBrewedBeer(final Ingredients ingredients, String processId,
-                                                     TestConfigurationHolder configurationHolder,SpanContext spanContext) {
+                                                     TestConfigurationHolder configurationHolder) {
 
-        Span trace = tracer.buildSpan("inside_maturing")
-            .asChildOf(spanContext)
+        log.info("inside_maturing ");
+        Span span = tracer.buildSpan("inside_maturing")
             .startManual();
+
         try {
             TestConfigurationHolder.TEST_CONFIG.set(configurationHolder);
             log.info("Updating bottling service. Current process id is equal [{}]", processId);
-            notifyPresentingService(processId,spanContext);
+            notifyPresentingService(processId);
             brewBeer();
+            //FIXME this will not work as it is done via sleuth stream - need instrumentation here
             eventGateway.emitEvent(Event.builder().eventType(EventType.BEER_MATURED).processId(processId).build());
-            notifyBottlingService(ingredients, processId,spanContext);
+            notifyBottlingService(ingredients, processId);
         } finally {
-            trace.finish();
+            span.finish();
         }
     }
 
@@ -77,11 +78,10 @@ class BottlingServiceUpdater {
         }
     }
 
-    private void notifyPresentingService(String correlationId,SpanContext spanContext) {
+    private void notifyPresentingService(String correlationId) {
         log.info("Calling presenting from maturing");
         Span scope = this.tracer.
             buildSpan("calling_presenting_from_maturing")
-            .asChildOf(spanContext)
             .startManual();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
@@ -101,12 +101,11 @@ class BottlingServiceUpdater {
      * [SLEUTH] HystrixCommand - Javanica integration
      */
     @HystrixCommand
-    public void notifyBottlingService(Ingredients ingredients, String correlationId,SpanContext spanContext) {
+    public void notifyBottlingService(Ingredients ingredients, String correlationId) {
         log.info("Calling bottling from maturing");
         Span scope = this.tracer.buildSpan("calling_bottling_from_maturing")
-            .asChildOf(spanContext)
             .startManual();
-        bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name(),spanContext);
+        bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name());
         scope.finish();
     }
 

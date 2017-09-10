@@ -2,6 +2,7 @@ package io.spring.cloud.samples.brewery.presenting.feed
 
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
+import io.opentracing.ActiveSpan
 import io.opentracing.Span
 import io.opentracing.Tracer
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,11 +39,13 @@ class FeedController {
         method = PUT)
     public String maturing(@RequestHeader("PROCESS-ID") String processId) {
         log.info("new maturing with process [$processId]")
-        Span span = tracer.buildSpan("inside_presenting_maturing_feed").startManual()
+        ActiveSpan span = tracer
+            .buildSpan("inside_presenting_maturing_feed")
+            .startActive()
         try {
             return feedRepository.addModifyProcess(processId, ProcessState.MATURING)
         } finally {
-            span.finish()
+            span.close();
         }
     }
 
@@ -53,11 +56,12 @@ class FeedController {
         method = PUT)
     public String bottling(@RequestHeader("PROCESS-ID") String processId) {
         log.info("new bottling process [$processId]")
-        Span span = tracer.buildSpan("inside_presenting_bottling_feed").startManual()
+        ActiveSpan span = tracer.buildSpan("inside_presenting_bottling_feed")
+            .startActive()
         try {
             return feedRepository.addModifyProcess(processId, ProcessState.BOTTLING)
         } finally {
-            span.finish()
+            span.close()
         }
     }
 

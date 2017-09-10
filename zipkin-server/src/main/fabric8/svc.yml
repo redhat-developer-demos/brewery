@@ -4,9 +4,8 @@ metadata:
     expose: "true"
   name: zipkin
 spec:
-  type: NodePort
   ports:
   - name: http
-    port: 8080
+    port: 9411
     protocol: TCP
-    targetPort: 8080
+    targetPort: 9411

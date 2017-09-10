@@ -41,14 +41,13 @@ class BottlerService {
      * [SLEUTH] HystrixCommand - Javanica integration
      */
     @HystrixCommand
-    void bottle(Wort wort, String processId, SpanContext spanContext) {
+    void bottle(Wort wort, String processId) {
         log.info("I'm inside bottling");
         Span span = tracer.buildSpan("inside_bottling")
-            .asChildOf(spanContext)
             .startManual();
         try {
             notifyPresenting(processId);
-            bottlingWorker.bottleBeer(wort.getWort(), processId, TEST_CONFIG.get(),spanContext);
+            bottlingWorker.bottleBeer(wort.getWort(), processId, TEST_CONFIG.get());
         } finally {
             span.finish();
         }

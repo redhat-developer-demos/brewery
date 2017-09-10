@@ -1,0 +1,2 @@
+app:
+  tracer: "jaeger"

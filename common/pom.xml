@@ -4,16 +4,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
+
   <parent>
     <groupId>io.spring.cloud.samples.brewery</groupId>
     <artifactId>brewery-parent</artifactId>
-    <version>1.0</version>
+    <version>2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>common</artifactId>
 
   <name>Spring Cloud::Brewery::Common</name>
   <description>Common library that will be used by all other projects</description>
+
+  <properties>
+    <opentracing-spring-cloud-starter.version>0.0.2-SNAPSHOT</opentracing-spring-cloud-starter.version>
+    <jaeger-core.version>0.20.6</jaeger-core.version>
+    <zipkin-sender-okhttp3.version>0.10.0</zipkin-sender-okhttp3.version>
+    <brave-opentracing.version>0.21.1</brave-opentracing.version>
+  </properties>
 
   <dependencies>
 
@@ -32,31 +40,25 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-cloud-starter</artifactId>
-      <version>0.0.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.opentracing.contrib</groupId>
-      <artifactId>opentracing-concurrent</artifactId>
-      <version>0.0.1</version>
+      <version>${opentracing-spring-cloud-starter.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.uber.jaeger</groupId>
       <artifactId>jaeger-core</artifactId>
-      <version>0.20.6</version>
+      <version>${jaeger-core.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.opentracing.brave</groupId>
       <artifactId>brave-opentracing</artifactId>
-      <version>0.20.0</version>
+      <version>${brave-opentracing.version}</version>
     </dependency>
 
     <dependency>
       <groupId>io.zipkin.reporter</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
-      <version>0.10.0</version>
+      <version>${zipkin-sender-okhttp3.version}</version>
     </dependency>
 
     <dependency>
@@ -93,8 +95,6 @@
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-graphite</artifactId>
     </dependency>
-
-
 
   </dependencies>
 

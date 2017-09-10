@@ -1,8 +1,6 @@
 package io.spring.cloud.samples.brewery.ingredients;
 
 import io.opentracing.ActiveSpan;
-import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.model.Ingredient;
@@ -33,19 +31,17 @@ class IngredientsFetchController {
                                                 @RequestHeader(TestConfigurationHolder.TEST_COMMUNICATION_TYPE_HEADER_NAME) String testCommunicationType) {
         log.info("Received a request to [/{}] with process id [{}] and communication type [{}]", ingredientType,
             processId, testCommunicationType);
-
-        ActiveSpan activeSpan = tracer.activeSpan();
-        log.info("ACTIVE SPAN : {}", activeSpan);
-        final SpanContext serverSpanContext = activeSpan.context();
-        return new WebAsyncTask<>(() -> {
-            Span span = tracer
-                .buildSpan("inside_ingredients")
-                .asChildOf(serverSpanContext)
-                .startManual();
-            Ingredient ingredient = new Ingredient(ingredientType, stubbedIngredientsProperties.getReturnedIngredientsQuantity());
-            log.info("Returning [{}] as fetched ingredient from an external service", ingredient);
-            span.finish();
-            return ingredient;
-        });
+        ActiveSpan span = tracer
+            .buildSpan("inside_ingredients")
+            .startActive();
+        try {
+            return new WebAsyncTask<>(() -> {
+                Ingredient ingredient = new Ingredient(ingredientType, stubbedIngredientsProperties.getReturnedIngredientsQuantity());
+                log.info("Returning [{}] as fetched ingredient from an external service", ingredient);
+                return ingredient;
+            });
+        } finally {
+            span.close();
+        }
     }
 }

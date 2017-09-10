@@ -61,11 +61,9 @@ class PresentController {
             processIdFromHeaders :
             new JdkIdGenerator().generateId().toString()
         log.info("Making new order with [$body.body] and processid [$processId].")
-        ActiveSpan activeSpan = this.tracer.activeSpan()
-        Span span = this.tracer
+        ActiveSpan span = this.tracer
             .buildSpan("inside_presenting")
-            .asChildOf(activeSpan.context())
-            .startManual()
+            .startActive()
         try {
             switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
                 case FEIGN:
@@ -74,9 +72,7 @@ class PresentController {
                     return useRestTemplateToCallAggregation(body, processId)
             }
         } finally {
-            span.finish()
-            //TODO do we need this ??
-           // activeSpan.close()
+            span.close()
         }
     }
 
