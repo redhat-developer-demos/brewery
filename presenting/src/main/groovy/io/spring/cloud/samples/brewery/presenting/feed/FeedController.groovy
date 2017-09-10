@@ -39,13 +39,17 @@ class FeedController {
         method = PUT)
     public String maturing(@RequestHeader("PROCESS-ID") String processId) {
         log.info("new maturing with process [$processId]")
-        ActiveSpan span = tracer
+        Span span = tracer
             .buildSpan("inside_presenting_maturing_feed")
-            .startActive()
+            .startManual()
+        if (tracer.activeSpan() == null) {
+            log.info("inside_presenting_maturing_feed::No Active Spans making span as active")
+            tracer.makeActive(span)
+        }
         try {
             return feedRepository.addModifyProcess(processId, ProcessState.MATURING)
         } finally {
-            span.close();
+            span.finish()
         }
     }
 
@@ -56,12 +60,17 @@ class FeedController {
         method = PUT)
     public String bottling(@RequestHeader("PROCESS-ID") String processId) {
         log.info("new bottling process [$processId]")
-        ActiveSpan span = tracer.buildSpan("inside_presenting_bottling_feed")
-            .startActive()
+        Span span = tracer
+            .buildSpan("inside_presenting_maturing_feed")
+            .startManual()
+        if (tracer.activeSpan() == null) {
+            log.info("inside_presenting_maturing_feed::No Active Spans making span as active")
+            tracer.makeActive(span)
+        }
         try {
             return feedRepository.addModifyProcess(processId, ProcessState.BOTTLING)
         } finally {
-            span.close()
+            span.finish()
         }
     }
 

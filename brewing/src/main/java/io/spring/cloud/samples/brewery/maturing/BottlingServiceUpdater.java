@@ -1,16 +1,8 @@
 package io.spring.cloud.samples.brewery.maturing;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
-import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
-import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import org.springframework.http.HttpMethod;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.util.Assert;
-import org.springframework.web.client.RestTemplate;
-
 import io.spring.cloud.samples.brewery.common.BottlingService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.events.Event;
@@ -20,6 +12,10 @@ import io.spring.cloud.samples.brewery.common.model.Ingredients;
 import io.spring.cloud.samples.brewery.common.model.Version;
 import io.spring.cloud.samples.brewery.common.model.Wort;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.util.Assert;
+import org.springframework.web.client.RestTemplate;
 
 import static io.spring.cloud.samples.brewery.common.TestConfigurationHolder.TestCommunicationType.FEIGN;
 import static io.spring.cloud.samples.brewery.common.TestRequestEntityBuilder.requestEntity;
@@ -98,7 +94,7 @@ class BottlingServiceUpdater {
     }
 
     /**
-     * [SLEUTH] HystrixCommand - Javanica integration
+     * [OpenTracing::java-spring-cloud] HystrixCommand - Javanica integration
      */
     @HystrixCommand
     public void notifyBottlingService(Ingredients ingredients, String correlationId) {

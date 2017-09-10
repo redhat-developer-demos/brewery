@@ -1,6 +1,7 @@
 package io.spring.cloud.samples.brewery.aggregating;
 
 import io.opentracing.ActiveSpan;
+import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.model.Ingredients;
@@ -28,7 +29,7 @@ class IngredientsController {
     }
 
     /**
-     * [SLEUTH] Callable - separate thread pool
+     *  [OpenTracing::java-spring-cloud] Callable - separate thread pool
      */
     @RequestMapping(method = RequestMethod.POST)
     public Callable<Ingredients> distributeIngredients(@RequestBody Order order,
@@ -39,18 +40,18 @@ class IngredientsController {
         log.info("Setting tags and events on an already existing span");
 
         log.info("Starting beer brewing process for process id [{}]", processId);
-        ActiveSpan activeSpan = tracer.
+        Span span = tracer.
             buildSpan("inside_aggregating")
             .withTag("beer", "stout")
-            .startActive();
+            .startManual();
 
-        activeSpan.log("ingredientsAggregationStarted");
+        span.log("ingredientsAggregationStarted");
         try {
             TestConfigurationHolder testConfigurationHolder = TestConfigurationHolder.TEST_CONFIG.get();
             return
                 () -> ingredientsAggregator.fetchIngredients(order, processId, testConfigurationHolder);
         } finally {
-            activeSpan.close();
+            span.finish();
         }
     }
 

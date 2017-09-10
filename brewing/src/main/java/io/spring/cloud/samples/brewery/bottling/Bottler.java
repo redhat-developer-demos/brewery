@@ -5,6 +5,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.opentracing.contrib.spring.cloud.hystrix.TraceCommand;
 import io.spring.cloud.samples.brewery.common.BottlingService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.model.Wort;
@@ -26,7 +27,7 @@ class Bottler implements BottlingService {
     }
 
     /**
-     * [SLEUTH] TraceCommand
+     * [OpenTracing] TraceCommand
      */
     @Override
     public void bottle(Wort wort, String processId, String testCommunicationType) {
@@ -47,35 +48,5 @@ class Bottler implements BottlingService {
                 return null;
             }
         }.execute();
-    }
-
-    static abstract class TraceCommand<Void> extends HystrixCommand<Void> {
-
-        private Span span;
-        private final Tracer tracer;
-
-        public TraceCommand(Tracer tracer, Setter setter) {
-            super(setter);
-            this.tracer = tracer;
-        }
-
-        @Override
-        protected Void run() throws Exception {
-            String commandKeyName = getCommandKey().name();
-
-            this.span = this.tracer.buildSpan(commandKeyName)
-                .withTag("commandKey", commandKeyName)
-                .withTag("commandGroup", commandGroup.name())
-                .withTag("threadPoolKey", threadPoolKey.name())
-                .startManual();
-
-            try {
-                return doRun();
-            } finally {
-                this.span.finish();
-            }
-        }
-
-        public abstract Void doRun() throws Exception;
     }
 }

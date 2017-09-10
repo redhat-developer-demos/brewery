@@ -38,7 +38,7 @@ class BottlerService {
     }
 
     /**
-     * [SLEUTH] HystrixCommand - Javanica integration
+     * [OpenTracing::java-spring-cloud] HystrixCommand - Javanica integration
      */
     @HystrixCommand
     void bottle(Wort wort, String processId) {
@@ -69,7 +69,7 @@ class BottlerService {
     }
 
 	/**
-     * [SLEUTH] AsyncRestTemplate with sync @LoadBalanced RestTemplate
+     * [OpenTracing::java-spring-cloud] AsyncRestTemplate with sync @LoadBalanced RestTemplate
      */
     private void useRestTemplateToCallPresenting(String processId) {
         log.info("Notifying presenting about beer. Process id [{}]", processId);
