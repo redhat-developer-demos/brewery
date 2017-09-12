@@ -15,6 +15,9 @@ spec:
              port: 8161
              path: /
            initialDelaySeconds: 5
+         env:
+         - name: JAVA_OPTIONS
+           value: -Xms512m -Xmx512m -Dhawtio.authenticationEnabled=false
          ports:
          - containerPort: 61616
            name: "core"
