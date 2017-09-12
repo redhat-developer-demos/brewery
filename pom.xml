@@ -102,7 +102,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>extras/apache-artemis</module>
     <module>common</module>
     <module>zuul</module>
     <module>ingredients</module>

@@ -66,33 +66,6 @@
       <artifactId>spring-cloud-starter-stream-artemis</artifactId>
     </dependency>
 
-    <!-- FIXME remove these after testing  -->
-
-    <!-- dependency>
-     <groupId>org.springframework.cloud</groupId>
-     <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
-   </dependency -->
-
-    <!-- dependency>
-     <groupId>org.springframework.amqp</groupId>
-     <artifactId>spring-amqp</artifactId>
-   </dependency -->
-
-    <!-- dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-sleuth</artifactId>
-    </dependency -->
-
-    <!-- dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-config</artifactId>
-    </dependency -->
-
-    <!-- dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-sleuth-stream</artifactId>
-    </dependency -->
-
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-core</artifactId>
