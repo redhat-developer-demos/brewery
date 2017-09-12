@@ -8,17 +8,14 @@ spec:
          imagePullPolicy: "IfNotPresent"
          livenessProbe:
            tcpSocket:
-             port: 15672
+             port: 61616
            initialDelaySeconds: 30
          readinessProbe:
            httpGet:
-             port: 15672
+             port: 8161
              path: /
            initialDelaySeconds: 5
          ports:
-         - containerPort: 15672
-           name: "management"
-         - containerPort: 5672
-           name: "amqp"
-      serviceAccountName: brewery
+         - containerPort: 61616
+           name: "core"
 

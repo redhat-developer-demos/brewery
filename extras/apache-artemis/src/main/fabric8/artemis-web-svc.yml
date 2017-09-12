@@ -3,7 +3,7 @@ metadata:
     expose: "true"
 spec:
   ports:
-  - name: "management"
-    port: 15672
+  - name: "http"
+    port: 8161
     protocol: "TCP"
-    targetPort: 15672
+    targetPort: 8161

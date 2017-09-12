@@ -9,15 +9,19 @@ data:
       tomcat:
         max-threads: 10
     spring:
-      rabbitmq:
-        host: rabbitmq-client
       sleuth:
         web:
           skipPattern: /api-docs.*|/autoconfig|/health|/configprops|/dump|/info|/metrics.*|/mappings|/trace|/swagger.*|.*\.png|.*\.css|.*\.js|.*\.html|/favicon.ico|/hystrix.stream|/feed/process/.*
       cloud:
         stream:
-          binder:
-            rabbit.default.maxConcurrency: 5
+          artemis:
+            binder:
+              transport: org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory
+              host: artemis-client
+              port: 61616
+      artemis:
+        mode: native
+        host: artemis-client
 
     hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 
@@ -32,10 +36,3 @@ data:
         enabled: false
       client:
         enabled: true
-
-    logging:
-     level.org.springframework.cloud: INFO
-     level.org.springframework.cloud.sleuth: ERROR
-     level.org.springframework.cloud.sleuth.log: ERROR
-     level.org.springframework.cloud.sleuth.trace: ERROR
-     level.org.springframework.cloud.sleuth.instrument.rxjava: ERROR

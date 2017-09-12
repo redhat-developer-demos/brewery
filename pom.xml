@@ -31,7 +31,9 @@
     <skipTests>true</skipTests>
     <!-- Setting the image explicity to use redhat-openjdk-->
     <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
+    <!-- FIXME: Need to baseline it to GA versions once GA is available -->
     <rohar-spring-boot-1.5-bom.version>1-SNAPSHOT</rohar-spring-boot-1.5-bom.version>
+    <spring-cloud-starter-stream-artemis.version>1.0.0-SNAPSHOT</spring-cloud-starter-stream-artemis.version>
   </properties>
 
   <dependencyManagement>
@@ -43,6 +45,12 @@
         <version>${rohar-spring-boot-1.5-bom.version}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>me.snowdrop</groupId>
+        <artifactId>spring-cloud-starter-stream-artemis</artifactId>
+        <version>${spring-cloud-starter-stream-artemis.version}</version>
       </dependency>
 
       <dependency>
@@ -88,23 +96,14 @@
         <version>${brewery-common.version}</version>
       </dependency>
 
-      <!-- FIXME remove after testing -->
-      <!-- dependency>
-        <groupId>io.spring.cloud.samples.brewery</groupId>
-        <artifactId>common-zipkin-stream</artifactId>
-        <version>${brewery-common-zipkin-stream.version}</version>
-      </dependency -->
-
-
     </dependencies>
 
 
   </dependencyManagement>
 
   <modules>
+    <module>extras/apache-artemis</module>
     <module>common</module>
-    <!-- module>common-zipkin-stream</module -->
-    <!-- module>zipkin-server</module -->
     <module>zuul</module>
     <module>ingredients</module>
     <module>reporting</module>

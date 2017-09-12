@@ -3,7 +3,7 @@ metadata:
     expose: "true"
 spec:
   ports:
-  - name: "client-amqp"
-    port:  5672
+  - name: "amqp"
+    port:  61616
     protocol: "TCP"
-    targetPort: 5672
+    targetPort: 61616
