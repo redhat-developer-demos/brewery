@@ -16,7 +16,9 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <fabric8.maven.plugin.version>3.5.26</fabric8.maven.plugin.version>
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
-    <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
+    <spring-boot.version>1.5.7.RELEASE</spring-boot.version>
+    <spring-cloud.version>Dalston.SR3</spring-cloud.version>
+    <spring-boot-maven-plugin.version>1.5.7.RELEASE</spring-boot-maven-plugin.version>
     <objenesis.version>2.2</objenesis.version>
     <cglib-nodep.version>3.1</cglib-nodep.version>
     <json-path-assert.version>2.0.0</json-path-assert.version>
@@ -32,7 +34,7 @@
     <!-- Setting the image explicity to use redhat-openjdk-->
     <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
     <!-- FIXME: Need to baseline it to GA versions once GA is available -->
-    <rohar-spring-boot-1.5-bom.version>1-SNAPSHOT</rohar-spring-boot-1.5-bom.version>
+    <rhoar-spring-boot-bom.version>1.5.7-SNAPSHOT</rhoar-spring-boot-bom.version>
     <spring-cloud-starter-stream-artemis.version>1.0.0-SNAPSHOT</spring-cloud-starter-stream-artemis.version>
   </properties>
 
@@ -40,11 +42,11 @@
     <dependencies>
 
       <dependency>
-        <groupId>org.jboss.snowdrop</groupId>
-        <artifactId>spring-boot-1.5-bom</artifactId>
-        <version>${rohar-spring-boot-1.5-bom.version}</version>
-        <scope>import</scope>
+        <groupId>me.snowdrop</groupId>
+        <artifactId>spring-boot-bom</artifactId>
+        <version>${rhoar-spring-boot-bom.version}</version>
         <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
       <dependency>

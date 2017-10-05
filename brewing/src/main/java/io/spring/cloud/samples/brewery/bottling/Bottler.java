@@ -3,9 +3,8 @@ package io.spring.cloud.samples.brewery.bottling;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
-import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.spring.cloud.hystrix.TraceCommand;
+import io.opentracing.contrib.spring.cloud.hystrix.TracedHystrixCommand;
 import io.spring.cloud.samples.brewery.common.BottlingService;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
 import io.spring.cloud.samples.brewery.common.model.Wort;
@@ -39,7 +38,7 @@ class Bottler implements BottlingService {
             .withGroupKey(HystrixCommandGroupKey.Factory.asKey(groupKey))
             .andCommandKey(HystrixCommandKey.Factory.asKey(commandKey));
         TestConfigurationHolder testConfigurationHolder = TestConfigurationHolder.TEST_CONFIG.get();
-        new TraceCommand<Void>(tracer,setter) {
+        new TracedHystrixCommand<Void>(tracer,setter) {
             @Override
             public Void doRun() throws Exception {
                 TestConfigurationHolder.TEST_CONFIG.set(testConfigurationHolder);

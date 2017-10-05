@@ -17,7 +17,6 @@
   <description>Common library that will be used by all other projects</description>
 
   <properties>
-    <opentracing-spring-cloud-starter.version>0.0.2-SNAPSHOT</opentracing-spring-cloud-starter.version>
     <jaeger-core.version>0.20.6</jaeger-core.version>
     <zipkin-sender-okhttp3.version>0.10.0</zipkin-sender-okhttp3.version>
     <brave-opentracing.version>0.21.1</brave-opentracing.version>
@@ -31,7 +30,6 @@
       <scope>compile</scope>
     </dependency>
 
-
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-hystrix</artifactId>
@@ -40,7 +38,6 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-cloud-starter</artifactId>
-      <version>${opentracing-spring-cloud-starter.version}</version>
     </dependency>
 
     <dependency>
