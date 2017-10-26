@@ -25,8 +25,7 @@ import org.springframework.web.client.RestTemplate
 class Application {
 
     @Bean
-    @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate() {
+    public RestTemplate restTemplate() {
         return  new RestTemplate()
     }
 

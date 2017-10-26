@@ -36,7 +36,7 @@ class BottlingWorker {
     @Autowired
     public BottlingWorker(Tracer tracer,
                           PresentingClient presentingClient,
-                          @LoadBalanced RestTemplate restTemplate, EventGateway eventGateway) {
+                          RestTemplate restTemplate, EventGateway eventGateway) {
         this.tracer = tracer;
         this.presentingClient = presentingClient;
         this.restTemplate = restTemplate;

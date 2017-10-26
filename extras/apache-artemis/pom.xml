@@ -19,6 +19,8 @@
 
   <properties>
     <docker.image>kameshsampath/apache-artemis</docker.image>
+    <!-- TODO swap to this image, but currently this image is not getting started -->
+    <!-- docker.image>enmasseproject/artemis</docker.image -->
     <fabric8-maven-plugin.apache-artemis.alias>artemis</fabric8-maven-plugin.apache-artemis.alias>
     <replicas>1</replicas>
   </properties>

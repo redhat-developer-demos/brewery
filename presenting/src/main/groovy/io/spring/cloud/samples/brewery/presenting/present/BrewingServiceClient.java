@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(Collaborators.BREWING)
+//Since we dont use feign with ribbon, its required to spcify the name and url to the client
+@FeignClient(name=Collaborators.BREWING,url=Collaborators.BREWING_URL)
 @RequestMapping(value = "/ingredients",
 		consumes = Versions.BREWING_CONTENT_TYPE_V1,
 		produces = MediaType.APPLICATION_JSON_VALUE)

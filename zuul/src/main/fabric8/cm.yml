@@ -23,3 +23,29 @@ data:
     hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
 
     endpoints.health.sensitive: false
+
+    # No Ribbon for Discovery hence we need to have these defined for routing to work
+    ribbon:
+      eureka:
+        enabled: false
+
+    zuul:
+      routes:
+        ingredients:
+          path: /ingredients/**
+          serviceId: ingredients
+          url: http://ingredients:8080
+        presenting:
+          path: /presenting/**
+          serviceId: presenting
+          url: http://presenting:8080
+        reporting:
+          path: /reporting/**
+          serviceId: reporting
+          url: http://reporting:8080
+        brewing:
+          path: /brewing/**
+          serviceId: brewing
+          url: http://brewing:8080
+
+

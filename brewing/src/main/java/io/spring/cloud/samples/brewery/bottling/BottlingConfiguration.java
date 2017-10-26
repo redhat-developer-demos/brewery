@@ -3,7 +3,6 @@ package io.spring.cloud.samples.brewery.bottling;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,21 +19,20 @@ class BottlingConfiguration {
     @Bean
     BottlerService bottlingService(BottlingWorker bottlingWorker,
                                    PresentingClient presentingClient,
-                                   @LoadBalanced RestTemplate restTemplate,
+                                   RestTemplate restTemplate,
                                    AsyncRestTemplate asyncRestTemplate,
                                    Tracer tracer) {
         return new BottlerService(bottlingWorker, presentingClient, restTemplate, asyncRestTemplate, tracer);
     }
 
     @Bean
-    @LoadBalanced
-    public RestTemplate loadBalancedRestTemplate() {
+    public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
 
     @Bean
-    AsyncRestTemplate asyncRestTemplate(@LoadBalanced RestTemplate restTemplate) {
+    AsyncRestTemplate asyncRestTemplate(RestTemplate restTemplate) {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setTaskExecutor(threadPoolTaskScheduler());
         return new AsyncRestTemplate(requestFactory, restTemplate);

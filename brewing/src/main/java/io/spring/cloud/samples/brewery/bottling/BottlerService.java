@@ -69,7 +69,7 @@ class BottlerService {
     }
 
 	/**
-     * [OpenTracing::java-spring-cloud] AsyncRestTemplate with sync @LoadBalanced RestTemplate
+     * [OpenTracing::java-spring-cloud] AsyncRestTemplate with sync RestTemplate
      */
     private void useRestTemplateToCallPresenting(String processId) {
         log.info("Notifying presenting about beer. Process id [{}]", processId);

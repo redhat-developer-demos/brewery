@@ -35,7 +35,7 @@ data:
       eureka:
         enabled: false
       client:
-        enabled: true
+        enabled: false
 
     logging:
      level.org.springframework.cloud: INFO

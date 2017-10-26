@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import static io.spring.cloud.samples.brewery.common.TestConfigurationHolder.TEST_COMMUNICATION_TYPE_HEADER_NAME;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
-@FeignClient(Collaborators.PRESENTING)
+@FeignClient(name=Collaborators.PRESENTING,url = Collaborators.PRESENTING_URL)
 @RequestMapping("/feed")
 interface PresentingClient {
     @RequestMapping(

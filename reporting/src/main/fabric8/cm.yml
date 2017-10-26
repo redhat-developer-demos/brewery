@@ -35,4 +35,4 @@ data:
       eureka:
         enabled: false
       client:
-        enabled: true
+        enabled: false

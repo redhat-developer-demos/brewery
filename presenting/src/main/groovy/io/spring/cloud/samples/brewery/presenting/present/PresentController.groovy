@@ -3,7 +3,6 @@ package io.spring.cloud.samples.brewery.presenting.present
 import groovy.transform.TypeChecked
 import groovy.util.logging.Slf4j
 import io.opentracing.ActiveSpan
-import io.opentracing.Span
 import io.opentracing.Tracer
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder
 import io.spring.cloud.samples.brewery.presenting.config.Collaborators
@@ -11,8 +10,6 @@ import io.spring.cloud.samples.brewery.presenting.config.Versions
 import io.spring.cloud.samples.brewery.presenting.feed.FeedRepository
 import io.spring.cloud.samples.brewery.presenting.feed.ProcessState
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.cloud.client.loadbalancer.LoadBalanced
-import org.springframework.cloud.kubernetes.discovery.KubernetesDiscoveryClient
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.util.JdkIdGenerator
@@ -39,17 +36,13 @@ class PresentController {
     private final BrewingServiceClient aggregationServiceClient
     private final RestTemplate restTemplate
 
-    private final KubernetesDiscoveryClient discoveryClient;
-
     @Autowired
     public PresentController(FeedRepository feedRepository, Tracer tracer,
-                             BrewingServiceClient aggregationServiceClient, @LoadBalanced RestTemplate restTemplate,
-                             KubernetesDiscoveryClient discoveryClient) {
+                             BrewingServiceClient aggregationServiceClient, RestTemplate restTemplate) {
         this.feedRepository = feedRepository
         this.tracer = tracer
         this.aggregationServiceClient = aggregationServiceClient
-        this.restTemplate = restTemplate
-        this.discoveryClient = discoveryClient;
+        this.restTemplate = restTemplate;
     }
 
     @RequestMapping(

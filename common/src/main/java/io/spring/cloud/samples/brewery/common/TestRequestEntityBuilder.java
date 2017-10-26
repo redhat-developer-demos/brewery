@@ -3,6 +3,7 @@ package io.spring.cloud.samples.brewery.common;
 import java.net.URI;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 
+@Slf4j
 public class TestRequestEntityBuilder {
 	private static final String PROCESS_ID_HEADER = "PROCESS-ID";
 	private static final String CONTENT_TYPE_HEADER = "Content-Type";
@@ -66,7 +68,8 @@ public class TestRequestEntityBuilder {
 		headers.add(PROCESS_ID_HEADER, processId);
 		headers.add(CONTENT_TYPE_HEADER, version);
 		headers.add(TestConfigurationHolder.TEST_COMMUNICATION_TYPE_HEADER_NAME, getCommunicationTypeHeader());
-		URI uri = URI.create("http://" + serviceName + "/" + url);
+		URI uri = URI.create("http://" + serviceName + ":8080/" + url);
+		log.info("TestRequestEntityBuilder::RequestEntity :: Request URI:{}",uri);
 		return new RequestEntity<>(body, headers, httpMethod, uri);
 	}
 
