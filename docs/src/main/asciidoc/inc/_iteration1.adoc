@@ -27,7 +27,7 @@ Through out this document we will call the directoy where the project was cloned
 ====
 
 [[itr1-deployable-apps]]
-=== Deploy Applications
+== Deploy Applications
 
 .Application List
 [cols="1*^,1,1,5"]

@@ -1,0 +1,5 @@
+== Documentation
+
+* http://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html[Maven Properties]
+* https://kubernetes.io[Kubernetes]
+* https://www.openshift.com[Openshift]

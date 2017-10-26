@@ -1,19 +1,20 @@
 
+= Green Cloud Demo
+Spring Cloud Brewery on OpenShift: Setup Guide
+
 :author: Kamesh Sampath
 :revnumber: {version}
 :revdate: {localdate}
 :toc: macro
 :toclevels: 4
-:toc-title: Spring Cloud Samples: Brewery on OpenShift
+:toc-title: Green Cloud Demo
 :doctype: book
 :icons: font
 :linkattrs:
 
-= Spring Cloud Brewery on OpenShift: Setup Guide
-
 ifndef::ebook-format[:leveloffset: 1]
 
-(C) 2017 The original authors.
+(C) 2017-present Red Hat Developers.
 
 ifdef::basebackend-html[toc::[]]
 
@@ -22,4 +23,9 @@ ifdef::basebackend-html[toc::[]]
 include::inc/_introduction.adoc[]
 
 include::inc/_iteration1.adoc[]
+
 include::inc/_iteration2.adoc[]
+
+include::inc/_iteration3.adoc[]
+
+include::inc/_appendix.adoc[]

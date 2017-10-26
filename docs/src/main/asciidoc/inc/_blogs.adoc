@@ -1,0 +1,12 @@
+[[res-blogs]]
+== Blogs
+
+http://bit.ly/spring-boot-on-k8s[Getting started with Spring Boot on OpenShift]
+
+http://bit.ly/springboot-oauth2-keycloak[Spring Boot and OAuth2 with Keycloak - RHD Blog]
+
+http://bit.ly/configsprintboot-k8s-part-1[Configuring Spring Boot Application on Kubernetes - RHD Blog]
+
+http://bit.ly/spring-boot-config-k8s-part-2[Configuring Spring Boot on Kubernetes with ConfigMap - RHD Blog]
+
+http://bit.ly/spring-boot-config-k8s-part-3[Configuring Spring Boot on Kubernetes with Secrets - RHD Blog]

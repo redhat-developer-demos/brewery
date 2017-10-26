@@ -1,0 +1,10 @@
+[[res-videos]]
+== Videos
+
+Quick Start Spring Boot on OpenShift
+
+video::nskZMK40NY4[youtube]
+
+Debug Spring Boot Application on OpenShift
+
+video::4oOfSdEIyxU[youtube]

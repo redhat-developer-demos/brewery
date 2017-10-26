@@ -5,8 +5,8 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="Kamesh Sampath">
-<title>Spring Cloud Brewery on OpenShift: Setup Guide</title>
+<meta name="author" content="Spring Cloud Brewery on OpenShift: Setup Guide">
+<title>Green Cloud Demo</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -513,78 +513,54 @@ table.CodeRay td.code>pre{padding:0}
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>Spring Cloud Brewery on OpenShift: Setup Guide</h1>
+<h1>Green Cloud Demo</h1>
 <div class="details">
-<span id="author" class="author">Kamesh Sampath</span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">2017-08-31</span>
+<span id="author" class="author">Spring Cloud Brewery on OpenShift: Setup Guide</span><br>
 </div>
 <div id="toc" class="toc2">
-<div id="toctitle">Spring Cloud Samples: Brewery on OpenShift</div>
+<div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#spring-cloud-brewery-on-openshift">1. Spring Cloud Brewery on OpenShift</a>
+<li><a href="#overview">1. Overview</a></li>
+<li><a href="#demo-overview">2. Demo Overview</a>
 <ul class="sectlevel2">
-<li><a href="#overview">1.1. Overview</a></li>
-<li><a href="#default-pre-req">1.2. Pre-Requisite</a></li>
-<li><a href="#accessing-the-applications">1.3. Accessing the Applications</a></li>
-<li><a href="#references">1.4. References</a></li>
+<li><a href="#short-history-of-microservices">2.1. Short History of Microservices</a></li>
+<li><a href="#app-overview">2.2. App Overview</a></li>
+<li><a href="#default-pre-req">2.3. Pre-Requisite</a></li>
+<li><a href="#docker-setup">2.4. Docker Setup</a></li>
+<li><a href="#accessing-the-applications">2.5. Accessing the Applications</a></li>
 </ul>
 </li>
-<li><a href="#iteration-1">2. Iteration I</a>
+<li><a href="#iteration-1">3. Iteration I</a>
 <ul class="sectlevel2">
-<li><a href="#itr1-application-setup">2.1. Setup</a>
-<ul class="sectlevel3">
-<li><a href="#itr1-clone-source">2.1.1. Clone</a></li>
-<li><a href="#itr1-deployable-apps">2.1.2. Deploy Applications</a></li>
-<li><a href="#itr1-build-app">2.1.3. Building</a></li>
-<li><a href="#itr1-deploy-to-openshift">2.1.4. Deploying to OpenShift</a>
-<ul class="sectlevel4">
-<li><a href="#rabbitmq">RabbitMQ</a></li>
-<li><a href="#config-server">Config Server</a></li>
-<li><a href="#eureka">Eureka</a></li>
-<li><a href="#zipkin-server">Zipkin Server</a></li>
-<li><a href="#zuul">Zuul</a></li>
-<li><a href="#ingredients">Ingredients</a></li>
-<li><a href="#reporting">Reporting</a></li>
-<li><a href="#brewing">Brewing</a></li>
-<li><a href="#presenting">Presenting</a></li>
+<li><a href="#itr1-application-setup">3.1. Setup</a></li>
+<li><a href="#itr1-deployable-apps">3.2. Deploy Applications</a></li>
 </ul>
 </li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#iteration-2">3. Iteration II</a>
+<li><a href="#iteration-2">4. Iteration II</a>
 <ul class="sectlevel2">
-<li><a href="#itr2-application-setup">3.1. Setup</a>
-<ul class="sectlevel3">
-<li><a href="#itr2-clone-source">3.1.1. Clone</a></li>
+<li><a href="#itr2-application-setup">4.1. Setup</a></li>
+<li><a href="#itr2-pre-req">4.2. Pre-Requisite</a></li>
+<li><a href="#itr2-deployable-apps">4.3. Deploy Applications</a></li>
+<li><a href="#itr2-acceptance-testing">4.4. Acceptance Testing</a></li>
+<li><a href="#itr2-deprecated-modules">4.5. Deprecated Modules</a></li>
 </ul>
 </li>
-<li><a href="#itr2-pre-req">3.2. Pre-Requisite</a>
-<ul class="sectlevel3">
-<li><a href="#itr2-pre-req-general">3.2.1. General</a></li>
-<li><a href="#itr2-pre-req-rabbitmq">3.2.2. RabbitMQ</a></li>
+<li><a href="#iteration-3">5. Iteration III</a>
+<ul class="sectlevel2">
+<li><a href="#itr3-application-setup">5.1. Setup</a></li>
+<li><a href="#itr3-pre-req">5.2. Pre-Requisite</a></li>
+<li><a href="#itr3-deployable-apps">5.3. Deploy Applications</a></li>
+<li><a href="#itr3-acceptance-testing">5.4. Acceptance Testing</a></li>
+<li><a href="#itr3-deprecated-modules">5.5. Deprecated Modules</a></li>
 </ul>
 </li>
-<li><a href="#itr2-deployable-apps">3.3. Deploy Applications</a>
-<ul class="sectlevel3">
-<li><a href="#itr2-build-app">3.3.1. Building</a></li>
-<li><a href="#itr2-deploy-to-openshift">3.3.2. Deploying to OpenShift</a>
-<ul class="sectlevel4">
-<li><a href="#itr2-rabbitmq">RabbitMQ</a></li>
-<li><a href="#itr2-zipkin-server">Zipkin Server</a></li>
-<li><a href="#zuul">Zuul</a></li>
-<li><a href="#itr2-ingredients">Ingredients</a></li>
-<li><a href="#itr2-reporting">Reporting</a></li>
-<li><a href="#itr2-brewing">Brewing</a></li>
-<li><a href="#itr2-presenting">Presenting</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#itr2-acceptance-testing">3.4. Acceptance Testing</a></li>
-<li><a href="#itr2-deprecated-modules">3.5. Deprecated Modules</a></li>
+<li><a href="#resources">6. Resources</a>
+<ul class="sectlevel2">
+<li><a href="#documentation">6.1. Documentation</a></li>
+<li><a href="#res-tools">6.2. Tools</a></li>
+<li><a href="#res-blogs">6.3. Blogs</a></li>
+<li><a href="#res-demos">6.4. Demos</a></li>
+<li><a href="#res-videos">6.5. Videos</a></li>
 </ul>
 </li>
 </ul>
@@ -594,24 +570,49 @@ table.CodeRay td.code>pre{padding:0}
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>&#169; 2017 The original authors.</p>
+<p>&#169; 2017-present Red Hat Developers.</p>
 </div>
 <!-- toc disabled -->
+<div class="videoblock">
+<div class="title">Debug/Deploy Spring Boot On OpenShift</div>
+<div class="content">
+<iframe width="640" height="480" src="https://www.youtube.com/embed/4oOfSdEIyxU?rel=0&amp;theme=dark" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="spring-cloud-brewery-on-openshift">1. Spring Cloud Brewery on OpenShift</h2>
+<h2 id="overview">1. Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Green Cloud Demo</strong> is your first step on how to migrate and optimize an existing Spring Boot application  to
+<a href="https://www.openshift.com">OpenShift</a>.  The migration guides you with the process of how to migrate Spring Boot workload form other platform
+to <a href="https://www.openshift.com">OpenShift</a>, i.e. the build process, the ideal platform (<a href="https://www.openshift.com">OpenShift</a>), optimizing etc.,</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="demo-overview">2. Demo Overview</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="overview">1.1. Overview</h3>
-<div class="paragraph">
-<p>This guides walks you through to setup <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> on
-<a href="https://www.openshift.com">OpenShift</a>. The steps in this guide could be the first step or a Proof of Technology(PoT)
-on how to migrate an existing Spring Cloud/Boot application on to <a href="https://kubernetes.io">Kubernetes</a>
-or <a href="https://www.openshift.com">Openshift</a>.</p>
+<h3 id="short-history-of-microservices">2.1. Short History of Microservices</h3>
+<div class="imageblock" style="text-align: center">
+<div class="content">
+<img src="images/History_Of_Microservices.png" alt="History Of Microservices">
+</div>
+<div class="title">Figure 1. Short History of Microservices</div>
 </div>
 <div class="paragraph">
-<p>In the process of migration, the original <a href="https://github.com/spring-cloud-samples/brewery">Spring Cloud Samples - Brewery</a>
+<p>Most of the <a href="https://netflix.github.io/">Netflix OSS</a> components listed above are pretty old and optimized more for AWS, they are prone to some common DevOps
+pain-points for organizations that are starting to adopt DevOps. The migration that will be done as part of this demo will help in alleviating those possible
+DevOps pain-points and provide the organizations a direction on <strong>How to migrate my Spring Boot Application to OpenShift</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="app-overview">2.2. App Overview</h3>
+<div class="paragraph">
+<p>In this demo, the <a href="https://github.com/kameshsampath/brewery">Spring Cloud Samples - Brewery</a> will be migrated
+and optimized for OpenShift, during the process of migration the original <a href="https://github.com/spring-cloud-samples/brewery">Spring Cloud Samples - Brewery</a>
 will be modified to make it deployable on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a>.</p>
 </div>
 <div class="paragraph">
@@ -621,26 +622,26 @@ will be modified to make it deployable on to <a href="https://kubernetes.io">Kub
 <ul class="checklist">
 <li>
 <p><i class="fa fa-check-square-o"></i> <a href="#iteration-1">Iteration I</a> - As-is deployment of the <a href="https://github.com/spring-cloud-samples/brewery">Spring Cloud Samples - Brewery</a>
-with minimal or no code change</p>
+with no code change.  The Application build process will be modified to enable easier deployment of application on Openshift</p>
 </li>
 <li>
 <p><i class="fa fa-check-square-o"></i> <a href="#iteration-2">Iteration II</a> - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing &amp; externalization of the config</p>
 </li>
 <li>
-<p>[] Iteration III - Replace RabbitMQ with JBoss A-MQ</p>
-</li>
-<li>
-<p>[] Iteration IV - Service Mesh with <a href="https://istio.io">Istio</a></p>
+<p><i class="fa fa-check-square-o"></i> <a href="#iteration-3">Iteration III</a> - Optimizing stacks on OpenShift, like Apache Artemis instead of RabbitMQ, using OpenTracing and Jaeger</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="default-pre-req">1.2. Pre-Requisite</h3>
+<h3 id="default-pre-req">2.3. Pre-Requisite</h3>
 <div class="paragraph">
 <p>You have a OpenShift cluster running locally using <a href="https://docs.openshift.org/latest/minishift/getting-started/index.html"><strong>minishift</strong></a>
 or <a href="https://developers.redhat.com/products/cdk/overview/Op"><strong>CDK</strong></a>, or
 have access to <a href="https://www.openshift.com/container-platform/index.html"><strong>OpenShift Container Platform</strong></a></p>
+</div>
+<div class="paragraph">
+<p>Check the <a href="#res-tools">Tools</a> section for more details</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -652,10 +653,7 @@ have access to <a href="https://www.openshift.com/container-platform/index.html"
 <div class="ulist">
 <ul>
 <li>
-<p>At least 7Gb of RAM is required to run the Brewery application</p>
-</li>
-<li>
-<p>Openshift Origin 1.4.1 is required till we have fixed this <a href="https://gist.github.com/cmoulliard/46a804a42648761b1fd8be4f61444dc3">issue</a></p>
+<p>At least 7Gb of RAM is required to run the Brewery application, atleast for <a href="#iteration-1">Iteration I</a></p>
 </li>
 </ul>
 </div>
@@ -665,7 +663,14 @@ have access to <a href="https://www.openshift.com/container-platform/index.html"
 </div>
 </div>
 <div class="sect2">
-<h3 id="accessing-the-applications">1.3. Accessing the Applications</h3>
+<h3 id="docker-setup">2.4. Docker Setup</h3>
+<div class="paragraph">
+<p>Before doing any deployment, its recommended to do <code>eval $(minishift docker-env)</code> from your current shell, to set up the DOCKER environment variables, that
+will be needed by the fabric8 maven plugin to deploy application on OpenShift</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="accessing-the-applications">2.5. Accessing the Applications</h3>
 <div class="paragraph">
 <p>You can view the application urls from OpenShift Web Console.  A successful deployment  will have all the applications running with single pod. The following screenshots
 shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the clients registers with it</p>
@@ -674,41 +679,25 @@ shows how the <a href="#deploy-eureka">Eureka</a> will look like when all the cl
 <div class="content">
 <img src="images/OpenShift_Web_Console.png" alt="OpenShift WebConsole">
 </div>
-<div class="title">Figure 1. Brewery Services</div>
+<div class="title">Figure 2. Brewery Services</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/Eureka_OpenShift.png" alt="Netflix Eureka Registry">
 </div>
-<div class="title">Figure 2. Eureka on OpenShift</div>
+<div class="title">Figure 3. Eureka on OpenShift</div>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/Brewer_App.png" alt="Brewer Application Home">
 </div>
-<div class="title">Figure 3. Brewer App</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="references">1.4. References</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="http://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html">Maven Properties</a></p>
-</li>
-<li>
-<p><a href="https://kubernetes.io">Kubernetes</a></p>
-</li>
-<li>
-<p><a href="https://www.openshift.com">Openshift</a></p>
-</li>
-</ul>
+<div class="title">Figure 4. Brewer App</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="iteration-1">2. Iteration I</h2>
+<h2 id="iteration-1">3. Iteration I</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Iteration-1 is supposed to be the as-is deployment of the <em>Brewery</em> application on to <a href="https://kubernetes.io">Kubernetes</a>
@@ -729,9 +718,9 @@ with modifications required :</p>
 <p>to have it deployed on to <a href="https://kubernetes.io">Kubernetes</a> or <a href="https://www.openshift.com">Openshift</a></p>
 </div>
 <div class="sect2">
-<h3 id="itr1-application-setup">2.1. Setup</h3>
+<h3 id="itr1-application-setup">3.1. Setup</h3>
 <div class="sect3">
-<h4 id="itr1-clone-source">2.1.1. Clone</h4>
+<h4 id="itr1-clone-source">3.1.1. Clone</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-1 https://github.com/redhat-developer-demos/brewery.git</code></pre>
@@ -752,8 +741,9 @@ with modifications required :</p>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="itr1-deployable-apps">2.1.2. Deploy Applications</h4>
+</div>
+<div class="sect2">
+<h3 id="itr1-deployable-apps">3.2. Deploy Applications</h3>
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 1. Application List</caption>
 <colgroup>
@@ -833,9 +823,8 @@ with modifications required :</p>
 </tr>
 </tbody>
 </table>
-</div>
 <div class="sect3">
-<h4 id="itr1-build-app">2.1.3. Building</h4>
+<h4 id="itr1-build-app">3.2.1. Building</h4>
 <div class="paragraph">
 <p>Brewery application uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
 run the following command</p>
@@ -860,7 +849,7 @@ run the following command</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="itr1-deploy-to-openshift">2.1.4. Deploying to OpenShift</h4>
+<h4 id="itr1-deploy-to-openshift">3.2.2. Deploying to OpenShift</h4>
 <div class="paragraph">
 <p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
@@ -984,7 +973,7 @@ Since this is the first Java application to be deployed,  it may take some time 
 </div>
 </div>
 <div class="sect1">
-<h2 id="iteration-2">3. Iteration II</h2>
+<h2 id="iteration-2">4. Iteration II</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The Iteration II will <a href="#itr2-deprecated-modules">deprecate</a> few of the <a href="https://netflix.github.io/">NetFlix OSS</a> components that are superflous
@@ -994,9 +983,9 @@ uses the <a href="https://github.com/spring-cloud-incubator/spring-cloud-kuberne
 the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based discovery client for Kubernetes</p>
 </div>
 <div class="sect2">
-<h3 id="itr2-application-setup">3.1. Setup</h3>
+<h3 id="itr2-application-setup">4.1. Setup</h3>
 <div class="sect3">
-<h4 id="itr2-clone-source">3.1.1. Clone</h4>
+<h4 id="itr2-clone-source">4.1.1. Clone</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-2 https://github.com/redhat-developer-demos/brewery.git</code></pre>
@@ -1019,9 +1008,9 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-pre-req">3.2. Pre-Requisite</h3>
+<h3 id="itr2-pre-req">4.2. Pre-Requisite</h3>
 <div class="sect3">
-<h4 id="itr2-pre-req-general">3.2.1. General</h4>
+<h4 id="itr2-pre-req-general">4.2.1. General</h4>
 <div class="paragraph">
 <p>The spring-cloud-kubernetes library used in the project requires the <code>default</code> service account to have view permissions, to enable that we execute the following command,</p>
 </div>
@@ -1032,7 +1021,7 @@ the <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> based dis
 </div>
 </div>
 <div class="sect3">
-<h4 id="itr2-pre-req-rabbitmq">3.2.2. RabbitMQ</h4>
+<h4 id="itr2-pre-req-rabbitmq">4.2.2. RabbitMQ</h4>
 <div class="paragraph">
 <p>The <a href="https://hub.docker.com/_/rabbitmq/">RabbimtMQ</a> container image when run is run using <code>root</code> user, which is restricted in OpenShift by defult, to enable the container to be run with <code>root</code> we need to give special permissions.</p>
 </div>
@@ -1060,7 +1049,7 @@ oc adm policy add-scc-to-user anyuid -z brewery  <i class="conum" data-value="1"
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-deployable-apps">3.3. Deploy Applications</h3>
+<h3 id="itr2-deployable-apps">4.3. Deploy Applications</h3>
 <table class="tableblock frame-all grid-all spread">
 <caption class="title">Table 2. Application List</caption>
 <colgroup>
@@ -1147,7 +1136,7 @@ oc adm policy add-scc-to-user anyuid -z brewery  <i class="conum" data-value="1"
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="itr2-build-app">3.3.1. Building</h4>
+<h4 id="itr2-build-app">4.3.1. Building</h4>
 <div class="paragraph">
 <p>The Iteration II of the brewery application has migrated all the projects to <a href="http://maven.apache.org/">Apache Maven</a> based build,
 to build the application run the following command</p>
@@ -1173,7 +1162,7 @@ of the respective application as well</td>
 </div>
 </div>
 <div class="sect3">
-<h4 id="itr2-deploy-to-openshift">3.3.2. Deploying to OpenShift</h4>
+<h4 id="itr2-deploy-to-openshift">4.3.2. Deploying to OpenShift</h4>
 <div class="paragraph">
 <p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
 explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
@@ -1290,7 +1279,7 @@ oc apply -f target/classes/META-INF/fabric8/openshift.yml</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-acceptance-testing">3.4. Acceptance Testing</h3>
+<h3 id="itr2-acceptance-testing">4.4. Acceptance Testing</h3>
 <div class="paragraph">
 <p>The <strong>$PROJECT_HOME/acceptance-tests</strong> holds the test cases for testing the application.  To perform
 we need to have have some ports forwarded from Kubernetes/OpenShift to localhost(where you build the application)</p>
@@ -1335,7 +1324,7 @@ Please update the pod names based on your local deployment
 </div>
 </div>
 <div class="sect2">
-<h3 id="itr2-deprecated-modules">3.5. Deprecated Modules</h3>
+<h3 id="itr2-deprecated-modules">4.5. Deprecated Modules</h3>
 <div class="paragraph">
 <p>As part of Iteration-II the following modules have been deprecated,</p>
 </div>
@@ -1364,11 +1353,564 @@ Please update the pod names based on your local deployment
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="iteration-3">5. Iteration III</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Iteration III is more of optimizing the <a href="#iteration-2">Iteration II</a> on OpenShift. This iteration has fair bit of code change that is required when porting the application to
+use  <a href="https://activemq.apache.org/artemis/">Apache Artemis</a> in place of RabbitMQ and  <a href="http://opentracing.io/">OpenTracing</a> based tracing and using <a href="https://uber.github.io/jaeger/">Jaeger</a>
+in place of Zipkin. This iteration will also obselete many modules/projects from source tree, refer to the <a href="#itr3-deprecated-modules">deprecate</a> section for more details</p>
+</div>
+<div class="sect2">
+<h3 id="itr3-application-setup">5.1. Setup</h3>
+<div class="sect3">
+<h4 id="itr3-clone-source">5.1.1. Clone</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">git clone -b iteration-3 https://github.com/redhat-developer-demos/brewery.git</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Through out this document we will call the directoy where the project was cloned as <em>$PROJECT_HOME</em></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr3-pre-req">5.2. Pre-Requisite</h3>
+<div class="sect3">
+<h4 id="itr3-pre-req-general">5.2.1. General</h4>
+<div class="paragraph">
+<p>The spring-cloud-kubernetes library used in the project requires the <code>default</code> service account to have view permissions, to enable that we execute the following command,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc policy add-role-to-user view -z default -n $(oc project -q)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr3-deployable-apps">5.3. Deploy Applications</h3>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. Application List</caption>
+<colgroup>
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"></th>
+<th class="tableblock halign-left valign-top">Application</th>
+<th class="tableblock halign-left valign-top">Folder</th>
+<th class="tableblock halign-left valign-top">Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#itr3-artemis">Apache Artemis</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/extras/apache-artemis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Message Broker - <a href="https://activemq.apache.org/artemis/" class="bare">https://activemq.apache.org/artemis/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/common</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Common shared library, the shared libraries dependencies are updated to leverage RHOAR 1.5.7 BOM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">common-zipkin-stream</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/common-zipkin-stream</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Since this iteration has moved all the tracing Components to  <a href="http://opentracing.io/">OpenTracing</a>, this module is deprecated/obselete as no Sleuth
+Stream will be used, instead the project will use <a href="https://github.com/search?q=org%3Aopentracing-contrib+java">Open Tracing Java modules</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">eureka</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/eureka</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application will use <a href="https://kubernetes.io/docs/concepts/services-networking/service/">Kubernetes Services</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">config-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/config-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application will use <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configmap/">Kubernetes ConfigMaps</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="red"><strong>X</strong></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red">zipkin-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><strong>$PROJECT_HOME</strong>/zipkin-server</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://zipkin.io/">Distributed Tracing system</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#jaeger">[jaeger]</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jaeger already provides OpenShift manifests to deploy the same in OpenShift</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://uber.github.io/jaeger/">Jaeger</a>, a high performing OpenTracing based implementation of Distributed Tracing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#zuul">Zuul</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/zuul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/Netflix/zuul/wiki">Java based Proxy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#ingredients">Ingredients</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/ingredients</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#reporting">Reporting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/reporting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#brewing">Brewing</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/brewing</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="icon"><i class="fa fa-check fa-color: green"></i></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#presenting">Presenting</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$PROJECT_HOME</strong>/presenting</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="sect3">
+<h4 id="itr3-build-app">5.3.1. Building</h4>
+<div class="paragraph">
+<p>The Iteration II of the brewery application has migrated all the projects to <a href="http://maven.apache.org/">Apache Maven</a> based build,
+to build the application run the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw -N install <i class="conum" data-value="1"></i><b>(1)</b>
+./mvnw clean install <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This will install the brewery parent pom in local maven repository</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This will build the applications, if the minishift or OpenShift cluster is running, this will trigger <code>s2i</code> builds
+of the respective application as well</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="itr3-deploy-to-openshift">5.3.2. Deploying to OpenShift</h4>
+<div class="paragraph">
+<p>As part of this lift and shift of existing application, to make it work as-is, there is certain order of applicaiton deployment might be required.  The following section
+explains the deployment of the application in the same order as expected  ( you can expriment with it if you like :) )</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Ensure that all <a href="#itr3-pre-req">Pre-Requisite</a> are done before starting deployment.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="itr3-artemis">Apache Artemis</h5>
+<div class="paragraph">
+<p>Starting this iteration, the application will be using <a href="https://activemq.apache.org/artemis/">Apache Artemis</a> as message broker in place of RabbitMQ, the following sections details on deploying
+Apache Artemis on OpenShift</p>
+</div>
+<div class="sect5">
+<h6 id="itr3-apache-artemis-local">Local Deployment</h6>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/extras/apache-artemis</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="itr3-apache-artemis-cloud">External Cloud Deployment</h6>
+<div class="paragraph">
+<p>Sometimes you might have access to docker socket typical case when deploying to external cloud, in those cases you can run the following set of commands,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw clean fabric8:resource
+oc apply -f target/classes/META-INF/fabric8/openshift.yml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will take some time to get it running as the deployment needs to download the <code>apache-artemis</code> docker image</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="itr3-jaeger">Jaeger Server</h5>
+<div class="paragraph">
+<p>The Jaeger distribution provides the OpenShift deployment manifests to deploy Jaeger, as part of this demo
+the <a href="https://github.com/jaegertracing/jaeger-openshift">all-in-one</a> deployment will be used</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc process -f https://raw.githubusercontent.com/jaegertracing/jaeger-openshift/master/all-in-one/jaeger-all-in-one-template.yml | oc create -f -</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="zuul">Zuul</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/zuul</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="itr3-ingredients">Ingredients</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/ingredients</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="itr3-reporting">Reporting</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/reporting</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="itr3-brewing">Brewing</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/brewing</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="itr3-presenting">Presenting</h5>
+<div class="paragraph">
+<p>Go to the directory  <strong>$PROJECT_HOME/presenting</strong>, and execute the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">./mvnw fabric8:deploy</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr3-acceptance-testing">5.4. Acceptance Testing</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As this iteration has lot of module updates and replacements, the old acceptance tests does not hold good. The automated Arquillain based automated tests develoment
+is in progress, this section will be updated with needed details once  its in place.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="itr3-deprecated-modules">5.5. Deprecated Modules</h3>
+<div class="paragraph">
+<p>As part of Iteration-III the following modules have been deprecated,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Eureka</p>
+</li>
+<li>
+<p>Config Server</p>
+</li>
+<li>
+<p>common-zipkin</p>
+</li>
+<li>
+<p>common-zipkin-old</p>
+</li>
+<li>
+<p>common-zipkin-stream</p>
+</li>
+<li>
+<p>zipkin-server</p>
+</li>
+<li>
+<p>zookeeper</p>
+</li>
+<li>
+<p>docker</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="resources">6. Resources</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="documentation">6.1. Documentation</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html">Maven Properties</a></p>
+</li>
+<li>
+<p><a href="https://kubernetes.io">Kubernetes</a></p>
+</li>
+<li>
+<p><a href="https://www.openshift.com">Openshift</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="res-tools">6.2. Tools</h3>
+<div class="paragraph">
+<p>There are two main tools that is always used with Spring Boot on OpenShift</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://developers.redhat.com/products/cdk/download/">RedHat Container Development Kit</a></p>
+</li>
+<li>
+<p><a href="https://maven.fabric8.io">fabric8 maven plugin</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can also find related tools and downloads from <a href="https://developers.redhat.com" class="bare">https://developers.redhat.com</a></p>
+</div>
+<div class="paragraph">
+<p>This page lists some commonly used commands, tips/tricks and some trouble shooting tips
+around these tools.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>This is not meant to replace original setup guide, please refer to the original setup guides
+for detailed setup of these tools.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="minishift">6.2.1. Minishift</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">oc login --server &lt;your openshift master server url&gt; -u developer</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Logging into OpenShift from cli using the user developer and the default password is developer.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">eval $(minishift oc-env)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sets the right path to the OpenShift cli</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">minishift console</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Opens the OpenShift web console in the default browser</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fabric8-maven-plugin">6.2.2. fabric8 maven plugin</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">eval $(minishift docker-env)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is very important command that you need to run before the first maven build, as this allows setting
+some important docker variables</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">mvn io.fabric8:fabric8-maven-plugin:3.5.30:setup</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sets up the fabric8 maven plugin in the current maven project.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the above code 3.5.30 is used as version, please update to version that suits your needs
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">mvn fabric8:deploy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploys the current maven project into OpenShift</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">mvn fabric8:undeploy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deploys the current maven project from OpenShift</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">mvn fabric8:debug</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Setups up port forward to debug the current OpenShift project</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sh">mvn fabric8:run</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Quick deploy the current maven project to OpenShift, runs in foreground
+and undeploys once CTRL + C is used to terminate current process in foreground.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="res-blogs">6.3. Blogs</h3>
+<div class="paragraph">
+<p><a href="http://bit.ly/spring-boot-on-k8s">Getting started with Spring Boot on OpenShift</a></p>
+</div>
+<div class="paragraph">
+<p><a href="http://bit.ly/springboot-oauth2-keycloak">Spring Boot and OAuth2 with Keycloak - RHD Blog</a></p>
+</div>
+<div class="paragraph">
+<p><a href="http://bit.ly/configsprintboot-k8s-part-1">Configuring Spring Boot Application on Kubernetes - RHD Blog</a></p>
+</div>
+<div class="paragraph">
+<p><a href="http://bit.ly/spring-boot-config-k8s-part-2">Configuring Spring Boot on Kubernetes with ConfigMap - RHD Blog</a></p>
+</div>
+<div class="paragraph">
+<p><a href="http://bit.ly/spring-boot-config-k8s-part-3">Configuring Spring Boot on Kubernetes with Secrets - RHD Blog</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="res-demos">6.4. Demos</h3>
+<div class="paragraph">
+<p>Spring Boot on OpenShift 101 <a href="https://github.com/redhat-developer-demos/springboot-on-openshift">Quickstart SprigBoot on OpenShift</a></p>
+</div>
+<div class="paragraph">
+<p>Step by Step approach to make an existing CloudFoundry ready Spring Boot application and its related workloads
+to OpenShift <a href="http://bit.ly/green-cloud-demo">Green Cloud Demo</a></p>
+</div>
+<div class="paragraph">
+<p>How to do a stateful Canary deployment using Spring Boot and Infnispan <a href="http://bit.ly/green-cloud-demo-sources">Popular Movie Store</a></p>
+</div>
+<div class="paragraph">
+<p>How to do integration Test of Spring Boot Application on OpenShift <a href="https://github.com/redhat-developer-demos/spring-boot-arq-demo">Spring Boot Integration Test on OpenShift</a></p>
+</div>
+<div class="paragraph">
+<p>Using Kubernetes ConfigMaps with Spring Boot <a href="https://github.com/redhat-developer-demos/spring-boot-configmaps-demo">Configure Kubernetes ConfigMaps with Spring Boot</a></p>
+</div>
+<div class="paragraph">
+<p>Using Kubernetes Secrets with Spring Boot <a href="https://github.com/redhat-developer-demos/spring-boot-secrets-demo">Configure Kubernetes Secrets with Spring Boot</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="res-videos">6.5. Videos</h3>
+<div class="paragraph">
+<p>Quick Start Spring Boot on OpenShift</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="https://www.youtube.com/embed/nskZMK40NY4?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="paragraph">
+<p>Debug Spring Boot Application on OpenShift</p>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="https://www.youtube.com/embed/4oOfSdEIyxU?rel=0" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2017-08-31 14:36:35 IST
+Last updated 2017-10-23 14:22:55 IST
 </div>
 </div>
 </body>

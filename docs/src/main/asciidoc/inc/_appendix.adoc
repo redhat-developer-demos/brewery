@@ -1,0 +1,11 @@
+= Resources
+
+include::./_docs.adoc[]
+
+include::./_tools.adoc[]
+
+include::./_blogs.adoc[]
+
+include::./_demos.adoc[]
+
+include::./_videos.adoc[]

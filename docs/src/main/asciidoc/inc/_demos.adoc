@@ -1,0 +1,15 @@
+[[res-demos]]
+== Demos
+
+Spring Boot on OpenShift 101 https://github.com/redhat-developer-demos/springboot-on-openshift[Quickstart SprigBoot on OpenShift]
+
+Step by Step approach to make an existing CloudFoundry ready Spring Boot application and its related workloads
+to OpenShift http://bit.ly/green-cloud-demo[Green Cloud Demo]
+
+How to do a stateful Canary deployment using Spring Boot and Infnispan http://bit.ly/green-cloud-demo-sources[Popular Movie Store]
+
+How to do integration Test of Spring Boot Application on OpenShift https://github.com/redhat-developer-demos/spring-boot-arq-demo[Spring Boot Integration Test on OpenShift]
+
+Using Kubernetes ConfigMaps with Spring Boot https://github.com/redhat-developer-demos/spring-boot-configmaps-demo[Configure Kubernetes ConfigMaps with Spring Boot]
+
+Using Kubernetes Secrets with Spring Boot https://github.com/redhat-developer-demos/spring-boot-secrets-demo[Configure Kubernetes Secrets with Spring Boot]

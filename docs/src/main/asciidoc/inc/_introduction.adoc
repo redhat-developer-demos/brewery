@@ -1,25 +1,36 @@
-= Spring Cloud Brewery on OpenShift
 
-== Overview
+video::4oOfSdEIyxU[youtube,title=Debug/Deploy Spring Boot On OpenShift,theme=dark,width=640,height=480,align=center]
 
-This guides walks you through to setup https://github.com/kameshsampath/brewery[Spring Cloud Samples - Brewery] on
-https://www.openshift.com[OpenShift]. The steps in this guide could be the first step or a Proof of Technology(PoT)
-on how to migrate an existing Spring Cloud/Boot application on to https://kubernetes.io[Kubernetes]
-or https://www.openshift.com[Openshift].
+= Overview
 
-In the process of migration, the original https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
+**Green Cloud Demo** is your first step on how to migrate and optimize an existing Spring Boot application  to
+https://www.openshift.com[OpenShift].  The migration guides you with the process of how to migrate Spring Boot workload form other platform 
+to https://www.openshift.com[OpenShift], i.e. the build process, the ideal platform (https://www.openshift.com[OpenShift]), optimizing etc.,
+
+= Demo Overview 
+
+== Short History of Microservices
+
+.History of Microservices
+image::./History_Of_Microservices.png[title=Short History of Microservices,align=center]
+
+Most of the https://netflix.github.io/[Netflix OSS] components listed above are pretty old and optimized more for AWS, they are prone to some common DevOps
+pain-points for organizations that are starting to adopt DevOps. The migration that will be done as part of this demo will help in alleviating those possible
+DevOps pain-points and provide the organizations a direction on **How to migrate my Spring Boot Application to OpenShift**
+
+== App Overview 
+In this demo, the https://github.com/kameshsampath/brewery[Spring Cloud Samples - Brewery] will be migrated 
+and optimized for OpenShift, during the process of migration the original https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
 will be modified to make it deployable on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift].
 
 The application will be migrated based on these iterations,
 
 * [*] <<iteration-1>> - As-is deployment of the https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
-with minimal or no code change
+with no code change.  The Application build process will be modified to enable easier deployment of application on Openshift
 
 * [*] <<iteration-2>> - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing & externalization of the config
 
-* [] Iteration III - Replace RabbitMQ with JBoss A-MQ
-
-* [] Iteration IV - Service Mesh with https://istio.io[Istio]
+* [*] <<iteration-3>> - Optimizing stacks on OpenShift, like Apache Artemis instead of RabbitMQ, using OpenTracing and Jaeger
 
 [[default-pre-req]]
 == Pre-Requisite
@@ -28,11 +39,17 @@ You have a OpenShift cluster running locally using https://docs.openshift.org/la
 or https://developers.redhat.com/products/cdk/overview/Op[*CDK*], or
 have access to https://www.openshift.com/container-platform/index.html[*OpenShift Container Platform*]
 
+Check the <<res-tools>> section for more details
+
 [WARNING]
 ====
-- At least 7Gb of RAM is required to run the Brewery application
-- Openshift Origin 1.4.1 is required till we have fixed this https://gist.github.com/cmoulliard/46a804a42648761b1fd8be4f61444dc3[issue]
+- At least 7Gb of RAM is required to run the Brewery application, atleast for <<iteration-1>>
 ====
+
+== Docker Setup
+
+Before doing any deployment, its recommended to do `eval $(minishift docker-env)` from your current shell, to set up the DOCKER environment variables, that
+will be needed by the fabric8 maven plugin to deploy application on OpenShift 
 
 == Accessing the Applications
 
@@ -47,9 +64,3 @@ image::./Eureka_OpenShift.png[Netflix Eureka Registry]
 
 .Brewer App
 image::./Brewer_App.png[Brewer Application Home]
-
-== References
-
-* http://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html[Maven Properties]
-* https://kubernetes.io[Kubernetes]
-* https://www.openshift.com[Openshift]
