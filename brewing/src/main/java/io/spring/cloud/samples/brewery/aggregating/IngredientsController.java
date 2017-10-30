@@ -40,10 +40,10 @@ class IngredientsController {
         log.info("Setting tags and events on an already existing span");
 
         log.info("Starting beer brewing process for process id [{}]", processId);
-        Span span = tracer.
+        ActiveSpan span = tracer.
             buildSpan("inside_aggregating")
             .withTag("beer", "stout")
-            .startManual();
+            .startActive();
 
         span.log("ingredientsAggregationStarted");
         try {
@@ -51,7 +51,7 @@ class IngredientsController {
             return
                 () -> ingredientsAggregator.fetchIngredients(order, processId, testConfigurationHolder);
         } finally {
-            span.finish();
+            span.close();
         }
     }
 

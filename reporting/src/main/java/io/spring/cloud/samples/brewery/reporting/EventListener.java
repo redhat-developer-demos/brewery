@@ -1,5 +1,6 @@
 package io.spring.cloud.samples.brewery.reporting;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.events.Event;
@@ -29,11 +30,11 @@ class EventListener {
     public void handleEvents(Event event, @Headers Map<String, Object> headers) throws InterruptedException {
         log.info("Received the following message with headers [{}] and body [{}]", headers, event);
         //FIXME - need to send parent span automatically - right now this wil be disconnected
-        Span newSpan = tracer.buildSpan("inside_reporting")
-            .startManual();
+        ActiveSpan newSpan = tracer.buildSpan("inside_reporting")
+            .startActive();
         reportingRepository.createOrUpdate(event);
         newSpan.log("savedEvent");
         log.info("Saved event to the db", headers, event);
-        newSpan.finish();
+        newSpan.close();
     }
 }

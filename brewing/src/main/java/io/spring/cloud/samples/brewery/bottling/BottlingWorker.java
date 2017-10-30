@@ -1,5 +1,6 @@
 package io.spring.cloud.samples.brewery.bottling;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
@@ -52,7 +53,7 @@ class BottlingWorker {
     }
 
     private void notifyPresentingService(String processId) {
-        Span scope = this.tracer.buildSpan("calling_presenting").startManual();
+        ActiveSpan span = this.tracer.buildSpan("calling_presenting").startActive();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
                 callPresentingViaFeign(processId);
@@ -60,13 +61,13 @@ class BottlingWorker {
             default:
                 useRestTemplateToCallPresenting(processId);
         }
-        scope.finish();
+        span.close();
     }
 
     private void increaseBottles(Integer wortAmount, String processId) {
         log.info("Bottling beer...");
-        Span scope = tracer.buildSpan("waiting_for_beer_bottling")
-            .startManual();
+        ActiveSpan span = tracer.buildSpan("waiting_for_beer_bottling")
+            .startActive();
         try {
             State stateForProcess = PROCESS_STATE.getOrDefault(processId, new State());
             Integer bottled = stateForProcess.bottled;
@@ -84,7 +85,7 @@ class BottlingWorker {
             stateForProcess.setBottles(bottles);
             PROCESS_STATE.put(processId, stateForProcess);
         } finally {
-            scope.finish();
+            span.close();
         }
     }
 

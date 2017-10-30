@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  tomcat:
+    max-threads: 10
+spring:
+  cloud:
+    stream:
+      artemis:
+        binder:
+          transport: org.apache.activemq.artemis.core.remoting.impl.netty.NettyConnectorFactory
+          host: artemis-client
+          port: 61616
+  artemis:
+    mode: native
+    host: artemis-client
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+endpoints.health.sensitive: false
+
+# No Ribbon for Discovery hence we need to have these defined for routing to work
+ribbon:
+  eureka:
+    enabled: false
+
+zuul:
+  ignoredServices: "*"
+  ignoredPatterns: /artemis-client/**,/artemis-web/**,/jaeger-agent/**,/jaeger-collector/**,/jaeger-query/**
+  routes:
+    ingredients:
+      path: /ingredients/**
+      serviceId: ingredients
+      url: http://ingredients:8080
+    presenting:
+      path: /presenting/**
+      serviceId: presenting
+      url: http://presenting:8080
+    reporting:
+      path: /reporting/**
+      serviceId: reporting
+      url: http://reporting:8080
+    brewing:
+      path: /brewing/**
+      serviceId: brewing
+      url: http://brewing:8080

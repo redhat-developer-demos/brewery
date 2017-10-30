@@ -1,5 +1,6 @@
 package io.spring.cloud.samples.brewery.ingredients;
 
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.TestConfigurationHolder;
@@ -31,9 +32,9 @@ class IngredientsFetchController {
                                                 @RequestHeader(TestConfigurationHolder.TEST_COMMUNICATION_TYPE_HEADER_NAME) String testCommunicationType) {
         log.info("Received a request to [/{}] with process id [{}] and communication type [{}]", ingredientType,
             processId, testCommunicationType);
-        Span span = tracer
+        ActiveSpan span = tracer
             .buildSpan("inside_ingredients")
-            .startManual();
+            .startActive();
         try {
             return new WebAsyncTask<>(() -> {
                 Ingredient ingredient = new Ingredient(ingredientType, stubbedIngredientsProperties.getReturnedIngredientsQuantity());
@@ -41,7 +42,7 @@ class IngredientsFetchController {
                 return ingredient;
             });
         } finally {
-            span.finish();
+            span.close();
         }
     }
 }

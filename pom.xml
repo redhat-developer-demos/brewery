@@ -18,7 +18,7 @@
     <spring-boot.activeProfiles>kubernetes</spring-boot.activeProfiles>
     <spring-boot.version>1.5.8.Beta2</spring-boot.version>
     <spring-cloud.version>Dalston.SR3</spring-cloud.version>
-    <spring-boot-maven-plugin.version>1.5.7.RELEASE</spring-boot-maven-plugin.version>
+    <spring-boot-maven-plugin.version>1.5.8.RELEASE</spring-boot-maven-plugin.version>
     <objenesis.version>2.2</objenesis.version>
     <cglib-nodep.version>3.1</cglib-nodep.version>
     <json-path-assert.version>2.0.0</json-path-assert.version>
@@ -34,8 +34,8 @@
     <!-- Setting the image explicity to use redhat-openjdk-->
     <fabric8.generator.from>registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift</fabric8.generator.from>
     <!-- FIXME: Need to baseline it to GA versions once GA is available -->
-    <rhoar-spring-boot-bom.version>1.5.7-SNAPSHOT</rhoar-spring-boot-bom.version>
-    <spring-cloud-starter-stream-artemis.version>1.0.0-SNAPSHOT</spring-cloud-starter-stream-artemis.version>
+    <rhoar-spring-boot-bom.version>1.5.8.Beta2</rhoar-spring-boot-bom.version>
+    <spring-cloud-starter-stream-artemis.version>1.0.0.Alpha1</spring-cloud-starter-stream-artemis.version>
   </properties>
 
   <dependencyManagement>

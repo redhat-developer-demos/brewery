@@ -38,6 +38,7 @@
     <dependency>
       <groupId>io.opentracing.contrib</groupId>
       <artifactId>opentracing-spring-cloud-starter</artifactId>
+      <version>0.0.5</version>
     </dependency>
 
     <dependency>
@@ -66,6 +67,7 @@
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-graphite</artifactId>

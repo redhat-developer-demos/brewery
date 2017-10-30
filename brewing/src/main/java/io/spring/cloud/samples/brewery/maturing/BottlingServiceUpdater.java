@@ -1,6 +1,7 @@
 package io.spring.cloud.samples.brewery.maturing;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.spring.cloud.samples.brewery.common.BottlingService;
@@ -48,8 +49,8 @@ class BottlingServiceUpdater {
                                                      TestConfigurationHolder configurationHolder) {
 
         log.info("inside_maturing ");
-        Span span = tracer.buildSpan("inside_maturing")
-            .startManual();
+        ActiveSpan span = tracer.buildSpan("inside_maturing")
+            .startActive();
 
         try {
             TestConfigurationHolder.TEST_CONFIG.set(configurationHolder);
@@ -60,7 +61,7 @@ class BottlingServiceUpdater {
             eventGateway.emitEvent(Event.builder().eventType(EventType.BEER_MATURED).processId(processId).build());
             notifyBottlingService(ingredients, processId);
         } finally {
-            span.finish();
+            span.close();
         }
     }
 
@@ -76,9 +77,9 @@ class BottlingServiceUpdater {
 
     private void notifyPresentingService(String correlationId) {
         log.info("Calling presenting from maturing");
-        Span scope = this.tracer.
+        ActiveSpan scope = this.tracer.
             buildSpan("calling_presenting_from_maturing")
-            .startManual();
+            .startActive();
         switch (TestConfigurationHolder.TEST_CONFIG.get().getTestCommunicationType()) {
             case FEIGN:
                 callPresentingViaFeign(correlationId);
@@ -86,7 +87,7 @@ class BottlingServiceUpdater {
             default:
                 useRestTemplateToCallPresenting(correlationId);
         }
-        scope.finish();
+        scope.close();
     }
 
     private void callPresentingViaFeign(String correlationId) {
@@ -99,10 +100,10 @@ class BottlingServiceUpdater {
     @HystrixCommand
     public void notifyBottlingService(Ingredients ingredients, String correlationId) {
         log.info("Calling bottling from maturing");
-        Span scope = this.tracer.buildSpan("calling_bottling_from_maturing")
-            .startManual();
+        ActiveSpan scope = this.tracer.buildSpan("calling_bottling_from_maturing")
+            .startActive();
         bottlingService.bottle(new Wort(getQuantity(ingredients)), correlationId, FEIGN.name());
-        scope.finish();
+        scope.close();
     }
 
     private void useRestTemplateToCallPresenting(String processId) {

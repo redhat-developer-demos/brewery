@@ -21,22 +21,16 @@ import org.springframework.context.annotation.Primary;
 @Slf4j
 public class BreweryConfiguration {
 
-
     @Bean
     @Primary
     public Tracer jaegerTracer() {
 
         log.info("Creating Jaeger OpenTracer");
 
-        Tracer tracer = new com.uber.jaeger.Tracer.Builder("GreenCloud-Brewery",
+        return new com.uber.jaeger.Tracer.Builder("GreenCloud-Brewery",
             new RemoteReporter(new HttpSender("http://jaeger-collector:14268/api/traces", 65000),
                 1, 100,
                 new Metrics(new StatsFactoryImpl(new NullStatsReporter()))), new ConstSampler(true))
             .build();
-
-        //Register Tracer
-        GlobalTracer.register(tracer);
-
-        return GlobalTracer.get();
     }
 }
