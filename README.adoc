@@ -299,4 +299,4 @@ As part of Iteration-III the following modules have been deprecated,
 * docker
 
 
-Please refer to setup guide here https://redhat-developer-demos.github.io/brewery/
+Please refer to setup guide https://bit.ly/greenclouddemo[here]
