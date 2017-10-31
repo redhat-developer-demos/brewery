@@ -1,0 +1,274 @@
+= Overview
+
+**Green Cloud Demo** is your first step on how to migrate and optimize an existing Spring Boot application  to
+https://www.openshift.com[OpenShift].  The migration guides you with the process of how to migrate Spring Boot workload form other platform 
+to https://www.openshift.com[OpenShift], i.e. the build process, the ideal platform (https://www.openshift.com[OpenShift]), optimizing etc.,
+
+
+== Short History of Microservices
+
+.History of Microservices
+image::./History_Of_Microservices.png[title=Short History of Microservices,align=center]
+
+Most of the https://netflix.github.io/[Netflix OSS] components listed above are pretty old and optimized more for AWS, they are prone to some common DevOps
+pain-points for organizations that are starting to adopt DevOps. The migration that will be done as part of this demo will help in alleviating those possible
+DevOps pain-points and provide the organizations a direction on **How to migrate my Spring Boot Application to OpenShift**
+
+== App Overview 
+In this demo, the https://github.com/kameshsampath/brewery[Spring Cloud Samples - Brewery] will be migrated 
+and optimized for OpenShift, during the process of migration the original https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
+will be modified to make it deployable on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift].
+
+The application will be migrated iteratively,
+
+* [*] <<iteration-1>> - As-is deployment of the https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
+with no code change.  The Application build process will be modified to enable easier deployment of application on Openshift
+
+* [*] https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-2[Iteration-II] - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing & externalization of the config
+
+* [*] https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-3[Iteration-III], the current iteration - Optimizing stacks on OpenShift, like Apache Artemis instead of RabbitMQ, using OpenTracing and Jaeger
+
+[[default-pre-req]]
+== Pre-Requisite
+
+You have a OpenShift cluster running locally using https://docs.openshift.org/latest/minishift/getting-started/index.html[*minishift*]
+or https://developers.redhat.com/products/cdk/overview/Op[*CDK*], or
+have access to https://www.openshift.com/container-platform/index.html[*OpenShift Container Platform*]
+
+Check the https://redhat-developer-docs.github.io/green-cloud-demo/#res-tools[Tools] section for more details
+
+[WARNING]
+====
+- At least 7Gb of RAM is required to run the Brewery application, atleast for https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-1[Iteration-I]
+====
+
+== Docker Setup
+
+Before doing any deployment, its recommended to do `eval $(minishift docker-env)` from your current shell, to set up the DOCKER environment variables, that will be needed by the fabric8 maven plugin to deploy application on OpenShift.
+
+[[iteration-1]]
+= Iteration I
+
+The Iteration-1 is supposed to be the as-is deployment of the __Brewery__ application on to https://kubernetes.io[Kubernetes]
+or https://www.openshift.com[Openshift].  This will have all the components from the original https://github.com/spring-cloud-samples/brewery
+with modifications required :
+
+- Use the Fabric8 Maven Plugin to generate the Kubernetes/OpenShift resources needed to deploy the applications on the platform
+- Design OpenShift templates to deploy RabbitMQ and the different servers such as Eureka, Config-Server, Zipkin, ... (to be discussed)
+
+to have it deployed on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift]
+
+[[itr1-application-setup]]
+== Setup
+
+[[itr1-clone-source]]
+=== Clone
+
+[source,sh]
+----
+git clone -b iteration-1 https://github.com/redhat-developer-demos/brewery.git
+----
+
+[NOTE]
+====
+Through out this document we will call the directory where the project was cloned as _$PROJECT_HOME_
+====
+
+[[itr1-pre-req]]
+== Pre-Requisite
+
+[[itr1-pre-req-rabbitmq]]
+=== RabbitMQ 
+
+The https://hub.docker.com/_/rabbitmq/[RabbimtMQ] container image when run is run using `root` user (UID `0`).  The OpenShift by default does not allow container 
+images to be run with UID `0`. In order to allow that we need to define polices and attach to Kubernetes Service Account, to have better clarity and control 
+we create a separate service account called **brewery** and add the required https://docs.openshift.org/latest/admin_guide/manage_scc.html[Security Context Constraints(SCC)] 
+to allow running the container as UID `0` user.  The following commands adds the required SCC to the service account **brewery**,
+
+[source,sh]
+----
+oc adm policy add-scc-to-user privileged -z brewery <1>
+
+oc adm policy add-scc-to-user anyuid -z brewery  <1>
+----
+
+<1> **brewery** service is created when RabbitMQ is deployed
+
+[[itr1-deployable-apps]]
+== Deploy Applications
+
+.Application List
+[cols="1*^,1,1,5"]
+|===
+| |Application| Folder | Remarks
+
+|icon:check[color: green]
+|<<rabbitmq>>
+| *$PROJECT_HOME*/extras/rabbitmq
+| Message Broker - https://www.rabbitmq.com/
+
+|icon:check[color: green]
+|common
+|*$PROJECT_HOME*/common
+| Common shared library
+
+|icon:check[color: green]
+|<<eureka>>
+|*$PROJECT_HOME*/eureka
+|Service Registry - https://github.com/Netflix/eureka/wiki/Eureka-at-a-glance
+
+|icon:check[color: green]
+|<<config-server>>
+|*$PROJECT_HOME*/config-server
+|Centralized Configuration Server - https://cloud.spring.io/spring-cloud-config/spring-cloud-config.html
+
+|icon:check[color: green]
+|<<zipkin-server>>
+|*$PROJECT_HOME*/zipkin-server
+| http://zipkin.io/[Distributed Tracing system]
+
+|icon:check[color: green]
+|<<zuul>>
+|*$PROJECT_HOME*/zuul
+| https://github.com/Netflix/zuul/wiki[Java based Proxy]
+
+|icon:check[color: green]
+|<<ingredients>>
+|*$PROJECT_HOME*/ingredients
+|
+
+|icon:check[color: green]
+|<<reporting>>
+|*$PROJECT_HOME*/reporting
+|
+
+|icon:check[color: green]
+|<<brewing>>
+|*$PROJECT_HOME*/brewing
+|
+
+|icon:check[color: green]
+|<<presenting>>
+|*$PROJECT_HOME*/presenting
+|
+
+|===
+
+
+[[itr1-build-app]]
+=== Building
+
+Brewery application uses gradle for build, we will leverage on the same to get the application artifacts ready. To build the applicaiton
+run the following command
+
+[source,sh]
+----
+./gradlew -DWHAT_TO_TEST="SLEUTH_STREAM" clean build <1>
+./mvnw -N install <2>
+----
+
+<1> We will be using https://cloud.spring.io/spring-cloud-sleuth/[Spring Cloud Sleuth] for sending trace information to https://github.com/openzipkin/zipkin[Zipkin]
+<2> This will install the brewery parent pom in local maven repository
+
+[[itr1-deploy-to-openshift]]
+=== Deploying to OpenShift
+
+[WARNING]
+====
+As part of this lift and shift i.e to make existing application to work **as-is**, there is certain order of application deployment might be required.  
+The order below is not hard rule but the best known working order during the migration effort. 
+====
+
+[[rabbitmq]]
+==== RabbitMQ
+
+Go to the directory  *$PROJECT_HOME/extras/rabbitmq*, and execute the following command
+
+[source,sh]
+----
+./mvnw -Dfabric8.mode=kubernetes clean fabric8:deploy
+----
+
+This will take some time to get it running as the deployment needs to download the `rabbitmq` docker image
+
+[[config-server]]
+==== Config Server
+
+Go to the directory  *$PROJECT_HOME/config-server*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+NOTE: Since this is the first Java application to be deployed,  it may take some time to download the necessary images from docker hub.
+
+[[eureka]]
+==== Eureka
+
+Go to the directory  *$PROJECT_HOME/eureka*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[zipkin-server]]
+==== Zipkin Server
+
+Go to the directory  *$PROJECT_HOME/zipkin-server*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[zuul]]
+==== Zuul
+
+Go to the directory  *$PROJECT_HOME/zuul*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[ingredients]]
+==== Ingredients
+
+Go to the directory  *$PROJECT_HOME/ingredients*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[reporting]]
+==== Reporting
+
+Go to the directory  *$PROJECT_HOME/reporting*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[brewing]]
+==== Brewing
+
+Go to the directory  *$PROJECT_HOME/brewing*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
+
+[[presenting]]
+==== Presenting
+
+Go to the directory  *$PROJECT_HOME/presenting*, and execute the following command
+
+[source,sh]
+----
+./mvnw clean fabric8:deploy
+----
