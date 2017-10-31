@@ -19,17 +19,14 @@ In this demo, the https://github.com/kameshsampath/brewery[Spring Cloud Samples 
 and optimized for OpenShift, during the process of migration the original https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
 will be modified to make it deployable on to https://kubernetes.io[Kubernetes] or https://www.openshift.com[Openshift].
 
-The application will be migrated based on these iterations,
+The application was migrated iteratively,
 
-* [*] <<iteration-1>> - As-is deployment of the https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
+* [*] https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-1[Iteration-I] - As-is deployment of the https://github.com/spring-cloud-samples/brewery[Spring Cloud Samples - Brewery]
 with no code change.  The Application build process will be modified to enable easier deployment of application on Openshift
 
-* [*] <<iteration-2>> - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing & externalization of the config
+* [*] https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-2[Iteration-II] - Will use native OpenShift/Kubernetes features such as service discovery, loadbalancing & externalization of the config
 
-* [*] <<iteration-3>> - Optimizing stacks on OpenShift, like Apache Artemis instead of RabbitMQ, using OpenTracing and Jaeger,
-and using Kubernetes for client side loadbalancing i.e. No Ribbon for LoadBalancing
-
-This document walks through on setting up Iteration-3
+* [*] <<iteration-3>> - Optimizing stacks on OpenShift, like Apache Artemis instead of RabbitMQ, using OpenTracing and Jaeger, and using Kubernetes for client side loadbalancing i.e. No Ribbon for LoadBalancing
 
 [[default-pre-req]]
 == Pre-Requisite
@@ -119,32 +116,32 @@ Stream will be used, instead the project will use https://github.com/search?q=or
 | http://zipkin.io/[Distributed Tracing system]
 
 |icon:check[color: green]
-|<<jaeger>>
+|<<itr3-jaeger>>
 | Jaeger already provides OpenShift manifests to deploy the same in OpenShift
 | https://uber.github.io/jaeger/[Jaeger], a high performing OpenTracing based implementation of Distributed Tracing
 
 |icon:check[color: green]
-|<<zuul>>
+|<<itr3-zuul>>
 |*$PROJECT_HOME*/zuul
 | https://github.com/Netflix/zuul/wiki[Java based Proxy]
 
 |icon:check[color: green]
-|<<ingredients>>
+|<<itr3-ingredients>>
 |*$PROJECT_HOME*/ingredients
 |
 
 |icon:check[color: green]
-|<<reporting>>
+|<<itr3-reporting>>
 |*$PROJECT_HOME*/reporting
 |
 
 |icon:check[color: green]
-|<<brewing>>
+|<<itr3-brewing>>
 |*$PROJECT_HOME*/brewing
 |
 
 |icon:check[color: green]
-|<<presenting>>
+|<<itr3-presenting>>
 |*$PROJECT_HOME*/presenting
 |
 
@@ -224,7 +221,7 @@ Please use the template from sources for all-in-deployment as currently version 
 traces as expected
 ====
 
-[[zuul]]
+[[itr3-zuul]]
 ==== Zuul
 
 Go to the directory  *$PROJECT_HOME/zuul*, and execute the following command
