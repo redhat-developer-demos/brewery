@@ -36,6 +36,7 @@ or https://developers.redhat.com/products/cdk/overview/Op[*CDK*], or
 have access to https://www.openshift.com/container-platform/index.html[*OpenShift Container Platform*]
 
 [[iteration-3]]
+= Iteration III
 
 This iteration is more of optimizing the <<iteration-2>> on OpenShift. This iteration has fair bit of code change that is required to port the application to
 use:
