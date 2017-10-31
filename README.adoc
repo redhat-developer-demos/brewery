@@ -38,11 +38,11 @@ have access to https://www.openshift.com/container-platform/index.html[*OpenShif
 [[iteration-3]]
 = Iteration III
 
-This iteration is more of optimizing the <<iteration-2>> on OpenShift. This iteration has fair bit of code change that is required to port the application to
+This iteration is more of optimizing the https://redhat-developer-docs.github.io/green-cloud-demo/#iteration-2[Iteration-II] on OpenShift. This iteration has fair bit of code change that is required to port the application to
 use:
 
 * https://activemq.apache.org/artemis/[Apache Artemis] in place of RabbitMQ
-* http://opentracing.io/[OpenTracing] based tracing and using https://uber.github.io/jaeger/[Jaeger]in place of Zipkin,
+* http://opentracing.io/[OpenTracing] based tracing and using https://uber.github.io/jaeger/[Jaeger] in place of Zipkin,
 * Leveraging Kubernetes load balancing for client services i.e. *No Ribbon for client side load balancing*.
 
 This iteration will also obselete many modules/projects from source tree, refer to the <<itr3-deprecated-modules,deprecate>> section for more details
