@@ -141,32 +141,32 @@ oc adm policy add-scc-to-user anyuid -z brewery  <1>
 |Application will use https://kubernetes.io/docs/tasks/configure-pod-container/configmap/[Kubernetes ConfigMaps]
 
 |icon:check[color: green]
-|<<zipkin-server>>
+|<<itr2-zipkin-server>>
 |*$PROJECT_HOME*/zipkin-server
 | http://zipkin.io/[Distributed Tracing system]
 
 |icon:check[color: green]
-|<<zuul>>
+|<<itr2-zuul>>
 |*$PROJECT_HOME*/zuul
 | https://github.com/Netflix/zuul/wiki[Java based Proxy]
 
 |icon:check[color: green]
-|<<ingredients>>
+|<<itr2-ingredients>>
 |*$PROJECT_HOME*/ingredients
 |
 
 |icon:check[color: green]
-|<<reporting>>
+|<<itr2-reporting>>
 |*$PROJECT_HOME*/reporting
 |
 
 |icon:check[color: green]
-|<<brewing>>
+|<<itr2-brewing>>
 |*$PROJECT_HOME*/brewing
 |
 
 |icon:check[color: green]
-|<<presenting>>
+|<<itr2-presenting>>
 |*$PROJECT_HOME*/presenting
 |
 
@@ -234,7 +234,7 @@ Go to the directory  *$PROJECT_HOME/zipkin-server*, and execute the following co
 ./mvnw fabric8:deploy
 ----
 
-[[zuul]]
+[[itr2-zuul]]
 ==== Zuul
 
 Go to the directory  *$PROJECT_HOME/zuul*, and execute the following command
