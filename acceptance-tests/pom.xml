@@ -14,7 +14,7 @@
     <build-helper-maven-plugin.version>1.12</build-helper-maven-plugin.version>
     <awaitility.version>1.6.5</awaitility.version>
     <rest-assured.version>2.6.0</rest-assured.version>
-    <spock-reports.version>1.2.7</spock-reports.version>
+    <spock-reports.version>1.6.0</spock-reports.version>
   </properties>
 
   <artifactId>acceptance-tests</artifactId>
